@@ -1,13 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Navigation from '@/components/Navigation'
-import DashboardClient from '@/components/DashboardClient'
+import TransactionsClient from './TransactionsClient'
 
 export const metadata = {
-  title: 'Dashboard - TrackFolio',
+  title: 'Trade Log - TrackFolio',
 }
 
-export default async function DashboardPage() {
+export default async function TransactionsPage() {
   const supabase = await createClient()
   
   const { data: { user }, error: userError } = await supabase.auth.getUser()
@@ -16,7 +16,7 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Fetch all transactions to build the dashboard
+  // Fetch user's transactions with nested stock data
   const { data: transactions, error: txError } = await supabase
     .from('transactions')
     .select(`
@@ -24,18 +24,17 @@ export default async function DashboardPage() {
       stocks ( symbol, company_name )
     `)
     .eq('user_id', user.id)
+    .order('transaction_date', { ascending: false })
+    .order('created_at', { ascending: false })
 
   if (txError) {
-    console.error('Error fetching transactions for dashboard:', txError)
+    console.error('Error loading transactions:', txError)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <Navigation user={user} />
-      
-      <main className="flex-grow">
-        <DashboardClient transactions={transactions as any || []} />
-      </main>
+      <TransactionsClient initialTransactions={transactions as any || []} />
     </div>
   )
 }
