@@ -17,13 +17,10 @@ export default async function DividendsPage() {
     redirect('/login')
   }
 
-    // Fetch user's last 10 dividends
+    // Fetch user's latest 10 entries across all time.
     const rawDividends = await prisma.dividends.findMany({
       where: { user_id: user.id },
-      orderBy: [
-        { date: 'desc' },
-        { created_at: 'desc' }
-      ],
+      orderBy: { created_at: 'desc' },
       take: 10,
     include: {
       stocks: {

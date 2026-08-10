@@ -17,8 +17,8 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Fetch all transactions to build the dashboard
-  const [transactions, dividends, companies] = await Promise.all([
+  // Fetch dashboard data. Stock aggregates are the source of truth for active shares.
+  const [transactions, dividends, companies, activeStocks] = await Promise.all([
     prisma.transactions.findMany({
       where: { user_id: user.id },
       select: {
@@ -48,6 +48,26 @@ export default async function DashboardPage() {
     }),
     prisma.dse_companies.findMany({
       select: { symbol: true, sector: true }
+    }),
+    prisma.stocks.findMany({
+      where: {
+        user_id: user.id,
+        total_quantity: { gt: 0 }
+      },
+      select: {
+        id: true,
+        symbol: true,
+        total_quantity: true,
+        total_investment: true,
+        portfolio_price: true,
+        dse_company: {
+          select: {
+            company_name: true,
+            sector: true,
+            current_price: true
+          }
+        }
+      }
     })
   ])
 
@@ -86,9 +106,24 @@ export default async function DashboardPage() {
     }
   }))
 
+  const formattedStocks = activeStocks.map(stock => ({
+    id: stock.id,
+    symbol: stock.symbol,
+    company_name: stock.dse_company?.company_name || 'Unknown',
+    sector: sectorMap.get(stock.symbol) || stock.dse_company?.sector || 'Others',
+    total_quantity: Number(stock.total_quantity || 0),
+    total_investment: Number(stock.total_investment || 0),
+    portfolio_price: Number(stock.portfolio_price || 0),
+    current_price: stock.dse_company?.current_price ? Number(stock.dse_company.current_price) : 0
+  }))
+
   return (
     <AppLayout user={user} title="Dashboard">
-      <DashboardClient transactions={formattedTransactions as any} dividends={formattedDividends as any} />
+      <DashboardClient
+        transactions={formattedTransactions as any}
+        dividends={formattedDividends as any}
+        stocks={formattedStocks}
+      />
     </AppLayout>
   )
 }

@@ -3,6 +3,7 @@
 import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { recalculateStockAggregates } from '@/lib/stock-aggregates'
 
 export async function syncDashboardData() {
   const supabase = await createClient()
@@ -38,7 +39,7 @@ export async function syncDashboardData() {
   // 2. Get User's Stocks symbols to know which ones to fetch contact info for
   const userStocks = await prisma.stocks.findMany({
     where: { user_id: user.id },
-    select: { symbol: true }
+    select: { id: true, symbol: true }
   })
 
   // 3. Update current_price for ALL DSE companies in the master table
@@ -104,8 +105,11 @@ export async function syncDashboardData() {
     }
   }))
 
+  await Promise.all(userStocks.map(stock => recalculateStockAggregates(stock.id)))
+
   revalidatePath('/')
   revalidatePath('/dashboard')
+  revalidatePath('/portfolio')
   
   return { success: true }
 }

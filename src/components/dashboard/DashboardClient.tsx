@@ -37,14 +37,27 @@ type Dividend = {
   }
 }
 
+type StockHolding = {
+  id: string
+  symbol: string
+  company_name: string
+  sector: string
+  total_quantity: number
+  total_investment: number
+  portfolio_price: number
+  current_price: number
+}
+
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316', '#84cc16', '#3b82f6', '#d946ef', '#f43f5e']
 
 export default function DashboardClient({ 
   transactions, 
-  dividends 
+  dividends,
+  stocks
 }: { 
   transactions: Transaction[], 
-  dividends: Dividend[] 
+  dividends: Dividend[],
+  stocks: StockHolding[]
 }) {
   
   const [isPending, startTransition] = useTransition()
@@ -63,35 +76,11 @@ export default function DashboardClient({
 
   // 1. Calculate KPI Metrics
   const kpis = useMemo(() => {
-    let totalInvested = 0
-    let totalShares = 0
-    let currentPortfolioValue = 0
-
-    // To accurately calculate current portfolio value, we need net quantity per stock
-    const holdings = new Map<string, { qty: number, invested: number, currentPrice: number }>()
-
-    transactions.forEach(txn => {
-      const sym = txn.stocks.symbol
-      const current = holdings.get(sym) || { qty: 0, invested: 0, currentPrice: txn.stocks.current_price || 0 }
-      
-      if (txn.type === 'BUY') {
-        current.qty += txn.quantity
-        current.invested += (txn.quantity * txn.price_per_unit) + txn.brokerage_fee
-      } else {
-        current.qty -= txn.quantity
-        current.invested -= (txn.quantity * txn.price_per_unit) - txn.brokerage_fee
-      }
-      holdings.set(sym, current)
-    })
-
-    holdings.forEach(h => {
-      if (h.qty > 0) {
-        totalInvested += h.invested
-        totalShares += h.qty
-        currentPortfolioValue += (h.qty * h.currentPrice)
-      }
-    })
-
+    const totalInvested = stocks.reduce((acc, stock) => acc + stock.total_investment, 0)
+    const totalShares = stocks.reduce((acc, stock) => acc + stock.total_quantity, 0)
+    const currentPortfolioValue = stocks.reduce((acc, stock) => {
+      return acc + (stock.total_quantity * stock.current_price)
+    }, 0)
     const totalDividend = dividends.reduce((acc, div) => acc + (div.cash_amount || 0), 0)
     
     // Unrealized P/L = Current Value - Invested Value
@@ -104,44 +93,26 @@ export default function DashboardClient({
       totalProfitLoss,
       currentPortfolioValue
     }
-  }, [transactions, dividends])
+  }, [stocks, dividends])
 
   // 2. Portfolio Allocation (Pie Chart) & Sector Allocation
   const { portfolioData, sectorData, totalPortfolioValue } = useMemo(() => {
-    const holdings = new Map<string, { symbol: string, totalQty: number, totalInvested: number, sector: string }>()
     const sectorTotals = new Map<string, number>()
-
-    transactions.forEach(txn => {
-      const sym = txn.stocks.symbol
-      const sector = txn.stocks.sector || 'Others'
-      const current = holdings.get(sym) || { symbol: sym, totalQty: 0, totalInvested: 0, sector }
-      
-      if (txn.type === 'BUY') {
-        current.totalQty += txn.quantity
-        current.totalInvested += (txn.quantity * txn.price_per_unit) + txn.brokerage_fee
-      } else if (txn.type === 'SELL') {
-        current.totalQty -= txn.quantity
-        current.totalInvested -= (txn.quantity * txn.price_per_unit) - txn.brokerage_fee
-      }
-      
-      holdings.set(sym, current)
-    })
-
-    const validHoldings = Array.from(holdings.values()).filter(h => h.totalQty > 0 && h.totalInvested > 0)
+    const validHoldings = stocks.filter(stock => stock.total_quantity > 0 && stock.total_investment > 0)
     
     let totalVal = 0
     validHoldings.forEach(h => {
-      totalVal += h.totalInvested
+      totalVal += h.total_investment
       const secVal = sectorTotals.get(h.sector) || 0
-      sectorTotals.set(h.sector, secVal + h.totalInvested)
+      sectorTotals.set(h.sector, secVal + h.total_investment)
     })
 
     return {
-      portfolioData: validHoldings.map(h => ({ name: h.symbol, value: h.totalInvested, qty: h.totalQty })).sort((a, b) => b.value - a.value),
+      portfolioData: validHoldings.map(h => ({ name: h.symbol, value: h.total_investment, qty: h.total_quantity })).sort((a, b) => b.value - a.value),
       sectorData: Array.from(sectorTotals.entries()).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value),
       totalPortfolioValue: totalVal
     }
-  }, [transactions])
+  }, [stocks])
 
 
   // 3. Daily Trade Activity (Bar Chart - Last 30 Days)
