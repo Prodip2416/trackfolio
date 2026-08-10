@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface PremiumDatePickerProps {
@@ -24,7 +25,9 @@ export default function PremiumDatePicker({
   placement = 'bottom'
 }: PremiumDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 })
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const calendarRef = useRef<HTMLDivElement>(null)
   
   // Date state
   const currentDate = value ? new Date(value) : new Date()
@@ -34,7 +37,13 @@ export default function PremiumDatePicker({
   // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      const target = event.target as Node
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target) &&
+        calendarRef.current &&
+        !calendarRef.current.contains(target)
+      ) {
         setIsOpen(false)
       }
     }
@@ -42,8 +51,7 @@ export default function PremiumDatePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Sync state if value prop changes
-  useEffect(() => {
+  const syncCalendarView = () => {
     if (value) {
       const d = new Date(value)
       if (!isNaN(d.getTime())) {
@@ -51,7 +59,51 @@ export default function PremiumDatePicker({
         setCurrentYear(d.getFullYear())
       }
     }
-  }, [value])
+  }
+
+  useLayoutEffect(() => {
+    if (!isOpen) return
+
+    const updateCalendarPosition = () => {
+      if (!dropdownRef.current) return
+
+      const triggerRect = dropdownRef.current.getBoundingClientRect()
+      const calendarRect = calendarRef.current?.getBoundingClientRect()
+      const calendarWidth = calendarRect?.width ?? 300
+      const calendarHeight = calendarRect?.height ?? 360
+      const gap = 8
+      const viewportPadding = 16
+      const maxLeft = window.innerWidth - calendarWidth - viewportPadding
+      const left = Math.max(viewportPadding, Math.min(triggerRect.left, maxLeft))
+
+      const topPlacement = triggerRect.top - calendarHeight - gap
+      const bottomPlacement = triggerRect.bottom + gap
+      const hasTopSpace = topPlacement >= viewportPadding
+      const hasBottomSpace = bottomPlacement + calendarHeight <= window.innerHeight - viewportPadding
+
+      let top = placement === 'top' ? topPlacement : bottomPlacement
+
+      if (placement === 'top' && !hasTopSpace && hasBottomSpace) {
+        top = bottomPlacement
+      }
+
+      if (placement === 'bottom' && !hasBottomSpace && hasTopSpace) {
+        top = topPlacement
+      }
+
+      top = Math.max(viewportPadding, Math.min(top, window.innerHeight - calendarHeight - viewportPadding))
+      setCalendarPosition({ top, left })
+    }
+
+    updateCalendarPosition()
+    window.addEventListener('resize', updateCalendarPosition)
+    window.addEventListener('scroll', updateCalendarPosition, true)
+
+    return () => {
+      window.removeEventListener('resize', updateCalendarPosition)
+      window.removeEventListener('scroll', updateCalendarPosition, true)
+    }
+  }, [isOpen, placement])
 
   const handlePrevMonth = () => {
     if (currentMonth === 0) {
@@ -134,7 +186,12 @@ export default function PremiumDatePicker({
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!isOpen) {
+            syncCalendarView()
+          }
+          setIsOpen(!isOpen)
+        }}
         className={`w-full flex items-center justify-between outline-none transition-all ${buttonClassName} ${
           isOpen ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300'
         } ${!value ? 'text-gray-500' : 'text-gray-900'}`}
@@ -145,10 +202,12 @@ export default function PremiumDatePicker({
         </div>
       </button>
 
-      {isOpen && (
-        <div className={`absolute z-50 bg-white border border-gray-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] p-5 min-w-[300px] ${
-          placement === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
-        }`}>
+      {isOpen && typeof document !== 'undefined' && createPortal((
+        <div
+          ref={calendarRef}
+          className="fixed z-[60] bg-white border border-gray-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] p-5 min-w-[300px]"
+          style={{ top: calendarPosition.top, left: calendarPosition.left }}
+        >
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <button 
@@ -214,7 +273,7 @@ export default function PremiumDatePicker({
              </button>
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   )
 }

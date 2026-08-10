@@ -17,13 +17,10 @@ export default async function TransactionsPage() {
     redirect('/login')
   }
 
-  // Fetch user's last 10 transactions with Prisma
+  // Fetch user's latest 10 entries across all time.
   const rawTransactions = await prisma.transactions.findMany({
     where: { user_id: user.id },
-    orderBy: [
-      { transaction_date: 'desc' },
-      { created_at: 'desc' }
-    ],
+    orderBy: { created_at: 'desc' },
     take: 10,
     include: {
       stocks: {

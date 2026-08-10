@@ -122,6 +122,7 @@ export async function addDividend(formData: FormData) {
     await recalculateStockAggregates(stock.id)
 
     revalidatePath('/dividends')
+    revalidatePath('/portfolio')
     return { success: 'Dividend added successfully!' }
   } catch (error) {
     console.error('Error adding dividend:', error)
@@ -145,6 +146,7 @@ export async function deleteDividend(id: string) {
     await recalculateStockAggregates(div.stock_id!)
 
     revalidatePath('/dividends')
+    revalidatePath('/portfolio')
     return { success: true }
   } catch (error) {
     console.error('Error deleting dividend:', error)

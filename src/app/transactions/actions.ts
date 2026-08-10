@@ -122,6 +122,7 @@ export async function addSmartTransaction(prevState: any, formData: FormData) {
     await recalculateStockAggregates(stockId)
 
     revalidatePath('/transactions')
+    revalidatePath('/portfolio')
     return { success: 'Transaction saved successfully!' }
   } catch (error) {
     console.error('Error adding transaction:', error)
@@ -182,6 +183,7 @@ export async function updateSmartTransaction(id: string, prevState: any, formDat
     }
 
     revalidatePath('/transactions')
+    revalidatePath('/portfolio')
     return { success: 'Transaction updated successfully!' }
   } catch (error) {
     console.error('Error updating transaction:', error)
@@ -207,6 +209,7 @@ export async function deleteTransaction(id: string) {
     await recalculateStockAggregates(txn.stock_id!)
 
     revalidatePath('/transactions')
+    revalidatePath('/portfolio')
     return { success: true }
   } catch (error) {
     console.error('Error deleting transaction:', error)

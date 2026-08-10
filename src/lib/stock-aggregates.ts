@@ -14,9 +14,11 @@ export async function recalculateStockAggregates(stockId: string) {
   })
 
   // We need to merge and sort them chronologically to simulate history
+  type Transaction = (typeof transactions)[number]
+  type Dividend = (typeof dividends)[number]
   type TimelineEvent = 
-    | { type: 'TX', date: Date, data: any }
-    | { type: 'DIV', date: Date, data: any }
+    | { type: 'TX', date: Date, data: Transaction }
+    | { type: 'DIV', date: Date, data: Dividend }
   
   const events: TimelineEvent[] = [
     ...transactions.map(t => ({ type: 'TX' as const, date: t.transaction_date, data: t })),
@@ -27,6 +29,7 @@ export async function recalculateStockAggregates(stockId: string) {
   let totalInvestment = 0
   let averageBuyPrice = 0
   let portfolioPrice = 0
+  let portfolioCost = 0
 
   for (const event of events) {
     if (event.type === 'TX') {
@@ -44,17 +47,23 @@ export async function recalculateStockAggregates(stockId: string) {
         
         totalQuantity += qty
         totalInvestment += cost
-        portfolioPrice = totalQuantity > 0 ? totalInvestment / totalQuantity : 0
+        portfolioCost += cost
+        portfolioPrice = totalQuantity > 0 ? portfolioCost / totalQuantity : 0
       } else if (txn.type === 'SELL') {
+        const costBasisPrice = totalQuantity > 0 ? totalInvestment / totalQuantity : 0
+        const adjustedPortfolioPrice = totalQuantity > 0 ? portfolioCost / totalQuantity : 0
+
         totalQuantity -= qty
-        totalInvestment -= (qty * portfolioPrice)
+        totalInvestment -= (qty * costBasisPrice)
+        portfolioCost -= (qty * adjustedPortfolioPrice)
         // averageBuyPrice remains same
-        portfolioPrice = totalQuantity > 0 ? totalInvestment / totalQuantity : 0
+        portfolioPrice = totalQuantity > 0 ? portfolioCost / totalQuantity : 0
         
         // Prevent negative values from rounding errors
         if (totalQuantity <= 0) {
           totalQuantity = 0
           totalInvestment = 0
+          portfolioCost = 0
           portfolioPrice = 0
           averageBuyPrice = 0
         }
@@ -62,12 +71,12 @@ export async function recalculateStockAggregates(stockId: string) {
     } else if (event.type === 'DIV') {
       const div = event.data
       if (div.cash_amount) {
-        totalInvestment -= Number(div.cash_amount)
-        portfolioPrice = totalQuantity > 0 ? totalInvestment / totalQuantity : 0
+        portfolioCost -= Number(div.cash_amount)
+        portfolioPrice = totalQuantity > 0 ? portfolioCost / totalQuantity : 0
       }
       if (div.bonus_quantity) {
         totalQuantity += Number(div.bonus_quantity)
-        portfolioPrice = totalQuantity > 0 ? totalInvestment / totalQuantity : 0
+        portfolioPrice = totalQuantity > 0 ? portfolioCost / totalQuantity : 0
       }
     }
   }
@@ -79,7 +88,8 @@ export async function recalculateStockAggregates(stockId: string) {
       total_quantity: totalQuantity,
       total_investment: totalInvestment,
       average_buy_price: averageBuyPrice,
-      portfolio_price: portfolioPrice
+      portfolio_price: portfolioPrice,
+      updated_at: new Date()
     }
   })
 }
