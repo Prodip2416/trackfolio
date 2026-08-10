@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
+import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import Navigation from '@/components/Navigation'
+import AppLayout from '@/components/layout/AppLayout'
 import HistoryClient from './HistoryClient'
 
 export const metadata = {
@@ -16,25 +17,44 @@ export default async function HistoryPage() {
     redirect('/login')
   }
 
-  // Fetch all transactions for history
-  const { data: transactions, error: txError } = await supabase
-    .from('transactions')
-    .select(`
-      id, type, quantity, price_per_unit, transaction_date, brokerage_fee,
-      stocks ( symbol, company_name )
-    `)
-    .eq('user_id', user.id)
-    .order('transaction_date', { ascending: false })
-    .order('created_at', { ascending: false })
+  // Fetch only necessary data for filters (symbols and dates)
+  const [txnMetadata, divMetadata] = await Promise.all([
+    prisma.transactions.findMany({
+      where: { user_id: user.id },
+      select: {
+        transaction_date: true,
+        stocks: { select: { symbol: true } }
+      }
+    }),
+    prisma.dividends.findMany({
+      where: { user_id: user.id },
+      select: {
+        date: true,
+        stocks: { select: { symbol: true } }
+      }
+    })
+  ])
 
-  if (txError) {
-    console.error('Error loading history transactions:', txError)
-  }
+  // Extract unique stocks
+  const stockSet = new Set<string>()
+  const yearSet = new Set<string>()
+
+  txnMetadata.forEach(t => {
+    if (t.stocks?.symbol) stockSet.add(t.stocks.symbol)
+    yearSet.add(t.transaction_date.toISOString().substring(0, 4))
+  })
+
+  divMetadata.forEach(d => {
+    if (d.stocks?.symbol) stockSet.add(d.stocks.symbol)
+    yearSet.add(d.date.toISOString().substring(0, 4))
+  })
+
+  const uniqueStocks = Array.from(stockSet).sort()
+  const uniqueYears = Array.from(yearSet).sort().reverse()
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <Navigation user={user} />
-      <HistoryClient transactions={transactions as any || []} />
-    </div>
+    <AppLayout user={user} title="History">
+      <HistoryClient uniqueStocks={uniqueStocks} uniqueYears={uniqueYears} />
+    </AppLayout>
   )
 }

@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import { Search, Loader2, X } from 'lucide-react'
 import { getDSECompanies, addSmartTransaction, updateSmartTransaction } from '@/app/transactions/actions'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import PremiumDatePicker from '@/components/shared/PremiumDatePicker'
 
 type DSECompany = {
   symbol: string
   company_name: string
-  sector: string
+  sector: string | null
 }
 
 type InitialData = {
@@ -44,8 +46,10 @@ export default function SmartTransactionForm({
   
   const [isLoading, setIsLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
-  const [error, setError] = useState('')
   const [type, setType] = useState<'BUY' | 'SELL'>(initialData?.type || 'BUY')
+  const [transactionDate, setTransactionDate] = useState(
+    initialData ? initialData.transaction_date.split('T')[0] : new Date().toISOString().split('T')[0]
+  )
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Debounced Search
@@ -81,15 +85,34 @@ export default function SmartTransactionForm({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    
     if (!selectedCompany) {
-      setError('Please select a company from the list first.')
+      toast.error('Please select a stock first')
+      return
+    }
+
+    const formData = new FormData(e.currentTarget)
+    
+    const quantity = formData.get('quantity')
+    const price = formData.get('price_per_unit')
+    const date = formData.get('transaction_date')
+
+    if (!quantity || Number(quantity) <= 0) {
+      toast.error('Quantity must be greater than 0')
+      return
+    }
+
+    if (!price || Number(price) <= 0) {
+      toast.error('Price per Unit must be greater than 0')
+      return
+    }
+
+    if (!date) {
+      toast.error('Please select a Transaction Date')
       return
     }
 
     setIsLoading(true)
-    setError('')
-
-    const formData = new FormData(e.currentTarget)
     formData.append('symbol', selectedCompany.symbol)
     formData.append('company_name', selectedCompany.company_name)
     formData.append('sector', selectedCompany.sector || '')
@@ -108,8 +131,9 @@ export default function SmartTransactionForm({
     setIsLoading(false)
 
     if (result?.error) {
-      setError(result.error)
+      toast.error(result.error)
     } else {
+      toast.success(initialData ? 'Trade updated successfully!' : 'Trade logged successfully!')
       router.refresh()
       onClose()
     }
@@ -125,23 +149,17 @@ export default function SmartTransactionForm({
           <X className="w-5 h-5" />
         </button>
         
-        <div className="p-6 flex-shrink-0">
+        <div className="px-6 pt-6 pb-2 flex-shrink-0">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
             {initialData ? 'Edit Trade' : 'New Trade'}
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
             {initialData ? 'Update your transaction details.' : 'Log a new buy or sell transaction.'}
           </p>
-
-          {error && (
-            <div className="mb-4 p-3 bg-red-50/50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg">
-              {error}
-            </div>
-          )}
         </div>
 
         <div className="px-6 pb-6 overflow-y-auto custom-scrollbar flex-grow">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-5">
             {/* Transaction Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -258,7 +276,6 @@ export default function SmartTransactionForm({
                 <input
                   type="number"
                   name="quantity"
-                  required
                   min="1"
                   step="0.01"
                   defaultValue={initialData?.quantity}
@@ -275,7 +292,6 @@ export default function SmartTransactionForm({
                 <input
                   type="number"
                   name="price_per_unit"
-                  required
                   min="0.1"
                   step="0.1"
                   defaultValue={initialData?.price_per_unit}
@@ -291,12 +307,12 @@ export default function SmartTransactionForm({
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Date
                 </label>
-                <input
-                  type="date"
-                  name="transaction_date"
-                  required
-                  defaultValue={initialData ? initialData.transaction_date.split('T')[0] : new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
+                <input type="hidden" name="transaction_date" value={transactionDate} />
+                <PremiumDatePicker
+                  value={transactionDate}
+                  onChange={setTransactionDate}
+                  placement="top"
+                  buttonClassName="px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium min-h-[46px]"
                 />
               </div>
 
@@ -319,7 +335,7 @@ export default function SmartTransactionForm({
 
             <button
               type="submit"
-              disabled={isLoading || !selectedCompany}
+              disabled={isLoading}
               className={`w-full mt-2 text-white font-medium py-3 px-4 rounded-xl transition-colors flex items-center justify-center space-x-2 ${
                 type === 'BUY' ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-red-600 hover:bg-red-700'
               } disabled:opacity-70 disabled:cursor-not-allowed`}

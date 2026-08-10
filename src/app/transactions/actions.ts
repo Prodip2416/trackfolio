@@ -1,42 +1,43 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { recalculateStockAggregates } from '@/lib/stock-aggregates'
 
 const smartTransactionSchema = z.object({
-  symbol: z.string().min(1, "Symbol is required"),
+  symbol: z.string().min(1, "Please select a valid Stock Symbol"),
   company_name: z.string().min(1, "Company Name is required"),
   sector: z.string().optional(),
   type: z.enum(['BUY', 'SELL']),
-  quantity: z.number().positive("Quantity must be positive"),
-  price_per_unit: z.number().positive("Price must be positive"),
-  transaction_date: z.string().min(1, "Date is required"),
-  brokerage_fee: z.number().min(0).optional(),
+  quantity: z.number().positive("Quantity must be greater than 0"),
+  price_per_unit: z.number().positive("Price must be greater than 0"),
+  transaction_date: z.string().min(1, "Please select a valid Transaction Date"),
+  brokerage_fee: z.number().min(0, "Brokerage fee cannot be negative").optional(),
   note: z.string().optional(),
 })
 
 export async function getDSECompanies(query: string = '') {
-  const supabase = await createClient()
-  let dbQuery = supabase
-    .from('dse_companies')
-    .select('symbol, company_name, sector')
-    .order('symbol', { ascending: true })
-    
-  if (query) {
-    dbQuery = dbQuery.ilike('symbol', `%${query}%`).limit(15)
-  } else {
-    dbQuery = dbQuery.limit(50)
-  }
-
-  const { data, error } = await dbQuery
-
-  if (error) {
+  try {
+    if (query) {
+      return await prisma.dse_companies.findMany({
+        where: { symbol: { contains: query, mode: 'insensitive' } },
+        select: { symbol: true, company_name: true, sector: true },
+        orderBy: { symbol: 'asc' },
+        take: 15
+      })
+    } else {
+      return await prisma.dse_companies.findMany({
+        select: { symbol: true, company_name: true, sector: true },
+        orderBy: { symbol: 'asc' },
+        take: 50
+      })
+    }
+  } catch (error) {
     console.error('Error fetching DSE companies:', error)
     return []
   }
-
-  return data
 }
 
 export async function addSmartTransaction(prevState: any, formData: FormData) {
@@ -75,64 +76,57 @@ export async function addSmartTransaction(prevState: any, formData: FormData) {
     note
   } = validatedFields.data
 
-  // 1. Check if the stock already exists in the user's portfolio (`stocks` table)
-  let { data: existingStock, error: stockCheckError } = await supabase
-    .from('stocks')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('symbol', symbol)
-    .single()
+  try {
+    // 0. Ensure user profile exists (replaces Supabase db trigger)
+    await prisma.profiles.upsert({
+      where: { id: user.id },
+      update: {},
+      create: { id: user.id, email: user.email }
+    })
 
-  let stockId = existingStock?.id
+    // 1. Check if the stock already exists in the user's portfolio (`stocks` table)
+    let existingStock = await prisma.stocks.findFirst({
+      where: { user_id: user.id, symbol }
+    })
 
-  // 2. If not, create it!
-  if (!stockId) {
-    const { data: newStock, error: insertError } = await supabase
-      .from('stocks')
-      .insert({
-        user_id: user.id,
-        symbol,
-        company_name,
-        sector,
-        current_price: type === 'BUY' ? price_per_unit : null, // Set initial current_price based on buy price
-        current_price_updated_at: new Date().toISOString()
+    let stockId = existingStock?.id
+
+    // 2. If not, create it!
+    if (!stockId) {
+      const newStock = await prisma.stocks.create({
+        data: {
+          user_id: user.id,
+          symbol
+        }
       })
-      .select('id')
-      .single()
-
-    if (insertError || !newStock) {
-      console.error("Error auto-creating stock:", insertError)
-      return { error: 'Failed to initialize stock in your portfolio.' }
+      stockId = newStock.id
+    } else if (type === 'BUY') {
+      // Intentionally left blank, no need to update current_price on stocks anymore
     }
-    
-    stockId = newStock.id
-  } else if (type === 'BUY') {
-    // Optionally update current price if they bought it again (keeps tracking updated)
-    await supabase.from('stocks').update({
-      current_price: price_per_unit,
-      current_price_updated_at: new Date().toISOString()
-    }).eq('id', stockId)
-  }
 
-  // 3. Save the transaction
-  const { error } = await supabase.from('transactions').insert({
-    user_id: user.id,
-    stock_id: stockId,
-    type,
-    quantity,
-    price_per_unit,
-    transaction_date,
-    brokerage_fee,
-    note
-  })
+    // 3. Save the transaction
+    await prisma.transactions.create({
+      data: {
+        user_id: user.id,
+        stock_id: stockId,
+        type: type as any,
+        quantity,
+        price_per_unit,
+        transaction_date: new Date(transaction_date),
+        brokerage_fee,
+        note
+      }
+    })
 
-  if (error) {
+    // 4. Recalculate Aggregates
+    await recalculateStockAggregates(stockId)
+
+    revalidatePath('/transactions')
+    return { success: 'Transaction saved successfully!' }
+  } catch (error) {
     console.error('Error adding transaction:', error)
     return { error: 'Failed to save transaction.' }
   }
-
-  revalidatePath('/transactions')
-  return { success: 'Transaction saved successfully!' }
 }
 
 export async function updateSmartTransaction(id: string, prevState: any, formData: FormData) {
@@ -168,27 +162,31 @@ export async function updateSmartTransaction(id: string, prevState: any, formDat
     note
   } = validatedFields.data
 
-  // We are not changing the stock symbol on update, just the transaction details
-  const { error } = await supabase
-    .from('transactions')
-    .update({
-      type,
-      quantity,
-      price_per_unit,
-      transaction_date,
-      brokerage_fee,
-      note
+  try {
+    // We are not changing the stock symbol on update, just the transaction details
+    await prisma.transactions.updateMany({
+      where: { id, user_id: user.id },
+      data: {
+        type: type as any,
+        quantity,
+        price_per_unit,
+        transaction_date: new Date(transaction_date),
+        brokerage_fee,
+        note
+      }
     })
-    .eq('id', id)
-    .eq('user_id', user.id)
 
-  if (error) {
+    const txn = await prisma.transactions.findUnique({ where: { id, user_id: user.id } })
+    if (txn) {
+      await recalculateStockAggregates(txn.stock_id!)
+    }
+
+    revalidatePath('/transactions')
+    return { success: 'Transaction updated successfully!' }
+  } catch (error) {
     console.error('Error updating transaction:', error)
     return { error: 'Failed to update transaction.' }
   }
-
-  revalidatePath('/transactions')
-  return { success: 'Transaction updated successfully!' }
 }
 
 export async function deleteTransaction(id: string) {
@@ -197,17 +195,21 @@ export async function deleteTransaction(id: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('transactions')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id)
+  try {
+    const txn = await prisma.transactions.findUnique({ where: { id, user_id: user.id } })
+    if (!txn) return { error: 'Transaction not found' }
 
-  if (error) {
+    await prisma.transactions.delete({
+      where: { id, user_id: user.id }
+    })
+    
+    // Recalculate Aggregates
+    await recalculateStockAggregates(txn.stock_id!)
+
+    revalidatePath('/transactions')
+    return { success: true }
+  } catch (error) {
     console.error('Error deleting transaction:', error)
     return { error: 'Failed to delete transaction.' }
   }
-
-  revalidatePath('/transactions')
-  return { success: true }
 }
