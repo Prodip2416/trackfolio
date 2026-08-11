@@ -11,7 +11,7 @@ const dividendSchema = z.object({
   type: z.enum(['INTERIM', 'FINAL']),
   year: z.number().min(2000, "Year must be 2000 or later").max(2100, "Year must be 2100 or earlier"),
   cash_amount: z.number().min(0, "Cash amount cannot be negative").nullable().optional(),
-  bonus_quantity: z.number().min(0, "Bonus quantity cannot be negative").nullable().optional(),
+  bonus_quantity: z.number().int("Bonus shares must be a whole number").min(0, "Bonus quantity cannot be negative").nullable().optional(),
   date: z.string().min(1, 'Please select a Declaration Date'),
   note: z.string().optional()
 })
@@ -151,5 +151,89 @@ export async function deleteDividend(id: string) {
   } catch (error) {
     console.error('Error deleting dividend:', error)
     return { error: 'Failed to delete dividend.' }
+  }
+}
+
+export async function updateDividend(id: string, formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Unauthorized' }
+
+  const validatedFields = dividendSchema.safeParse({
+    symbol: formData.get('symbol'),
+    type: formData.get('type'),
+    year: Number(formData.get('year')),
+    cash_amount: formData.get('cash_amount') ? Number(formData.get('cash_amount')) : null,
+    bonus_quantity: formData.get('bonus_quantity') ? Number(formData.get('bonus_quantity')) : null,
+    date: formData.get('date'),
+    note: formData.get('note') || '',
+  })
+
+  if (!validatedFields.success) {
+    return { error: validatedFields.error.issues?.[0]?.message || 'Validation failed' }
+  }
+
+  const {
+    symbol,
+    type,
+    year,
+    cash_amount,
+    bonus_quantity,
+    date,
+    note
+  } = validatedFields.data
+
+  try {
+    const existingDiv = await prisma.dividends.findUnique({
+      where: { id, user_id: user.id }
+    })
+    
+    if (!existingDiv) return { error: 'Dividend not found' }
+
+    // Check for duplicate dividend on same date but different id
+    const stock = await prisma.stocks.findFirst({
+      where: { user_id: user.id, symbol }
+    })
+
+    if (!stock) return { error: 'You do not own this stock in your portfolio.' }
+
+    const duplicateDividend = await prisma.dividends.findFirst({
+      where: {
+        user_id: user.id,
+        stock_id: stock.id,
+        date: new Date(date),
+        id: { not: id }
+      }
+    })
+
+    if (duplicateDividend) {
+      return { error: 'A dividend for this stock on this date already exists.' }
+    }
+
+    await prisma.dividends.update({
+      where: { id },
+      data: {
+        stock_id: stock.id,
+        type: type as any,
+        year,
+        cash_amount,
+        bonus_quantity,
+        date: new Date(date),
+        note
+      }
+    })
+
+    // Recalculate if stock changed, we should theoretically recalculate both, but usually stock doesn't change
+    if (existingDiv.stock_id !== stock.id) {
+       await recalculateStockAggregates(existingDiv.stock_id!)
+    }
+    await recalculateStockAggregates(stock.id)
+
+    revalidatePath('/dividends')
+    revalidatePath('/portfolio')
+    return { success: 'Dividend updated successfully!' }
+  } catch (error) {
+    console.error('Error updating dividend:', error)
+    return { error: 'Failed to update dividend.' }
   }
 }

@@ -102,6 +102,11 @@ export default function SmartTransactionForm({
       return
     }
 
+    if (!Number.isInteger(Number(quantity))) {
+      toast.error('Quantity must be a whole number (e.g., 45, 89)')
+      return
+    }
+
     if (!price || Number(price) <= 0) {
       toast.error('Price per Unit must be greater than 0')
       return
@@ -277,7 +282,8 @@ export default function SmartTransactionForm({
                   type="number"
                   name="quantity"
                   min="1"
-                  step="0.01"
+                  step="1"
+                  required
                   defaultValue={initialData?.quantity}
                   placeholder="e.g. 100"
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
@@ -294,6 +300,7 @@ export default function SmartTransactionForm({
                   name="price_per_unit"
                   min="0.1"
                   step="0.1"
+                  required
                   defaultValue={initialData?.price_per_unit}
                   placeholder="e.g. 45.5"
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"

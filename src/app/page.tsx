@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import DashboardClient from '@/components/dashboard/DashboardClient'
+import { getDictionary } from '@/i18n/getDictionary'
 
 export const metadata = {
   title: 'Dashboard - TrackFolio',
@@ -17,8 +18,10 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
+  const dict = await getDictionary()
+
   // Fetch dashboard data. Stock aggregates are the source of truth for active shares.
-  const [transactions, dividends, companies, activeStocks] = await Promise.all([
+  const [transactions, dividends, companies, activeStocks, lastUpdatedCompany] = await Promise.all([
     prisma.transactions.findMany({
       where: { user_id: user.id },
       select: {
@@ -68,6 +71,10 @@ export default async function DashboardPage() {
           }
         }
       }
+    }),
+    prisma.dse_companies.findFirst({
+      orderBy: { updated_at: 'desc' },
+      select: { updated_at: true }
     })
   ])
 
@@ -118,11 +125,13 @@ export default async function DashboardPage() {
   }))
 
   return (
-    <AppLayout user={user} title="Dashboard">
+    <AppLayout user={user} title={dict.sidebar.dashboard}>
       <DashboardClient
         transactions={formattedTransactions as any}
         dividends={formattedDividends as any}
         stocks={formattedStocks}
+        lastSyncTime={lastUpdatedCompany?.updated_at?.toISOString() || null}
+        dict={dict}
       />
     </AppLayout>
   )

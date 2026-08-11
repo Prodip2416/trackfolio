@@ -7,6 +7,7 @@ import SearchableDropdown from '@/components/shared/SearchableDropdown'
 import PremiumDatePicker from '@/components/shared/PremiumDatePicker'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { updateDividend } from '@/app/dividends/actions'
 
 type OwnedStock = {
   id: string
@@ -15,9 +16,11 @@ type OwnedStock = {
 }
 
 export default function DividendForm({ 
-  onClose 
+  onClose,
+  initialData 
 }: { 
-  onClose: () => void 
+  onClose: () => void
+  initialData?: any 
 }) {
   const router = useRouter()
   const [ownedStocks, setOwnedStocks] = useState<OwnedStock[]>([])
@@ -26,13 +29,13 @@ export default function DividendForm({
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   // Form State
-  const [symbol, setSymbol] = useState('')
-  const [type, setType] = useState('FINAL') // INTERIM or FINAL
-  const [year, setYear] = useState(new Date().getFullYear().toString())
-  const [date, setDate] = useState('')
-  const [cashAmount, setCashAmount] = useState('')
-  const [bonusQuantity, setBonusQuantity] = useState('')
-  const [note, setNote] = useState('')
+  const [symbol, setSymbol] = useState(initialData?.symbol || '')
+  const [type, setType] = useState(initialData?.type || 'FINAL') // INTERIM or FINAL
+  const [year, setYear] = useState(initialData?.year?.toString() || new Date().getFullYear().toString())
+  const [date, setDate] = useState(initialData?.date ? new Date(initialData.date).toISOString().substring(0, 10) : '')
+  const [cashAmount, setCashAmount] = useState(initialData?.cash_amount?.toString() || '')
+  const [bonusQuantity, setBonusQuantity] = useState(initialData?.bonus_quantity?.toString() || '')
+  const [note, setNote] = useState(initialData?.note || '')
 
   useEffect(() => {
     async function fetchStocks() {
@@ -87,6 +90,11 @@ export default function DividendForm({
       return
     }
 
+    if (bonusQuantity && !Number.isInteger(Number(bonusQuantity))) {
+      toast.error('Bonus shares must be a whole number (e.g., 25, 45)')
+      return
+    }
+
     setIsSubmitting(true)
     const formData = new FormData()
     formData.append('symbol', symbol)
@@ -97,14 +105,19 @@ export default function DividendForm({
     if (bonusQuantity) formData.append('bonus_quantity', bonusQuantity)
     if (note) formData.append('note', note)
 
-    const res = await addDividend(formData)
+    let res
+    if (initialData?.id) {
+      res = await updateDividend(initialData.id, formData)
+    } else {
+      res = await addDividend(formData)
+    }
     
     setIsSubmitting(false)
     
     if (res?.error) {
       toast.error(res.error)
     } else {
-      toast.success('Dividend saved successfully!')
+      toast.success(initialData?.id ? 'Dividend updated successfully!' : 'Dividend saved successfully!')
       router.refresh()
       onClose()
     }
@@ -123,7 +136,7 @@ export default function DividendForm({
 
         <div className="px-6 pt-6 pb-2 flex-shrink-0">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            Log Dividend
+            {initialData?.id ? 'Edit Dividend' : 'Log Dividend'}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             Track your cash and bonus dividends.
@@ -220,7 +233,8 @@ export default function DividendForm({
                   </label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="1"
+                    min="1"
                     value={bonusQuantity}
                     onChange={(e) => setBonusQuantity(e.target.value)}
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
@@ -254,7 +268,7 @@ export default function DividendForm({
                     <span>Saving...</span>
                   </>
                 ) : (
-                  <span>Save Dividend</span>
+                  <span>{initialData?.id ? 'Update Dividend' : 'Save Dividend'}</span>
                 )}
               </button>
             </form>

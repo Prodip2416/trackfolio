@@ -7,16 +7,12 @@ export async function getHistoryData({
   activeTab,
   filterStock,
   filterYear,
-  filterStartDate,
-  filterEndDate,
   currentPage,
   itemsPerPage = 10,
 }: {
   activeTab: 'BUY' | 'SELL' | 'DIVIDEND'
   filterStock: string
   filterYear: string
-  filterStartDate: string
-  filterEndDate: string
   currentPage: number
   itemsPerPage?: number
 }) {
@@ -47,20 +43,6 @@ export async function getHistoryData({
     if (filterYear !== 'ALL') {
       dateCondition.gte = new Date(`${filterYear}-01-01T00:00:00.000Z`)
       dateCondition.lt = new Date(`${parseInt(filterYear) + 1}-01-01T00:00:00.000Z`)
-    }
-    
-    if (filterStartDate) {
-      const startDate = new Date(`${filterStartDate}T00:00:00.000Z`)
-      if (!dateCondition.gte || startDate > dateCondition.gte) {
-        dateCondition.gte = startDate
-      }
-    }
-    
-    if (filterEndDate) {
-      const endDate = new Date(`${filterEndDate}T23:59:59.999Z`)
-      if (!dateCondition.lte || endDate < dateCondition.lte) {
-        dateCondition.lte = endDate
-      }
     }
 
     if (Object.keys(dateCondition).length > 0) {
@@ -137,20 +119,6 @@ export async function getHistoryData({
     if (filterYear !== 'ALL') {
       dateCondition.gte = new Date(`${filterYear}-01-01T00:00:00.000Z`)
       dateCondition.lt = new Date(`${parseInt(filterYear) + 1}-01-01T00:00:00.000Z`)
-    }
-    
-    if (filterStartDate) {
-      const startDate = new Date(`${filterStartDate}T00:00:00.000Z`)
-      if (!dateCondition.gte || startDate > dateCondition.gte) {
-        dateCondition.gte = startDate
-      }
-    }
-    
-    if (filterEndDate) {
-      const endDate = new Date(`${filterEndDate}T23:59:59.999Z`)
-      if (!dateCondition.lte || endDate < dateCondition.lte) {
-        dateCondition.lte = endDate
-      }
     }
 
     if (Object.keys(dateCondition).length > 0) {

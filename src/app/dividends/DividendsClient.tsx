@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Pencil } from 'lucide-react'
 import DividendForm from '@/components/dividends/DividendForm'
 import { deleteDividend } from '@/app/dividends/actions'
 import ConfirmModal from '@/components/shared/ConfirmModal'
@@ -23,6 +23,7 @@ type Dividend = {
 
 export default function DividendsClient({ initialDividends }: { initialDividends: Dividend[] }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [editDividend, setEditDividend] = useState<any>(null)
   const [deleteDividendId, setDeleteDividendId] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -39,7 +40,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
       <div className="px-4 py-4 sm:px-0">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dividend Info</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Dividend Log</h1>
             <p className="text-gray-500 mt-1">Manage and track your latest dividend income and bonus shares.</p>
           </div>
           <button
@@ -76,32 +77,32 @@ export default function DividendsClient({ initialDividends }: { initialDividends
                 <h3 className="text-sm font-semibold text-gray-700">Latest 10 Dividends</h3>
               </div>
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-100/50 border-b border-gray-200">
                   <tr>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Symbol
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Date & Year
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Type
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Cash (৳)
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Bonus Qty
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-100">
                   {initialDividends.map((div) => {
                     return (
-                      <tr key={div.id} className="hover:bg-gray-50/50 transition-colors">
+                      <tr key={div.id} className="even:bg-gray-50/60 odd:bg-white hover:bg-indigo-50/40 transition-colors group">
                         <td className="px-4 py-2 whitespace-nowrap">
                           <div className="text-xs font-bold text-gray-900">{div.stocks?.symbol}</div>
                           <div className="text-[10px] text-gray-500 truncate max-w-[150px]">{div.stocks?.company_name}</div>
@@ -124,14 +125,33 @@ export default function DividendsClient({ initialDividends }: { initialDividends
                           {div.bonus_quantity ? div.bonus_quantity.toLocaleString() : '-'}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
-                          <button
-                            onClick={() => setDeleteDividendId(div.id)}
-                            disabled={deleteDividendId === div.id && isDeleting}
-                            className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
-                            title="Delete Dividend"
-                          >
-                            <Trash2 className="w-4 h-4 ml-auto" />
-                          </button>
+                          <div className="flex items-center justify-end space-x-3">
+                            <button
+                              onClick={() => setEditDividend({
+                                id: div.id,
+                                symbol: div.stocks?.symbol,
+                                company_name: div.stocks?.company_name,
+                                type: div.type,
+                                year: div.year,
+                                cash_amount: div.cash_amount,
+                                bonus_quantity: div.bonus_quantity,
+                                date: div.date,
+                                note: div.note
+                              })}
+                              className="text-indigo-600 hover:text-indigo-900 transition-colors disabled:opacity-50"
+                              title="Edit Dividend"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => setDeleteDividendId(div.id)}
+                              disabled={deleteDividendId === div.id && isDeleting}
+                              className="text-red-600 hover:text-red-900 transition-colors disabled:opacity-50"
+                              title="Delete Dividend"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )
@@ -145,6 +165,13 @@ export default function DividendsClient({ initialDividends }: { initialDividends
 
       {isAddModalOpen && (
         <DividendForm onClose={() => setIsAddModalOpen(false)} />
+      )}
+
+      {editDividend && (
+        <DividendForm 
+          onClose={() => setEditDividend(null)} 
+          initialData={editDividend} 
+        />
       )}
 
       <ConfirmModal

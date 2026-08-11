@@ -5,7 +5,7 @@ import DividendsClient from './DividendsClient'
 import prisma from '@/lib/prisma'
 
 export const metadata = {
-  title: 'Dividend Info - TrackFolio',
+  title: 'Dividend Log - TrackFolio',
 }
 
 export default async function DividendsPage() {
@@ -46,7 +46,7 @@ export default async function DividendsPage() {
   }))
 
   return (
-    <AppLayout user={user} title="Dividend Info">
+    <AppLayout user={user} title="Dividend Log">
       <DividendsClient initialDividends={dividends as any} />
     </AppLayout>
   )

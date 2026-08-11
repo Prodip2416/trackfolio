@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import PortfolioClient from './PortfolioClient'
+import { getDictionary } from '@/i18n/getDictionary'
 
 export const metadata = {
   title: 'Portfolio - TrackFolio',
@@ -26,6 +27,8 @@ export default async function PortfolioPage({
   const currentPage = typeof pageStr === 'string' ? parseInt(pageStr, 10) : 1
   const limit = 10
   const skip = (currentPage - 1) * limit
+
+  const dict = await getDictionary()
 
   // 1. Get global aggregates for the top card (Total Investment & Count)
   const globalAggregates = await prisma.stocks.aggregate({
@@ -83,13 +86,14 @@ export default async function PortfolioPage({
   }))
 
   return (
-    <AppLayout user={user} title="Portfolio">
+    <AppLayout user={user} title={dict.sidebar.portfolio}>
       <PortfolioClient 
         stocks={formattedStocks} 
         currentPage={currentPage}
         totalPages={totalPages}
         globalTotalInvestment={globalTotalInvestment}
         globalActiveStocksCount={globalActiveStocksCount}
+        dict={dict}
       />
     </AppLayout>
   )

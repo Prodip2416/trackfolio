@@ -4,7 +4,6 @@ import { useState, useMemo, useEffect } from 'react'
 
 import { Filter, ArrowDownRight, ArrowUpRight, Calendar, Banknote, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import SearchableDropdown from '@/components/shared/SearchableDropdown'
-import PremiumDatePicker from '@/components/shared/PremiumDatePicker'
 import { getHistoryData } from './actions'
 
 type Transaction = {
@@ -41,18 +40,7 @@ export default function HistoryClient({
 }) {
   const [activeTab, setActiveTab] = useState<'BUY' | 'SELL' | 'DIVIDEND'>('BUY')
   const [filterStock, setFilterStock] = useState('ALL')
-  const [filterYear, setFilterYear] = useState('ALL')
-  
-  // Initialize dates: 1 month ago to today
-  const [filterStartDate, setFilterStartDate] = useState(() => {
-    const d = new Date()
-    d.setMonth(d.getMonth() - 1)
-    return d.toISOString().substring(0, 10)
-  })
-  
-  const [filterEndDate, setFilterEndDate] = useState(() => {
-    return new Date().toISOString().substring(0, 10)
-  })
+  const [filterYear, setFilterYear] = useState(new Date().getFullYear().toString())
   
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
@@ -64,10 +52,11 @@ export default function HistoryClient({
   const [currentTotal, setCurrentTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Reset page when filters change
+  // Reset page and data when filters change to prevent mismatched data crashes
   useEffect(() => {
     setCurrentPage(1)
-  }, [activeTab, filterStock, filterYear, filterStartDate, filterEndDate])
+    setData([]) // Clear data so old tab's data doesn't render in new tab's columns
+  }, [activeTab, filterStock, filterYear])
 
   // Fetch data from backend whenever filters or page change
   useEffect(() => {
@@ -78,8 +67,6 @@ export default function HistoryClient({
           activeTab,
           filterStock,
           filterYear,
-          filterStartDate,
-          filterEndDate,
           currentPage,
           itemsPerPage
         })
@@ -96,13 +83,15 @@ export default function HistoryClient({
     }
 
     fetchData()
-  }, [activeTab, filterStock, filterYear, filterStartDate, filterEndDate, currentPage])
+  }, [activeTab, filterStock, filterYear, currentPage])
 
 
-  // Generate year options from fetched unique years
   const yearOptions = useMemo(() => {
     const options = [{ label: 'All Years', value: 'ALL' }]
-    uniqueYears.forEach(year => {
+    const yearsSet = new Set(uniqueYears)
+    yearsSet.add(new Date().getFullYear().toString())
+    
+    Array.from(yearsSet).sort().reverse().forEach(year => {
       options.push({ label: year, value: year })
     })
     return options
@@ -130,11 +119,11 @@ export default function HistoryClient({
           {/* Tabs Section */}
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => setActiveTab('BUY')}
+              onClick={() => { setActiveTab('BUY'); setData([]); }}
               className={`flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
                 activeTab === 'BUY'
                   ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-indigo-50 border border-gray-200'
+                  : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700'
               }`}
             >
               <ArrowDownRight className="w-4 h-4" />
@@ -142,11 +131,11 @@ export default function HistoryClient({
             </button>
 
             <button
-              onClick={() => setActiveTab('SELL')}
+              onClick={() => { setActiveTab('SELL'); setData([]); }}
               className={`flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
                 activeTab === 'SELL'
                   ? 'bg-pink-600 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-pink-50 border border-gray-200'
+                  : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700'
               }`}
             >
               <ArrowUpRight className="w-4 h-4" />
@@ -154,11 +143,11 @@ export default function HistoryClient({
             </button>
 
             <button
-              onClick={() => setActiveTab('DIVIDEND')}
+              onClick={() => { setActiveTab('DIVIDEND'); setData([]); }}
               className={`flex items-center space-x-1.5 px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
                 activeTab === 'DIVIDEND'
                   ? 'bg-green-600 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-green-50 border border-gray-200'
+                  : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-700'
               }`}
             >
               <Banknote className="w-4 h-4" />
@@ -167,23 +156,23 @@ export default function HistoryClient({
           </div>
 
           {/* Filter Summary */}
-          <div className={`px-5 py-2.5 rounded-xl border flex flex-row items-center gap-4 shadow-sm ${
-            activeTab === 'BUY' ? 'bg-indigo-50/80 border-indigo-100' : 
-            activeTab === 'SELL' ? 'bg-pink-50/80 border-pink-100' :
-            'bg-green-50/80 border-green-100'
+          <div className={`px-5 py-2.5 rounded-xl border flex flex-row items-center gap-4 shadow-sm transition-colors ${
+            activeTab === 'BUY' ? 'bg-indigo-50/80 dark:bg-indigo-900/20 border-indigo-100 dark:border-indigo-800/30' : 
+            activeTab === 'SELL' ? 'bg-pink-50/80 dark:bg-pink-900/20 border-pink-100 dark:border-pink-800/30' :
+            'bg-green-50/80 dark:bg-green-900/20 border-green-100 dark:border-green-800/30'
           }`}>
             <div className="flex flex-col">
-              <span className={`text-[10px] font-bold tracking-wider uppercase ${
-                activeTab === 'BUY' ? 'text-indigo-600' : 
-                activeTab === 'SELL' ? 'text-pink-600' :
-                'text-green-600'
+              <span className={`text-[10px] font-bold tracking-wider uppercase transition-colors ${
+                activeTab === 'BUY' ? 'text-indigo-600 dark:text-indigo-400' : 
+                activeTab === 'SELL' ? 'text-pink-600 dark:text-pink-400' :
+                'text-green-600 dark:text-green-400'
               }`}>
                 Filtered {activeTab === 'BUY' ? 'Buy' : activeTab === 'SELL' ? 'Sell' : 'Cash'} Total
               </span>
-              <span className={`text-lg font-extrabold leading-tight ${
-                activeTab === 'BUY' ? 'text-indigo-900' : 
-                activeTab === 'SELL' ? 'text-pink-900' :
-                'text-green-900'
+              <span className={`text-lg font-extrabold leading-tight transition-colors ${
+                activeTab === 'BUY' ? 'text-indigo-900 dark:text-indigo-300' : 
+                activeTab === 'SELL' ? 'text-pink-900 dark:text-pink-300' :
+                'text-green-900 dark:text-green-300'
               }`}>
                 ৳{currentTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
@@ -192,10 +181,10 @@ export default function HistoryClient({
         </div>
 
         {/* Results Container (Filters + Table) */}
-        <div className="bg-white shadow-sm border border-gray-200 rounded-2xl relative">
+        <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-slate-800 rounded-2xl relative transition-colors">
           
           {/* Filters Section Right Above Table */}
-          <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-10">
+          <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-10 transition-colors">
             <div className="flex flex-wrap items-center gap-2">
               <div className="hidden sm:flex items-center justify-center w-8 h-8 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-400">
                 <Filter className="w-3.5 h-3.5" />
@@ -223,31 +212,11 @@ export default function HistoryClient({
                 />
               </div>
 
-              <div className="w-[145px] sm:w-[160px]">
-                <PremiumDatePicker
-                  value={filterStartDate}
-                  onChange={setFilterStartDate}
-                  placeholder="From date"
-                  buttonClassName="px-3 py-1.5 bg-white border rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
-                />
-              </div>
-
-              <div className="w-[145px] sm:w-[160px]">
-                <PremiumDatePicker
-                  value={filterEndDate}
-                  onChange={setFilterEndDate}
-                  placeholder="To date"
-                  buttonClassName="px-3 py-1.5 bg-white border rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
-                />
-              </div>
-
-              {(filterStock !== 'ALL' || filterYear !== 'ALL' || filterStartDate || filterEndDate) && (
+              {(filterStock !== 'ALL' || filterYear !== 'ALL') && (
                 <button 
                   onClick={() => {
                     setFilterStock('ALL')
                     setFilterYear('ALL')
-                    setFilterStartDate('')
-                    setFilterEndDate('')
                   }}
                   className="px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
                 >
@@ -256,68 +225,68 @@ export default function HistoryClient({
               )}
             </div>
             
-            <div className="text-xs font-semibold text-gray-500 whitespace-nowrap bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
-              Records: <span className="text-gray-900">{totalRecords}</span>
+            <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 whitespace-nowrap bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm transition-colors">
+              Records: <span className="text-gray-900 dark:text-white">{totalRecords}</span>
             </div>
           </div>
           
           <div className="relative">
             {/* Loading Blur Overlay */}
             {isLoading && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 backdrop-blur-[2px] rounded-b-2xl transition-all duration-300">
-                <div className="flex flex-col items-center bg-white px-6 py-4 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100">
-                  <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mb-2" />
-                  <span className="text-sm font-bold text-gray-700">Loading records...</span>
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] rounded-b-2xl transition-all duration-300">
+                <div className="flex flex-col items-center bg-white dark:bg-slate-800 px-6 py-4 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-slate-700">
+                  <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin mb-2" />
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-200">Loading records...</span>
                 </div>
               </div>
             )}
 
             <div className="overflow-x-auto min-h-[300px]">
-              <table className="min-w-full divide-y divide-gray-100">
-                <thead className="bg-gray-50/50">
+              <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
+                <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 transition-colors">
                   <tr>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Symbol</th>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Symbol</th>
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Date</th>
                     {activeTab === 'DIVIDEND' ? (
                       <>
-                        <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Type</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Cash (৳)</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Bonus Shares</th>
+                        <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Type</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Cash (৳)</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Bonus Shares</th>
                       </>
                     ) : (
                       <>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Quantity</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Price (৳)</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Fee (৳)</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Total (৳)</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Quantity</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Price (৳)</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider hidden sm:table-cell">Fee (৳)</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Total (৳)</th>
                       </>
                     )}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-50">
+                <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
                   {activeTab === 'DIVIDEND' ? (
                     // DIVIDEND TABLE ROWS
                     data.length > 0 ? (
                       (data as Dividend[]).map((div) => (
-                        <tr key={div.id} className="hover:bg-gray-50/50 transition-colors">
+                        <tr key={div.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800/80 transition-colors group">
                           <td className="px-4 py-2 whitespace-nowrap">
-                            <div className="text-xs font-bold text-gray-900">{div.stocks?.symbol}</div>
-                            <div className="text-[10px] text-gray-500 truncate max-w-[150px] hidden md:block">{div.stocks?.company_name}</div>
+                            <div className="text-xs font-bold text-gray-900 dark:text-white">{div.stocks?.symbol}</div>
+                            <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[150px] hidden md:block">{div.stocks?.company_name}</div>
                           </td>
-                          <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500">
-                            {formatDate(div.date)}
+                          <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                            {div.date ? formatDate(div.date) : '-'}
                           </td>
-                          <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500">
+                          <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium ${
-                              div.type === 'INTERIM' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                              div.type === 'INTERIM' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
                             }`}>
                               {div.type}
                             </span>
                           </td>
-                          <td className="px-4 py-2 whitespace-nowrap text-xs text-green-600 text-right font-medium">
+                          <td className="px-4 py-2 whitespace-nowrap text-xs text-green-600 dark:text-green-400 text-right font-medium">
                             {div.cash_amount ? `৳${div.cash_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
                           </td>
-                          <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 text-right">
+                          <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
                             {div.bonus_quantity ? `+${div.bonus_quantity.toLocaleString()}` : '-'}
                           </td>
                         </tr>
@@ -333,27 +302,28 @@ export default function HistoryClient({
                     // TRANSACTION TABLE ROWS
                     data.length > 0 ? (
                       (data as Transaction[]).map((txn) => {
+                        if (txn.quantity === undefined) return null; // Defensive check to avoid rendering mismatched data
                         const total = (txn.quantity * txn.price_per_unit) + (txn.type === 'BUY' ? txn.brokerage_fee : -txn.brokerage_fee)
                         return (
-                          <tr key={txn.id} className="hover:bg-gray-50/50 transition-colors">
+                          <tr key={txn.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800/80 transition-colors group">
                             <td className="px-4 py-2 whitespace-nowrap">
-                              <div className="text-xs font-bold text-gray-900">{txn.stocks?.symbol}</div>
-                              <div className="text-[10px] text-gray-500 truncate max-w-[150px] hidden md:block">{txn.stocks?.company_name}</div>
+                              <div className="text-xs font-bold text-gray-900 dark:text-white">{txn.stocks?.symbol}</div>
+                              <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[150px] hidden md:block">{txn.stocks?.company_name}</div>
                             </td>
-                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500">
-                              {formatDate(txn.transaction_date)}
+                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                              {txn.transaction_date ? formatDate(txn.transaction_date) : '-'}
                             </td>
-                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 text-right font-medium">
-                              {txn.quantity.toLocaleString()}
+                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right font-medium">
+                              {txn.quantity?.toLocaleString() ?? '-'}
                             </td>
-                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 text-right">
-                              {txn.price_per_unit.toFixed(2)}
+                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right">
+                              {txn.price_per_unit?.toFixed(2) ?? '-'}
                             </td>
-                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500 text-right hidden sm:table-cell">
+                            <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400 text-right hidden sm:table-cell">
                               {txn.brokerage_fee?.toFixed(2) || '0.00'}
                             </td>
-                            <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 text-right">
-                              {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
+                              {total ? total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}
                             </td>
                           </tr>
                         )
@@ -371,44 +341,63 @@ export default function HistoryClient({
             </div>
 
             {/* Pagination Footer */}
-            <div className="bg-gray-50/50 px-6 py-4 border-t border-gray-100 rounded-b-2xl flex items-center justify-between">
+            <div className="bg-gray-50/50 dark:bg-slate-900/50 px-6 py-4 border-t border-gray-100 dark:border-slate-800 rounded-b-2xl flex items-center justify-between transition-colors">
               <div className="hidden sm:block">
-                <p className="text-[13px] text-gray-500">
-                  Showing page <span className="font-semibold text-gray-900">{currentPage}</span> of <span className="font-semibold text-gray-900">{totalPages}</span>
+                <p className="text-[13px] text-gray-500 dark:text-gray-400">
+                  Showing page <span className="font-semibold text-gray-900 dark:text-white">{currentPage}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
                 </p>
               </div>
               <div className="flex-1 flex justify-between sm:justify-end gap-2">
                 <button 
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1 || isLoading}
-                  className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4 mr-1" />
                   Previous
                 </button>
 
                 {/* Page Numbers */}
-                <div className="hidden sm:flex items-center gap-1 mx-2 overflow-x-auto max-w-[200px]">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      disabled={isLoading}
-                      className={`relative inline-flex items-center justify-center min-w-[32px] h-8 px-1 rounded-lg text-[13px] font-medium transition-colors ${
-                        page === currentPage
-                          ? 'bg-indigo-600 text-white shadow-sm border border-indigo-600'
-                          : 'bg-white text-gray-600 border border-transparent hover:bg-gray-100 disabled:opacity-50'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
+                <div className="hidden sm:flex items-center gap-1 mx-2">
+                  {(() => {
+                    const pages = [];
+                    if (totalPages <= 5) {
+                      for (let i = 1; i <= totalPages; i++) pages.push(i);
+                    } else {
+                      if (currentPage <= 3) {
+                        pages.push(1, 2, 3, 4, '...', totalPages);
+                      } else if (currentPage >= totalPages - 2) {
+                        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                      } else {
+                        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+                      }
+                    }
+                    return pages.map((page, index) => {
+                      if (page === '...') {
+                        return <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
+                      }
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page as number)}
+                          disabled={isLoading}
+                          className={`relative inline-flex items-center justify-center min-w-[32px] h-8 px-1 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                            page === currentPage
+                              ? 'bg-indigo-600 text-white shadow-sm border border-indigo-600'
+                              : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-100 dark:hover:bg-slate-700 disabled:opacity-50'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    });
+                  })()}
                 </div>
 
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages || isLoading}
-                  className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-[13px] font-medium text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   Next
                   <ChevronRight className="w-4 h-4 ml-1" />

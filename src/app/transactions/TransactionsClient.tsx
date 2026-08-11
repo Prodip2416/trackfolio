@@ -75,40 +75,40 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
                 <h3 className="text-sm font-semibold text-gray-700">Latest 10 Trades</h3>
               </div>
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-100/50 border-b border-gray-200">
                   <tr>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Symbol
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Date
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Type
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Quantity
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Price (৳)
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider hidden sm:table-cell">
                       Fee (৳)
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Total (৳)
                     </th>
-                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-100">
                   {initialTransactions.map((txn) => {
                     const total = (txn.quantity * txn.price_per_unit) + (txn.type === 'BUY' ? txn.brokerage_fee : -txn.brokerage_fee)
                     
                     return (
-                      <tr key={txn.id} className="hover:bg-gray-50/50 transition-colors">
+                      <tr key={txn.id} className="even:bg-gray-50/60 odd:bg-white hover:bg-indigo-50/40 transition-colors group">
                         <td className="px-4 py-2 whitespace-nowrap">
                           <div className="text-xs font-bold text-gray-900">{txn.stocks?.symbol}</div>
                           <div className="text-[10px] text-gray-500 truncate max-w-[150px]">{txn.stocks?.company_name}</div>

@@ -11,7 +11,7 @@ const smartTransactionSchema = z.object({
   company_name: z.string().min(1, "Company Name is required"),
   sector: z.string().optional(),
   type: z.enum(['BUY', 'SELL']),
-  quantity: z.number().positive("Quantity must be greater than 0"),
+  quantity: z.number().int("Quantity must be a whole number").positive("Quantity must be greater than 0"),
   price_per_unit: z.number().positive("Price must be greater than 0"),
   transaction_date: z.string().min(1, "Please select a valid Transaction Date"),
   brokerage_fee: z.number().min(0, "Brokerage fee cannot be negative").optional(),
