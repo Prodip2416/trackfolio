@@ -45,11 +45,14 @@ export default function SignupClient() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f8fafc] px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden selection:bg-indigo-100">
       
-      {/* Soft, eye-soothing decorative background elements */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-100/40 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-50/50 blur-[120px] pointer-events-none" />
+      {/* macOS inspired dynamic background orbs */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-300/40 mix-blend-multiply filter blur-[120px] opacity-70 animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-300/40 mix-blend-multiply filter blur-[120px] opacity-70 animate-pulse" style={{ animationDuration: '10s' }} />
+        <div className="absolute bottom-[-20%] left-[20%] w-[50%] h-[50%] rounded-full bg-pink-300/40 mix-blend-multiply filter blur-[120px] opacity-70 animate-pulse" style={{ animationDuration: '12s' }} />
+      </div>
 
       <div className="w-full max-w-md relative z-10">
         
@@ -66,8 +69,8 @@ export default function SignupClient() {
           </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.04)] border border-white/60">
+        {/* Card - Apple Glassmorphism Style */}
+        <div className="bg-white/60 backdrop-blur-3xl p-8 sm:p-10 rounded-3xl shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] border border-white/80">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-5">
               <div>
@@ -78,7 +81,7 @@ export default function SignupClient() {
                   id="fullName"
                   type="text"
                   autoComplete="name"
-                  className="block w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all sm:text-sm font-medium"
+                  className="block w-full rounded-2xl border border-slate-200/60 bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-indigo-500/50 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all sm:text-sm font-medium shadow-sm backdrop-blur-sm"
                   placeholder="John Doe"
                   {...register('fullName')}
                 />
@@ -95,7 +98,7 @@ export default function SignupClient() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  className="block w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all sm:text-sm font-medium"
+                  className="block w-full rounded-2xl border border-slate-200/60 bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-indigo-500/50 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all sm:text-sm font-medium shadow-sm backdrop-blur-sm"
                   placeholder="you@example.com"
                   {...register('email')}
                 />
@@ -112,7 +115,7 @@ export default function SignupClient() {
                   id="password"
                   type="password"
                   autoComplete="new-password"
-                  className="block w-full rounded-xl border border-slate-200 bg-white/50 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all sm:text-sm font-medium"
+                  className="block w-full rounded-2xl border border-slate-200/60 bg-white/50 px-4 py-3.5 text-slate-900 placeholder-slate-400 focus:border-indigo-500/50 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all sm:text-sm font-medium shadow-sm backdrop-blur-sm"
                   placeholder="••••••••"
                   {...register('password')}
                 />
@@ -126,7 +129,7 @@ export default function SignupClient() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="group relative flex w-full justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:from-indigo-500 hover:to-indigo-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0"
+                className="group relative flex w-full justify-center rounded-2xl bg-slate-900 px-4 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-slate-800 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-slate-900/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 {isPending ? (
                   <Loader2 className="animate-spin h-5 w-5 text-white" />
