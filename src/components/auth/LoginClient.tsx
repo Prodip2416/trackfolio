@@ -7,6 +7,7 @@ import { z } from 'zod'
 import Link from 'next/link'
 import { login } from '@/app/auth/actions'
 import { Loader2 } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const loginSchema = z.object({
@@ -17,6 +18,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginClient() {
+  const searchParams = useSearchParams()
+  const isRegistered = searchParams.get('registered') === 'true'
   const [isPending, startTransition] = useTransition()
 
   const {
@@ -66,6 +69,13 @@ export default function LoginClient() {
 
         {/* Card */}
         <div className="bg-white/80 backdrop-blur-xl p-8 sm:p-10 rounded-[2rem] shadow-[0_8px_40px_rgb(0,0,0,0.04)] border border-white/60">
+          
+          {isRegistered && (
+            <div className="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium text-center">
+              Account created successfully! Please check your email inbox to verify your account before logging in.
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-5">
               <div>

@@ -17,6 +17,9 @@ export async function login(formData: FormData) {
 
   if (error) {
     console.error("Supabase Login Error:", error)
+    if (error.message.toLowerCase().includes('email not confirmed')) {
+      return { error: 'Please verify your email address. Check your inbox for the verification link.' }
+    }
     return { error: error.message }
   }
 
@@ -46,8 +49,8 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  revalidatePath('/login', 'layout')
+  redirect('/login?registered=true')
 }
 
 export async function logout() {

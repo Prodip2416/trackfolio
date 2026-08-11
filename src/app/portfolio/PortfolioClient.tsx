@@ -65,7 +65,7 @@ export default function PortfolioClient({
               {dict.portfolio.portfolioHoldings}
             </span>
             <div className="flex items-end">
-              <span className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-none">
+              <span className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white leading-none">
                 {globalActiveStocksCount}
               </span>
               <span className="text-sm font-semibold text-gray-400 ml-2 mb-1">
