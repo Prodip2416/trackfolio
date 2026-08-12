@@ -72,6 +72,8 @@ export async function getHistoryData({
         cash_amount: true,
         bonus_quantity: true,
         date: true,
+        year: true,
+        note: true,
         stocks: {
           select: { symbol: true, dse_company: { select: { company_name: true } } }
         }
@@ -93,6 +95,8 @@ export async function getHistoryData({
       cash_amount: d.cash_amount ? Number(d.cash_amount) : null,
       bonus_quantity: d.bonus_quantity ? Number(d.bonus_quantity) : null,
       date: d.date.toISOString(),
+      year: d.year,
+      note: d.note,
     }))
 
     return {
@@ -162,6 +166,7 @@ export async function getHistoryData({
         price_per_unit: true,
         transaction_date: true,
         brokerage_fee: true,
+        note: true,
         stocks: {
           select: { symbol: true, dse_company: { select: { company_name: true } } }
         }
@@ -184,6 +189,7 @@ export async function getHistoryData({
       price_per_unit: Number(t.price_per_unit),
       brokerage_fee: t.brokerage_fee ? Number(t.brokerage_fee) : 0,
       transaction_date: t.transaction_date.toISOString(),
+      note: t.note,
     }))
 
     return {

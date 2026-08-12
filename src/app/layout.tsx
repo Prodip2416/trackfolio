@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { getLocale } from "@/i18n/getDictionary";
+import GlobalLoader from "@/components/shared/GlobalLoader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body className="min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-200">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <GlobalLoader />
           {children}
           <Toaster position="top-right" toastOptions={{ duration: 5000 }} />
         </ThemeProvider>

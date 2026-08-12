@@ -9,6 +9,7 @@ export default function Sidebar({ dict }: { dict: any }) {
   const pathname = usePathname() || ''
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false)
   const [isReportsOpen, setIsReportsOpen] = useState(false)
+  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false)
 
   // Automatically open the analytics menu if the user is on an analytics page
   useEffect(() => {
@@ -17,6 +18,9 @@ export default function Sidebar({ dict }: { dict: any }) {
     }
     if (pathname.startsWith('/reports')) {
       setIsReportsOpen(true)
+    }
+    if (pathname.startsWith('/portfolio')) {
+      setIsPortfolioOpen(true)
     }
   }, [pathname])
 
@@ -34,7 +38,14 @@ export default function Sidebar({ dict }: { dict: any }) {
         { name: dict.sidebar.riskWarnings, href: '/analytics/warnings' },
       ]
     },
-    { name: dict.sidebar.portfolio, href: '/portfolio', icon: Briefcase },
+    { 
+      name: dict.sidebar.portfolio, 
+      icon: Briefcase,
+      subItems: [
+        { name: dict.sidebar.overview, href: '/portfolio' },
+        { name: dict.sidebar.assetLedger, href: '/portfolio/ledger' },
+      ]
+    },
     { name: dict.sidebar.tradeLog, href: '/transactions', icon: ArrowRightLeft },
     { name: dict.sidebar.dividendLog, href: '/dividends', icon: Coins },
     { name: dict.sidebar.history, href: '/history', icon: History },
@@ -53,16 +64,25 @@ export default function Sidebar({ dict }: { dict: any }) {
   return (
     <div className="w-64 bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-150 border-r border-gray-200/50 dark:border-slate-800 h-screen sticky top-0 flex flex-col shadow-sm print:hidden transition-colors duration-200">
       <div className="h-16 flex items-center px-6 border-b border-gray-200/50 dark:border-slate-800 transition-colors duration-200">
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight transition-colors duration-200">Track<span className="text-indigo-600 dark:text-indigo-500">Folio</span></h1>
+        <Link href="/" className="block hover:opacity-80 transition-opacity">
+          <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight transition-colors duration-200">Track<span className="text-indigo-600 dark:text-indigo-500">Folio</span></h1>
+        </Link>
       </div>
       
       <div className="flex-1 py-6 px-4 space-y-1 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => {
           if (item.subItems) {
-            const isActive = pathname.startsWith(item.name === dict.sidebar.reports ? '/reports' : '/analytics')
-            const isOpen = item.name === dict.sidebar.reports ? isReportsOpen : isAnalyticsOpen
+            const isActive = pathname.startsWith(
+              item.name === dict.sidebar.reports ? '/reports' : 
+              item.name === dict.sidebar.portfolio ? '/portfolio' : 
+              '/analytics'
+            )
+            const isOpen = item.name === dict.sidebar.reports ? isReportsOpen : 
+                           item.name === dict.sidebar.portfolio ? isPortfolioOpen :
+                           isAnalyticsOpen
             const toggleOpen = () => {
               if (item.name === dict.sidebar.reports) setIsReportsOpen(!isReportsOpen)
+              else if (item.name === dict.sidebar.portfolio) setIsPortfolioOpen(!isPortfolioOpen)
               else setIsAnalyticsOpen(!isAnalyticsOpen)
             }
             const Icon = item.icon

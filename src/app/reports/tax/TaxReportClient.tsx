@@ -167,7 +167,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
             <table className="min-w-full divide-y divide-gray-100 print:divide-gray-200">
               <thead className="bg-white">
                 <tr>
-                  <th scope="col" className="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Symbol</th>
+                  <th scope="col" className="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Stock</th>
                   <th scope="col" className="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Total Sold (Qty)</th>
                   <th scope="col" className="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Cost Value (৳)</th>
                   <th scope="col" className="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Sell Value (৳)</th>
@@ -219,7 +219,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
             <table className="min-w-full divide-y divide-gray-100 print:divide-gray-200">
               <thead className="bg-white">
                 <tr>
-                  <th scope="col" className="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Symbol</th>
+                  <th scope="col" className="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Stock</th>
                   <th scope="col" className="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Total Cash Received (৳)</th>
                 </tr>
               </thead>
