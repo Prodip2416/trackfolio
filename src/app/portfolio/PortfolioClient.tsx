@@ -40,40 +40,6 @@ export default function PortfolioClient({
       <div className="px-4 sm:px-0">
         
 
-        {/* Portfolio Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {/* Total Investment Card */}
-          <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-6 shadow-lg shadow-indigo-200 text-white relative overflow-hidden">
-            <div className="absolute top-[-10%] right-[-5%] w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-24 h-24 bg-indigo-400/20 rounded-full blur-xl pointer-events-none" />
-            
-            <div className="relative z-10 flex flex-col">
-              <span className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1 flex items-center">
-                <Briefcase className="w-3.5 h-3.5 mr-1.5" />
-                {dict.dashboard.totalInvested}
-              </span>
-              <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                ৳{globalTotalInvestment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-            </div>
-          </div>
-
-          {/* Active Holdings Card */}
-          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-center transition-colors">
-            <span className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1 flex items-center">
-              <TrendingUp className="w-3.5 h-3.5 mr-1.5 text-indigo-500" />
-              {dict.portfolio.portfolioHoldings}
-            </span>
-            <div className="flex items-end">
-              <span className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white leading-none">
-                {globalActiveStocksCount}
-              </span>
-              <span className="text-sm font-semibold text-gray-400 ml-2 mb-1">
-                Unique Stocks
-              </span>
-            </div>
-          </div>
-        </div>
 
         {/* Premium Data Table */}
         <div className="bg-white dark:bg-slate-900 shadow-xl shadow-gray-200/50 dark:shadow-none rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors">
@@ -81,12 +47,12 @@ export default function PortfolioClient({
             <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800">
               <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
                 <tr>
-                  <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.symbol}</th>
+                  <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Stock</th>
                   <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Cat</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.shares}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.avgCost}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.marketPrice}</th>
-                  <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.currentValue}</th>
+                  <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Portfolio Price</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.totalInvested}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.date}</th>
                   <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.avgDown}</th>

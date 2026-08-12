@@ -71,12 +71,12 @@ export default function GenericReportClient({
 
     let csvContent = ''
     if (reportType === 'DIVIDEND') {
-      csvContent = 'Symbol,Company Name,Date,Type,Cash Amount (Tk),Bonus Shares\n'
+      csvContent = 'Stock,Company Name,Date,Type,Cash Amount (Tk),Bonus Shares\n'
       data.forEach(row => {
         csvContent += `"${row.symbol}","${row.company_name}","${formatDate(row.date)}","${row.type}","${row.cash_amount || 0}","${row.bonus_quantity || 0}"\n`
       })
     } else {
-      csvContent = 'Symbol,Company Name,Date,Type,Quantity,Price (Tk),Fee (Tk),Total Value (Tk)\n'
+      csvContent = 'Stock,Company Name,Date,Type,Quantity,Price (Tk),Fee (Tk),Total Value (Tk)\n'
       data.forEach(row => {
         const total = (row.quantity * row.price_per_unit) + (reportType === 'BUY' ? row.brokerage_fee : -row.brokerage_fee)
         csvContent += `"${row.symbol}","${row.company_name}","${formatDate(row.date)}","${row.type}","${row.quantity}","${row.price_per_unit}","${row.brokerage_fee}","${total}"\n`
@@ -93,7 +93,7 @@ export default function GenericReportClient({
     let exportData = []
     if (reportType === 'DIVIDEND') {
       exportData = data.map(row => ({
-        'Symbol': row.symbol,
+        'Stock': row.symbol,
         'Company Name': row.company_name,
         'Date': formatDate(row.date),
         'Type': row.type,
@@ -104,7 +104,7 @@ export default function GenericReportClient({
       exportData = data.map(row => {
         const total = (row.quantity * row.price_per_unit) + (reportType === 'BUY' ? row.brokerage_fee : -row.brokerage_fee)
         return {
-          'Symbol': row.symbol,
+          'Stock': row.symbol,
           'Company Name': row.company_name,
           'Date': formatDate(row.date),
           'Type': row.type,
@@ -231,7 +231,7 @@ export default function GenericReportClient({
               <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
                 <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-10 backdrop-blur-sm transition-colors">
                   <tr>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Symbol</th>
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Stock</th>
                     <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Date</th>
                     {reportType === 'DIVIDEND' ? (
                       <>

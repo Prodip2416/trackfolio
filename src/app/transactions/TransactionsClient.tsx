@@ -78,7 +78,7 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
                 <thead className="bg-gray-100/50 border-b border-gray-200">
                   <tr>
                     <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
-                      Symbol
+                      Stock
                     </th>
                     <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black uppercase tracking-wider">
                       Date

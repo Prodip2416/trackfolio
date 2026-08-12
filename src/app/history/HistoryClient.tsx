@@ -2,9 +2,14 @@
 
 import { useState, useMemo, useEffect } from 'react'
 
-import { Filter, ArrowDownRight, ArrowUpRight, Calendar, Banknote, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import { Filter, ArrowDownRight, ArrowUpRight, Calendar, Banknote, ChevronLeft, ChevronRight, Loader2, Pencil, Trash2 } from 'lucide-react'
 import SearchableDropdown from '@/components/shared/SearchableDropdown'
 import { getHistoryData } from './actions'
+import SmartTransactionForm from '@/components/transactions/SmartTransactionForm'
+import DividendForm from '@/components/dividends/DividendForm'
+import ConfirmModal from '@/components/shared/ConfirmModal'
+import { deleteTransaction } from '@/app/transactions/actions'
+import { deleteDividend } from '@/app/dividends/actions'
 
 type Transaction = {
   id: string
@@ -51,6 +56,28 @@ export default function HistoryClient({
   const [totalRecords, setTotalRecords] = useState(0)
   const [currentTotal, setCurrentTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+  // Edit/Delete State
+  const [editTransaction, setEditTransaction] = useState<any>(null)
+  const [editDividend, setEditDividend] = useState<any>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteType, setDeleteType] = useState<'TRANSACTION' | 'DIVIDEND' | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const confirmDelete = async () => {
+    if (!deleteId || !deleteType) return
+    setIsDeleting(true)
+    if (deleteType === 'TRANSACTION') {
+      await deleteTransaction(deleteId)
+    } else {
+      await deleteDividend(deleteId)
+    }
+    setIsDeleting(false)
+    setDeleteId(null)
+    setDeleteType(null)
+    setRefreshTrigger(p => p + 1)
+  }
 
   // Reset page and data when filters change to prevent mismatched data crashes
   useEffect(() => {
@@ -83,7 +110,7 @@ export default function HistoryClient({
     }
 
     fetchData()
-  }, [activeTab, filterStock, filterYear, currentPage])
+  }, [activeTab, filterStock, filterYear, currentPage, refreshTrigger])
 
 
   const yearOptions = useMemo(() => {
@@ -245,13 +272,14 @@ export default function HistoryClient({
               <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
                 <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 transition-colors">
                   <tr>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Symbol</th>
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Stock</th>
                     <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Date</th>
                     {activeTab === 'DIVIDEND' ? (
                       <>
                         <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Type</th>
                         <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Cash (৳)</th>
                         <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Bonus Shares</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Actions</th>
                       </>
                     ) : (
                       <>
@@ -259,6 +287,7 @@ export default function HistoryClient({
                         <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Price (৳)</th>
                         <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider hidden sm:table-cell">Fee (৳)</th>
                         <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Total (৳)</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Actions</th>
                       </>
                     )}
                   </tr>
@@ -289,11 +318,39 @@ export default function HistoryClient({
                           <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
                             {div.bonus_quantity ? `+${div.bonus_quantity.toLocaleString()}` : '-'}
                           </td>
+                          <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
+                            <div className="flex items-center justify-end space-x-3 transition-opacity">
+                              <button
+                                onClick={() => setEditDividend({
+                                  id: div.id,
+                                  symbol: div.stocks?.symbol,
+                                  type: div.type,
+                                  year: (div as any).year?.toString(),
+                                  cash_amount: div.cash_amount,
+                                  bonus_quantity: div.bonus_quantity,
+                                  date: div.date,
+                                  note: (div as any).note || ''
+                                })}
+                                className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+                                title="Edit Dividend"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => { setDeleteId(div.id); setDeleteType('DIVIDEND'); }}
+                                disabled={deleteId === div.id && isDeleting}
+                                className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors disabled:opacity-50"
+                                title="Delete Dividend"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                           {isLoading ? '' : 'No dividend records match your current filters.'}
                         </td>
                       </tr>
@@ -325,12 +382,41 @@ export default function HistoryClient({
                             <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
                               {total ? total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}
                             </td>
+                            <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
+                              <div className="flex items-center justify-end space-x-3 transition-opacity">
+                                <button
+                                  onClick={() => setEditTransaction({
+                                    id: txn.id,
+                                    symbol: txn.stocks?.symbol,
+                                    company_name: txn.stocks?.company_name,
+                                    type: txn.type,
+                                    quantity: txn.quantity,
+                                    price_per_unit: txn.price_per_unit,
+                                    transaction_date: txn.transaction_date,
+                                    brokerage_fee: txn.brokerage_fee || 0,
+                                    note: (txn as any).note || ''
+                                  })}
+                                  className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+                                  title="Edit Transaction"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => { setDeleteId(txn.id); setDeleteType('TRANSACTION'); }}
+                                  disabled={deleteId === txn.id && isDeleting}
+                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors disabled:opacity-50"
+                                  title="Delete Transaction"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                         )
                       })
                     ) : (
                       <tr>
-                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                        <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                           {isLoading ? '' : `No ${activeTab.toLowerCase()} transactions match your current filters.`}
                         </td>
                       </tr>
@@ -408,6 +494,30 @@ export default function HistoryClient({
         </div>
 
       </div>
+      {editTransaction && (
+        <SmartTransactionForm 
+          onClose={() => { setEditTransaction(null); setRefreshTrigger(p => p + 1); }} 
+          initialData={editTransaction} 
+        />
+      )}
+
+      {editDividend && (
+        <DividendForm 
+          onClose={() => { setEditDividend(null); setRefreshTrigger(p => p + 1); }} 
+          initialData={editDividend} 
+        />
+      )}
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title={`Delete ${deleteType === 'TRANSACTION' ? 'Trade Log' : 'Dividend'}`}
+        message={`Are you sure you want to delete this ${deleteType === 'TRANSACTION' ? 'trade log' : 'dividend'}? This action cannot be undone.`}
+        confirmText="Delete"
+        isDestructive={true}
+        isLoading={isDeleting}
+        onConfirm={confirmDelete}
+        onClose={() => { setDeleteId(null); setDeleteType(null); }}
+      />
     </div>
   )
 }
