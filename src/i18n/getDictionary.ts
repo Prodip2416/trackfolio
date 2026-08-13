@@ -1,9 +1,11 @@
 import { cookies } from 'next/headers'
 
-// Use dynamic imports to load the JSON files asynchronously
+import en from './dictionaries/en.json'
+import bn from './dictionaries/bn.json'
+
 const dictionaries = {
-  en: () => import('./dictionaries/en.json').then((module) => module.default),
-  bn: () => import('./dictionaries/bn.json').then((module) => module.default),
+  en: () => Promise.resolve(en),
+  bn: () => Promise.resolve(bn),
 }
 
 export type Locale = keyof typeof dictionaries
@@ -23,3 +25,4 @@ export const getLocale = async (): Promise<Locale> => {
   const cookieStore = await cookies()
   return (cookieStore.get('NEXT_LOCALE')?.value || 'en') as Locale
 }
+

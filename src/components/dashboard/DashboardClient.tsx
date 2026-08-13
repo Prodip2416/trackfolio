@@ -464,10 +464,10 @@ export default function DashboardClient({
 
 
   return (
-    <div className="w-full space-y-6 px-4 sm:px-0">
+    <div className="w-full space-y-3 px-4 sm:px-0">
       
       {/* 1. KPI Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Total Invested */}
         <div className="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-gray-900 p-4 rounded-xl border border-indigo-100/50 dark:border-indigo-800/30 shadow-md shadow-indigo-100/20 dark:shadow-none flex flex-col justify-between">
           <div className="flex justify-between items-start relative z-10">
@@ -533,45 +533,71 @@ export default function DashboardClient({
         </div>
       </div>
 
-      {/* 2. Charts Row 1: Pie Charts + Trade Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* 2. Charts Row 1: Pie Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         
         {/* Left: Portfolio Allocation */}
-        <div className="lg:col-span-1 bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2">{dict.dashboard.portfolioAllocation}</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center">{dict.dashboard.portfolioAllocation}</h3>
           
           {portfolioData.length > 0 ? (
-            <div className="flex-grow flex flex-col items-center justify-center min-h-[220px]">
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie
-                    data={portfolioData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={90}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {portfolioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="dark:hidden">
-                    <tspan x="50%" dy="-0.5em" fontSize="11" fill="#6b7280" fontWeight="600">{dict.dashboard.totalValue}</tspan>
-                    <tspan x="50%" dy="1.5em" fontSize="13" fill="#111827" fontWeight="900">
-                      ৳{(totalPortfolioValue / 1000).toFixed(0)}k
-                    </tspan>
-                  </text>
-                  <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="hidden dark:block">
-                    <tspan x="50%" dy="-0.5em" fontSize="11" fill="#9ca3af" fontWeight="600">{dict.dashboard.totalValue}</tspan>
-                    <tspan x="50%" dy="1.5em" fontSize="13" fill="#f3f4f6" fontWeight="900">
-                      ৳{(totalPortfolioValue / 1000).toFixed(0)}k
-                    </tspan>
-                  </text>
-                  <RechartsTooltip content={<CustomPieTooltip type="portfolio" />} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="flex-grow flex items-center justify-between min-h-[220px]">
+              {/* Chart Side */}
+              <div className="w-[55%] h-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={portfolioData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={85}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {portfolioData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="dark:hidden">
+                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#6b7280" fontWeight="600">{dict.dashboard.totalValue}</tspan>
+                      <tspan x="50%" dy="1.5em" fontSize="13" fill="#111827" fontWeight="900">
+                        ৳{(totalPortfolioValue / 1000).toFixed(0)}k
+                      </tspan>
+                    </text>
+                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="hidden dark:block">
+                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#9ca3af" fontWeight="600">{dict.dashboard.totalValue}</tspan>
+                      <tspan x="50%" dy="1.5em" fontSize="13" fill="#f3f4f6" fontWeight="900">
+                        ৳{(totalPortfolioValue / 1000).toFixed(0)}k
+                      </tspan>
+                    </text>
+                    <RechartsTooltip content={<CustomPieTooltip type="portfolio" />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              
+              {/* Info Side */}
+              <div className="w-[45%] flex flex-col justify-center space-y-4 pl-4 border-l border-gray-100 dark:border-gray-800">
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">Total Assets</p>
+                  <p className="text-xl font-black text-gray-900 dark:text-white">{portfolioData.length}</p>
+                </div>
+                
+                {portfolioData.length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1.5">{dict.dashboard.topHolding}</p>
+                    <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: COLORS[0] }}></span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">{portfolioData[0].name}</span>
+                        <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
+                          {((portfolioData[0].value / totalPortfolioValue) * 100).toFixed(1)}% <span className="text-gray-400 font-normal">{dict.dashboard.alloc}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
@@ -580,42 +606,120 @@ export default function DashboardClient({
           )}
         </div>
 
-        {/* Middle: Sector Allocation */}
-        <div className="lg:col-span-1 bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2">{dict.dashboard.sectorAllocation}</h3>
+        {/* Middle: Holdings Breakdown */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white text-center">{dict.dashboard.holdingsBreakdown}</h3>
+          {portfolioData.length > 0 ? (
+            <div className="flex-1 flex flex-col min-h-[220px] max-h-[220px] overflow-y-auto custom-scrollbar pr-2 mt-1 relative">
+              <div className="flex flex-col w-full text-left">
+                {/* Header Row */}
+                <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider pb-1 pt-1.5 border-b border-gray-100 dark:border-gray-800 mb-0.5 sticky top-0 bg-white dark:bg-gray-900 z-10">
+                  <div className="w-[30%]">{dict.dashboard.symbol}</div>
+                  <div className="w-[20%] text-right">{dict.dashboard.shares}</div>
+                  <div className="w-[30%] text-right">{dict.dashboard.invested}</div>
+                  <div className="w-[20%] text-right">{dict.dashboard.alloc}</div>
+                </div>
+                
+                {/* Data Rows */}
+                <div className="space-y-0">
+                  {portfolioData.map((item, index) => {
+                    const percent = totalPortfolioValue > 0 ? ((item.value / totalPortfolioValue) * 100).toFixed(1) : '0.0'
+                    return (
+                      <div key={index} className="flex items-center justify-between py-1 border-b border-gray-50 dark:border-gray-800/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors rounded-lg px-1 -mx-1">
+                        <div className="flex items-center gap-1.5 w-[30%]">
+                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
+                          <span className="text-xs font-bold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</span>
+                        </div>
+                        <div className="w-[20%] text-right text-[11px] font-medium text-gray-600 dark:text-gray-400 truncate">
+                          {item.qty.toLocaleString()}
+                        </div>
+                        <div className="w-[30%] text-right text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
+                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString()}
+                        </div>
+                        <div className="w-[20%] text-right">
+                          <span className="text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded">
+                            {percent}%
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-grow flex items-center justify-center min-h-[220px] text-gray-400 text-sm">
+              {dict.dashboard.noHoldings}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Sector Allocation Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        
+        {/* Left: Sector Allocation Chart */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center">{dict.dashboard.sectorAllocation}</h3>
           
           {sectorData.length > 0 ? (
-            <div className="flex-grow flex flex-col items-center justify-center min-h-[220px]">
-              <ResponsiveContainer width="100%" height={220}>
-                <PieChart>
-                  <Pie
-                    data={sectorData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={90}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {sectorData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="dark:hidden">
-                    <tspan x="50%" dy="-0.5em" fontSize="11" fill="#6b7280" fontWeight="600">{dict.dashboard.sectors}</tspan>
-                    <tspan x="50%" dy="1.5em" fontSize="14" fill="#111827" fontWeight="900">
-                      {sectorData.length}
-                    </tspan>
-                  </text>
-                  <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="hidden dark:block">
-                    <tspan x="50%" dy="-0.5em" fontSize="11" fill="#9ca3af" fontWeight="600">{dict.dashboard.sectors}</tspan>
-                    <tspan x="50%" dy="1.5em" fontSize="14" fill="#f3f4f6" fontWeight="900">
-                      {sectorData.length}
-                    </tspan>
-                  </text>
-                  <RechartsTooltip content={<CustomPieTooltip type="sector" />} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="flex-grow flex items-center justify-between min-h-[220px]">
+              {/* Chart Side */}
+              <div className="w-[55%] h-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={sectorData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={85}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {sectorData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="dark:hidden">
+                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#6b7280" fontWeight="600">{dict.dashboard.sectors}</tspan>
+                      <tspan x="50%" dy="1.5em" fontSize="14" fill="#111827" fontWeight="900">
+                        {sectorData.length}
+                      </tspan>
+                    </text>
+                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="hidden dark:block">
+                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#9ca3af" fontWeight="600">{dict.dashboard.sectors}</tspan>
+                      <tspan x="50%" dy="1.5em" fontSize="14" fill="#f3f4f6" fontWeight="900">
+                        {sectorData.length}
+                      </tspan>
+                    </text>
+                    <RechartsTooltip content={<CustomPieTooltip type="sector" />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Info Side */}
+              <div className="w-[45%] flex flex-col justify-center space-y-4 pl-4 border-l border-gray-100 dark:border-gray-800">
+                <div>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">{dict.dashboard.totalSectors}</p>
+                  <p className="text-xl font-black text-gray-900 dark:text-white">{sectorData.length}</p>
+                </div>
+                
+                {sectorData.length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1.5">{dict.dashboard.dominantSector}</p>
+                    <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
+                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: COLORS[3 % COLORS.length] }}></span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">{sectorData[0].name}</span>
+                        <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
+                          {((sectorData[0].value / totalPortfolioValue) * 100).toFixed(1)}% <span className="text-gray-400 font-normal">{dict.dashboard.alloc}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
@@ -624,9 +728,54 @@ export default function DashboardClient({
           )}
         </div>
 
-        {/* Right: Daily Trade Activity Bar Chart */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        {/* Right: Sector Breakdown */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white text-center">{dict.dashboard.sectorBreakdown}</h3>
+          {sectorData.length > 0 ? (
+            <div className="flex-1 flex flex-col min-h-[220px] max-h-[220px] overflow-y-auto custom-scrollbar pr-2 mt-1 relative">
+              <div className="flex flex-col w-full text-left">
+                {/* Header Row */}
+                <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider pb-1 pt-1.5 border-b border-gray-100 dark:border-gray-800 mb-0.5 sticky top-0 bg-white dark:bg-gray-900 z-10">
+                  <div className="w-[50%]">{dict.dashboard.sector}</div>
+                  <div className="w-[25%] text-right">{dict.dashboard.invested}</div>
+                  <div className="w-[25%] text-right">{dict.dashboard.alloc}</div>
+                </div>
+                
+                {/* Data Rows */}
+                <div className="space-y-0">
+                  {sectorData.map((item, index) => {
+                    const percent = totalPortfolioValue > 0 ? ((item.value / totalPortfolioValue) * 100).toFixed(1) : '0.0'
+                    return (
+                      <div key={index} className="flex items-center justify-between py-1 border-b border-gray-50 dark:border-gray-800/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors rounded-lg px-1 -mx-1">
+                        <div className="flex items-center gap-1.5 w-[50%]">
+                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[(index + 3) % COLORS.length] }}></span>
+                          <span className="text-xs font-bold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</span>
+                        </div>
+                        <div className="w-[25%] text-right text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
+                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString()}
+                        </div>
+                        <div className="w-[25%] text-right">
+                          <span className="text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded">
+                            {percent}%
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
+              {dict.dashboard.noSectorData}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 4. Daily Trade Activity Bar Chart */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col w-full">
+        <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <div>
               <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.tradeActivity}</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.dailyBreakdown}</p>
@@ -669,9 +818,7 @@ export default function DashboardClient({
           )}
         </div>
 
-      </div>
-
-      {/* 3. Dividend History Row */}
+      {/* 5. Dividend History Row */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
         <div className="mb-4 flex justify-between items-center">
           <div>
@@ -716,7 +863,7 @@ export default function DashboardClient({
         </div>
       </div>
 
-      {/* 4. Recent Trades Row */}
+      {/* 6. Recent Trades Row */}
       <div className="bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden w-full">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.recentTrades}</h3>

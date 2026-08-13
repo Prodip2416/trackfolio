@@ -73,17 +73,20 @@ export default async function PortfolioPage({
   })
 
   // Format Decimal to Number for Client Component
-  const formattedStocks = activeStocks.map(stock => ({
-    ...stock,
-    company_name: stock.dse_company?.company_name || 'Unknown',
-    category: stock.dse_company?.category || 'N/A',
-    latest_price: stock.dse_company?.current_price ? Number(stock.dse_company.current_price) : 0,
-    total_quantity: Number(stock.total_quantity),
-    average_buy_price: Number(stock.average_buy_price),
-    portfolio_price: Number(stock.portfolio_price),
-    total_investment: Number(stock.total_investment),
-    updated_at: stock.updated_at ? stock.updated_at.toISOString() : new Date().toISOString(),
-  }))
+  const formattedStocks = activeStocks.map(stock => {
+    const { dse_company, ...rest } = stock;
+    return {
+      ...rest,
+      company_name: dse_company?.company_name || 'Unknown',
+      category: dse_company?.category || 'N/A',
+      latest_price: dse_company?.current_price ? Number(dse_company.current_price) : 0,
+      total_quantity: Number(stock.total_quantity),
+      average_buy_price: Number(stock.average_buy_price),
+      portfolio_price: Number(stock.portfolio_price),
+      total_investment: Number(stock.total_investment),
+      updated_at: stock.updated_at ? stock.updated_at.toISOString() : new Date().toISOString(),
+    }
+  })
 
   return (
     <AppLayout user={user} title={dict.sidebar.portfolio}>

@@ -57,7 +57,14 @@
     "sectors": "সেক্টরসমূহ",
     "totalValue": "মোট মূল্য",
     "shares": "শেয়ার",
-    "invested": "বিনিয়োগ"
+    "invested": "বিনিয়োগ",
+    "holdingsBreakdown": "হোল্ডিংস ব্রেকডাউন",
+    "sectorBreakdown": "সেক্টর ব্রেকডাউন",
+    "topHolding": "শীর্ষ হোল্ডিং",
+    "totalSectors": "মোট সেক্টর",
+    "dominantSector": "প্রধান সেক্টর",
+    "alloc": "অ্যালোকেশন",
+    "sector": "সেক্টর"
   },
   "portfolio": {
     "portfolioHoldings": "পোর্টফোলিও হোল্ডিংস",

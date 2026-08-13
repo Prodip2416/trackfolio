@@ -26,12 +26,14 @@ export default function LedgerClient({
   initialData, 
   initialStockId, 
   initialYear,
+  initialType,
   dict 
 }: { 
   stocks: Stock[]
   initialData: LedgerRow[]
   initialStockId: string
   initialYear: string
+  initialType: string
   dict: any
 }) {
   const router = useRouter()
@@ -46,10 +48,12 @@ export default function LedgerClient({
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const yearDropdownRef = useRef<HTMLDivElement>(null)
+  const typeDropdownRef = useRef<HTMLDivElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isYearDropdownOpen, setIsYearDropdownOpen] = useState(false)
   const [yearSearchQuery, setYearSearchQuery] = useState('')
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,6 +62,9 @@ export default function LedgerClient({
       }
       if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target as Node)) {
         setIsYearDropdownOpen(false)
+      }
+      if (typeDropdownRef.current && !typeDropdownRef.current.contains(event.target as Node)) {
+        setIsTypeDropdownOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -96,7 +103,7 @@ export default function LedgerClient({
   const handleFilterChange = (key: string, value: string) => {
     setIsLoading(true)
     const params = new URLSearchParams(searchParams.toString())
-    if (value === 'ALL') {
+    if (value === 'ALL' && key !== 'year') {
       params.delete(key)
     } else {
       params.set(key, value)
@@ -146,7 +153,7 @@ export default function LedgerClient({
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-3">
+    <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-3">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -279,6 +286,44 @@ export default function LedgerClient({
               </div>
             )}
           </div>
+          
+          <div className="relative" ref={typeDropdownRef}>
+            <div 
+              className="w-36 px-3 py-2 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm flex items-center justify-between cursor-pointer transition-colors"
+              onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+            >
+              <span className="truncate">
+                {initialType === 'ALL' ? 'All Types' : initialType === 'BUY' ? 'Buy' : initialType === 'SELL' ? 'Sell' : 'Dividend'}
+              </span>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`} />
+            </div>
+
+            {isTypeDropdownOpen && (
+              <div className="absolute z-50 w-36 mt-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-lg flex flex-col overflow-hidden right-0 origin-top-right">
+                <div className="overflow-y-auto custom-scrollbar flex-1 py-1">
+                  {[
+                    { label: 'All Types', value: 'ALL' },
+                    { label: 'Buy', value: 'BUY' },
+                    { label: 'Sell', value: 'SELL' },
+                    { label: 'Dividend', value: 'DIVIDEND' }
+                  ].map((t) => (
+                    <div
+                      key={t.value}
+                      onClick={() => {
+                        handleFilterChange('type', t.value)
+                        setIsTypeDropdownOpen(false)
+                      }}
+                      className={`px-3 py-2 flex flex-col hover:bg-gray-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors ${initialType === t.value ? 'bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 font-semibold' : 'text-gray-700 dark:text-gray-300'}`}
+                    >
+                      <span className="text-sm">
+                        {t.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -349,15 +394,15 @@ export default function LedgerClient({
         </div>
       </div>
 
-      <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200/50 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm transition-colors duration-200 relative">
+      <div className="flex-1 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200/50 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm transition-colors duration-200 relative flex flex-col min-h-0">
         {(isPending || isLoading) && (
-          <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm z-10 flex items-center justify-center min-h-[200px]">
+          <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm z-30 flex items-center justify-center min-h-[200px]">
             <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
           </div>
         )}
-        <div className="overflow-x-auto custom-scrollbar">
+        <div className="flex-1 overflow-auto custom-scrollbar relative">
           <table className="w-full text-xs text-left">
-            <thead className="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-200/50 dark:border-slate-800">
+            <thead className="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-200/50 dark:border-slate-800 sticky top-0 z-20 backdrop-blur-md">
               <tr>
                 <th className="px-4 py-2.5 font-semibold">Date</th>
                 <th className="px-4 py-2.5 font-semibold">Type</th>

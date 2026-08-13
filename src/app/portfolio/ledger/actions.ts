@@ -32,7 +32,7 @@ export async function getOwnedStocks() {
   }
 }
 
-export async function getAssetLedger(stockId?: string, year?: string) {
+export async function getAssetLedger(stockId?: string, year?: string, type?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Unauthorized' }
@@ -55,34 +55,42 @@ export async function getAssetLedger(stockId?: string, year?: string) {
         gte: startDate,
         lte: endDate
       }
-      // Dividends have both a date and a year column in the db. 
-      // We will filter by the 'year' column for simplicity as per existing logic, or date.
       dividendWhere.year = yearNum
     }
 
+    if (type === 'BUY' || type === 'SELL') {
+      transactionWhere.type = type
+    }
+
     // Fetch transactions
-    const rawTransactions = await prisma.transactions.findMany({
-      where: transactionWhere,
-      include: {
-        stocks: {
-          include: {
-            dse_company: true
+    let rawTransactions: any[] = []
+    if (!type || type === 'ALL' || type === 'BUY' || type === 'SELL') {
+      rawTransactions = await prisma.transactions.findMany({
+        where: transactionWhere,
+        include: {
+          stocks: {
+            include: {
+              dse_company: true
+            }
           }
         }
-      }
-    })
+      })
+    }
 
     // Fetch dividends
-    const rawDividends = await prisma.dividends.findMany({
-      where: dividendWhere,
-      include: {
-        stocks: {
-          include: {
-            dse_company: true
+    let rawDividends: any[] = []
+    if (!type || type === 'ALL' || type === 'DIVIDEND') {
+      rawDividends = await prisma.dividends.findMany({
+        where: dividendWhere,
+        include: {
+          stocks: {
+            include: {
+              dse_company: true
+            }
           }
         }
-      }
-    })
+      })
+    }
 
     // Normalize Data
     const normalizedTransactions = rawTransactions.map(t => ({
