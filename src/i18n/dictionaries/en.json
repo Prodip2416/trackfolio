@@ -57,7 +57,14 @@
     "sectors": "Sectors",
     "totalValue": "Total Value",
     "shares": "Shares",
-    "invested": "Invested"
+    "invested": "Invested",
+    "holdingsBreakdown": "Holdings Breakdown",
+    "sectorBreakdown": "Sector Breakdown",
+    "topHolding": "Top Holding",
+    "totalSectors": "Total Sectors",
+    "dominantSector": "Dominant Sector",
+    "alloc": "Alloc",
+    "sector": "Sector"
   },
   "portfolio": {
     "portfolioHoldings": "Portfolio Holdings",

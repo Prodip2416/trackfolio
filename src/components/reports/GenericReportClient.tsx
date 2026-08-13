@@ -25,14 +25,11 @@ export default function GenericReportClient({
 
   const yearOptions = useMemo(() => {
     const options = [{ label: 'All Years', value: 'ALL' }]
-    const yearsSet = new Set(uniqueYears)
-    yearsSet.add(new Date().getFullYear().toString())
-    
-    Array.from(yearsSet).sort().reverse().forEach(year => {
-      options.push({ label: year, value: year })
-    })
+    for (let i = 2025; i <= 2075; i++) {
+      options.push({ label: i.toString(), value: i.toString() })
+    }
     return options
-  }, [uniqueYears])
+  }, [])
 
   const stockOptions = useMemo(() => {
     const options = [{ label: 'All Stocks', value: 'ALL' }]
@@ -138,10 +135,9 @@ export default function GenericReportClient({
   }, [data, reportType])
 
   return (
-    <div className="w-full">
-      <div className="px-4 sm:px-0">
+    <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-3 px-4 sm:px-0">
         
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white transition-colors">{reportType.charAt(0) + reportType.slice(1).toLowerCase()} Report</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors">Detailed log of all {reportType.toLowerCase()}s with export options.</p>
@@ -155,8 +151,8 @@ export default function GenericReportClient({
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-slate-800 rounded-2xl relative transition-colors">
-          <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-30 transition-colors">
+        <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-slate-800 rounded-2xl relative transition-colors flex-1 flex flex-col min-h-0">
+          <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-30 transition-colors shrink-0">
             <div className="flex flex-wrap items-center gap-2">
               <div className="hidden sm:flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-gray-400 dark:text-gray-500 transition-colors">
                 <Filter className="w-3.5 h-3.5" />
@@ -217,9 +213,9 @@ export default function GenericReportClient({
             </div>
           </div>
           
-          <div className="relative">
+          <div className="relative flex-1 flex flex-col min-h-0">
             {isLoading && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] rounded-b-2xl transition-all duration-300">
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] rounded-b-2xl transition-all duration-300">
                 <div className="flex flex-col items-center bg-white dark:bg-slate-800 px-6 py-4 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-slate-700">
                   <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin mb-2" />
                   <span className="text-sm font-bold text-gray-700 dark:text-gray-200">Loading records...</span>
@@ -227,9 +223,9 @@ export default function GenericReportClient({
               </div>
             )}
 
-            <div className="overflow-x-auto min-h-[400px] max-h-[600px] custom-scrollbar">
-              <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
-                <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-10 backdrop-blur-sm transition-colors">
+            <div className="flex-1 overflow-auto custom-scrollbar">
+              <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800 transition-colors relative">
+                <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-20 backdrop-blur-md transition-colors shadow-sm">
                   <tr>
                     <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Stock</th>
                     <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Date</th>
@@ -315,15 +311,13 @@ export default function GenericReportClient({
               </table>
             </div>
 
-            <div className="bg-gray-50/50 dark:bg-slate-900/50 px-6 py-3 border-t border-gray-100 dark:border-slate-800 rounded-b-2xl flex items-center justify-end transition-colors">
+            <div className="bg-gray-50/50 dark:bg-slate-900/50 px-6 py-3 border-t border-gray-100 dark:border-slate-800 rounded-b-2xl flex items-center justify-end transition-colors shrink-0">
               <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                 Total Records: <span className="text-gray-900 dark:text-white ml-1">{data.length}</span>
               </span>
             </div>
           </div>
         </div>
-
-      </div>
     </div>
   )
 }

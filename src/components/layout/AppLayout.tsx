@@ -29,7 +29,7 @@ export default async function AppLayout({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex transition-colors duration-200">
       {/* Fixed Sidebar */}
-      <Sidebar dict={dict} />
+      <Sidebar dict={dict} user={user} />
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">

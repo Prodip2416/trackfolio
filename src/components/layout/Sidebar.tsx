@@ -1,26 +1,64 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useTransition, useRef } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe } from 'lucide-react'
+import { User } from '@supabase/supabase-js'
+import { logout } from '@/app/auth/actions'
+import { setLanguage } from '@/app/actions/i18n'
+import { useTheme } from 'next-themes'
 
-export default function Sidebar({ dict }: { dict: any }) {
+export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const pathname = usePathname() || ''
+  const router = useRouter()
+  const [isTransitioning, startTransition] = useTransition()
+  
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const profileRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const changeLanguage = (lang: 'en' | 'bn') => {
+    startTransition(async () => {
+      await setLanguage(lang)
+      router.refresh()
+    })
+  }
+
+  const userInitial = user ? (user.user_metadata?.full_name || user.email || 'U').charAt(0).toUpperCase() : 'U'
+  const userName = user ? (user.user_metadata?.full_name || user.email?.split('@')[0] || 'User') : 'User'
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false)
   const [isReportsOpen, setIsReportsOpen] = useState(false)
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false)
 
-  // Automatically open the analytics menu if the user is on an analytics page
   useEffect(() => {
     if (pathname.startsWith('/analytics')) {
       setIsAnalyticsOpen(true)
-    }
-    if (pathname.startsWith('/reports')) {
+      setIsReportsOpen(false)
+      setIsPortfolioOpen(false)
+    } else if (pathname.startsWith('/reports')) {
       setIsReportsOpen(true)
-    }
-    if (pathname.startsWith('/portfolio')) {
+      setIsAnalyticsOpen(false)
+      setIsPortfolioOpen(false)
+    } else if (pathname.startsWith('/portfolio')) {
       setIsPortfolioOpen(true)
+      setIsAnalyticsOpen(false)
+      setIsReportsOpen(false)
     }
   }, [pathname])
 
@@ -81,9 +119,25 @@ export default function Sidebar({ dict }: { dict: any }) {
                            item.name === dict.sidebar.portfolio ? isPortfolioOpen :
                            isAnalyticsOpen
             const toggleOpen = () => {
-              if (item.name === dict.sidebar.reports) setIsReportsOpen(!isReportsOpen)
-              else if (item.name === dict.sidebar.portfolio) setIsPortfolioOpen(!isPortfolioOpen)
-              else setIsAnalyticsOpen(!isAnalyticsOpen)
+              if (item.name === dict.sidebar.reports) {
+                setIsReportsOpen(!isReportsOpen)
+                if (!isReportsOpen) {
+                  setIsPortfolioOpen(false)
+                  setIsAnalyticsOpen(false)
+                }
+              } else if (item.name === dict.sidebar.portfolio) {
+                setIsPortfolioOpen(!isPortfolioOpen)
+                if (!isPortfolioOpen) {
+                  setIsReportsOpen(false)
+                  setIsAnalyticsOpen(false)
+                }
+              } else {
+                setIsAnalyticsOpen(!isAnalyticsOpen)
+                if (!isAnalyticsOpen) {
+                  setIsReportsOpen(false)
+                  setIsPortfolioOpen(false)
+                }
+              }
             }
             const Icon = item.icon
             return (
@@ -149,6 +203,98 @@ export default function Sidebar({ dict }: { dict: any }) {
           )
         })}
       </div>
+
+      {/* User Actions */}
+      {user && (
+        <div className="p-4 border-t border-gray-200/50 dark:border-slate-800 mt-auto relative" ref={profileRef}>
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="flex items-center w-full bg-white/50 dark:bg-slate-800/50 rounded-xl p-2 border border-transparent hover:border-gray-200 dark:hover:border-slate-700 transition-colors cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center font-bold text-sm mr-3 shadow-inner">
+              {userInitial}
+            </div>
+            <div className="flex flex-col items-start flex-1 min-w-0">
+              <span className="text-sm font-bold text-gray-700 dark:text-gray-200 truncate w-full text-left">
+                {userName}
+              </span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium truncate w-full text-left">
+                {user.email}
+              </span>
+            </div>
+          </button>
+
+          {/* Dropdown Menu */}
+          {isProfileOpen && (
+            <div className="absolute bottom-full left-4 mb-2 w-56 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden transform origin-bottom-left transition-all animate-in fade-in zoom-in-95 z-50">
+              <div className="p-2 space-y-1">
+                <div className="px-3 py-2 flex items-center justify-between group">
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center">
+                    {mounted && theme === 'dark' ? (
+                      <Moon className="w-3.5 h-3.5 mr-2 text-indigo-500" />
+                    ) : (
+                      <Sun className="w-3.5 h-3.5 mr-2 text-amber-500" />
+                    )}
+                    {dict.common.appearance}
+                  </span>
+                  
+                  {mounted && (
+                    <div className="flex bg-gray-100 dark:bg-slate-900 rounded-lg p-0.5">
+                      <button
+                        onClick={() => setTheme('light')}
+                        className={`p-1 rounded-md transition-colors cursor-pointer ${theme === 'light' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-400'}`}
+                      >
+                        <Sun className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => setTheme('dark')}
+                        className={`p-1 rounded-md transition-colors cursor-pointer ${theme === 'dark' ? 'bg-slate-700 text-indigo-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-400'}`}
+                      >
+                        <Moon className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="px-3 py-2 flex items-center justify-between group">
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center">
+                    <Globe className="w-3.5 h-3.5 mr-2 text-emerald-500" />
+                    {dict.common.language}
+                  </span>
+                  <div className="flex bg-gray-100 dark:bg-slate-900 rounded-lg p-0.5">
+                    <button
+                      onClick={() => changeLanguage('en')}
+                      disabled={isTransitioning}
+                      className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-colors cursor-pointer ${dict.common.trackfolio === 'TrackFolio' ? 'bg-white text-emerald-600 shadow-sm dark:bg-slate-700 dark:text-emerald-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                    >
+                      EN
+                    </button>
+                    <button
+                      onClick={() => changeLanguage('bn')}
+                      disabled={isTransitioning}
+                      className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold transition-colors cursor-pointer ${dict.common.trackfolio !== 'TrackFolio' ? 'bg-white text-emerald-600 shadow-sm dark:bg-slate-700 dark:text-emerald-400' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                    >
+                      BN
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="h-px bg-gray-100 dark:bg-slate-700 my-1 mx-2" />
+                
+                <form action={logout}>
+                  <button
+                    type="submit"
+                    className="w-full text-left px-3 py-2 flex items-center text-xs font-bold text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5 mr-2" />
+                    {dict.common.logout}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
