@@ -37,7 +37,7 @@ export default function Topbar({ title, lastSyncTime, dict }: { user: User, titl
   }
 
   const getBreadcrumbs = () => {
-    const items = [
+    const items: Array<{ name: string; icon?: any }> = [
       { name: dict.common.trackfolio, icon: LayoutDashboard }
     ]
 
