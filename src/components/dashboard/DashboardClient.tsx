@@ -109,45 +109,7 @@ const YearSelect = ({ value, onChange, years }: { value: number, onChange: (val:
   )
 }
 
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-const MonthSelect = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  
-  return (
-    <div className="relative">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-28 px-3 py-1.5 text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-      >
-        <span>{MONTHS[value].slice(0, 3)}</span>
-        <ChevronDown className="w-3.5 h-3.5 ml-2 text-gray-500" />
-      </button>
-      
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}></div>
-          <div className="absolute right-0 z-50 w-32 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl overflow-hidden py-1">
-            <div className="max-h-48 overflow-y-auto">
-              {MONTHS.map((m, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    onChange(i)
-                    setIsOpen(false)
-                  }}
-                  className={`w-full text-left px-3 py-1.5 text-xs transition-colors cursor-pointer ${i === value ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-bold' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
-                >
-                  {m}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
 
 export default function DashboardClient({ 
   transactions, 
@@ -166,7 +128,6 @@ export default function DashboardClient({
   const [isPending, startTransition] = useTransition()
   const [selectedDividendYear, setSelectedDividendYear] = useState<number>(new Date().getFullYear())
   const [selectedActivityYear, setSelectedActivityYear] = useState<number>(new Date().getFullYear())
-  const [selectedActivityMonth, setSelectedActivityMonth] = useState<number>(new Date().getMonth())
 
   const dividendYears = useMemo(() => {
     const years: number[] = []
@@ -246,20 +207,27 @@ export default function DashboardClient({
   }, [stocks])
 
 
-  // 3. Daily Trade Activity (Bar Chart - Selected Month)
+  // 3. Trade Activity (Bar Chart - Monthly Breakdown)
   const activityData = useMemo(() => {
-    const dailyStats = new Map<string, any>()
+    const monthlyStats = new Map<string, any>()
+    
+    // Initialize 12 months for the selected year
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    months.forEach(m => {
+      monthlyStats.set(`${m} ${selectedActivityYear.toString().slice(-2)}`, { 
+        date: `${m} ${selectedActivityYear.toString().slice(-2)}`, 
+        buyAmount: 0, buyCount: 0, buyShares: 0, buyDetails: [],
+        sellAmount: 0, sellCount: 0, sellShares: 0, sellDetails: []
+      })
+    })
 
     transactions.forEach(txn => {
       const dateObj = new Date(txn.transaction_date)
-      if (dateObj.getFullYear() !== selectedActivityYear || dateObj.getMonth() !== selectedActivityMonth) return
+      if (dateObj.getFullYear() !== selectedActivityYear) return
 
-      const dateStr = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
-      const current = dailyStats.get(dateStr) || { 
-        date: dateStr, 
-        buyAmount: 0, buyCount: 0, buyShares: 0, buyDetails: [],
-        sellAmount: 0, sellCount: 0, sellShares: 0, sellDetails: []
-      }
+      const key = dateObj.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })
+      const current = monthlyStats.get(key)
+      if (!current) return
 
       if (txn.type === 'BUY') {
         const amount = (txn.quantity * txn.price_per_unit) + txn.brokerage_fee
@@ -288,25 +256,15 @@ export default function DashboardClient({
           current.sellDetails.push({ symbol: txn.stocks.symbol, quantity: txn.quantity, amount })
         }
       }
-
-      dailyStats.set(dateStr, current)
     })
 
-    return Array.from(dailyStats.values()).sort((a, b) => {
-      // Create actual date objects to sort properly
-      const getRealDate = (dStr: string) => {
-        const [day, monthStr] = dStr.split(' ')
-        const monthIndex = new Date(`${monthStr} 1 2000`).getMonth()
-        const d = new Date()
-        d.setMonth(monthIndex)
-        d.setDate(parseInt(day))
-        // Handle year wrap-around
-        if (d > new Date()) d.setFullYear(d.getFullYear() - 1)
-        return d.getTime()
-      }
-      return getRealDate(a.date) - getRealDate(b.date)
+    // Sort buyDetails and sellDetails by amount descending
+    return Array.from(monthlyStats.values()).map(data => {
+      data.buyDetails.sort((a: any, b: any) => b.amount - a.amount)
+      data.sellDetails.sort((a: any, b: any) => b.amount - a.amount)
+      return data
     })
-  }, [transactions, selectedActivityYear, selectedActivityMonth])
+  }, [transactions, selectedActivityYear])
 
 
   // 4. Dividend History (Bar Chart - Selected Year)
@@ -353,55 +311,23 @@ export default function DashboardClient({
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-white dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[200px]">
-          <p className="font-bold text-gray-900 dark:text-white mb-2 pb-2 border-b border-gray-100 dark:border-gray-700">
-            {label}
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
+          <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
+          <p className="text-xs font-bold text-indigo-600 mb-2">
+            Total: ৳{data.buyAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          {data.buyCount > 0 && (
-            <div className="mb-3">
-              <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 flex items-center mb-1">
-                <ArrowDownRight className="w-4 h-4 mr-1" /> {dict.dashboard.buy} 
-                <span className="text-xs text-gray-500 ml-1">({data.buyCount} trades)</span>
-              </p>
-              <div className="space-y-1 mb-1.5">
-                {data.buyDetails.map((d: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center text-[11px]">
-                    <span className="text-gray-600 dark:text-gray-300 font-medium">
-                      {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
-                    </span>
-                    <span className="text-gray-900 dark:text-gray-100 font-bold ml-3">
-                      ৳{d.amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 border-t border-gray-100 dark:border-gray-700 pt-1 mt-1 text-right">
-                Total: ৳{data.buyAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-              </p>
-            </div>
-          )}
-          
-          {data.sellCount > 0 && (
-            <div>
-              <p className="text-sm font-semibold text-pink-600 dark:text-pink-400 flex items-center mb-1">
-                <ArrowUpRight className="w-4 h-4 mr-1" /> {dict.dashboard.sell} 
-                <span className="text-xs text-gray-500 ml-1">({data.sellCount} trades)</span>
-              </p>
-              <div className="space-y-1 mb-1.5">
-                {data.sellDetails.map((d: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center text-[11px]">
-                    <span className="text-gray-600 dark:text-gray-300 font-medium">
-                      {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
-                    </span>
-                    <span className="text-gray-900 dark:text-gray-100 font-bold ml-3">
-                      ৳{d.amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-[11px] font-bold text-pink-700 dark:text-pink-300 border-t border-gray-100 dark:border-gray-700 pt-1 mt-1 text-right">
-                Total: ৳{data.sellAmount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-              </p>
+          {data.buyDetails && data.buyDetails.length > 0 && (
+            <div className="space-y-1.5">
+              {data.buyDetails.map((d: any, i: number) => (
+                <div key={i} className="flex justify-between items-center text-[11px]">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium">
+                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
+                  </span>
+                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">
+                    ৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </span>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -773,16 +699,15 @@ export default function DashboardClient({
         </div>
       </div>
 
-      {/* 4. Daily Trade Activity Bar Chart */}
+      {/* 4. Monthly Trade Activity Bar Chart */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col w-full">
         <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <div>
               <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.tradeActivity}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.dailyBreakdown}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.monthlyBreakdown}</p>
             </div>
             <div className="flex items-center space-x-2">
               <YearSelect value={selectedActivityYear} onChange={setSelectedActivityYear} years={activityYears} />
-              <MonthSelect value={selectedActivityMonth} onChange={setSelectedActivityMonth} />
             </div>
           </div>
           
@@ -805,9 +730,7 @@ export default function DashboardClient({
                     tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
                   />
                   <RechartsTooltip content={<CustomBarTooltip />} cursor={{ fill: '#f3f4f6' }} />
-                  <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                  <Bar dataKey="buyAmount" name="Buy" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={30} />
-                  <Bar dataKey="sellAmount" name="Sell" fill="#ec4899" radius={[4, 4, 0, 0]} maxBarSize={30} />
+                  <Bar dataKey="buyAmount" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={40} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
