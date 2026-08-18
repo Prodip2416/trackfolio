@@ -5,6 +5,7 @@ import { X, Loader2 } from 'lucide-react'
 import { getOwnedStocks, addDividend } from '@/app/dividends/actions'
 import SearchableDropdown from '@/components/shared/SearchableDropdown'
 import PremiumDatePicker from '@/components/shared/PremiumDatePicker'
+import YearPicker from '@/components/shared/YearPicker'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { updateDividend } from '@/app/dividends/actions'
@@ -57,11 +58,6 @@ export default function DividendForm({
     { label: 'Final Dividend', value: 'FINAL' },
     { label: 'Interim Dividend', value: 'INTERIM' }
   ]
-
-  const yearOptions = Array.from({ length: 51 }, (_, i) => {
-    const y = (2025 + i).toString()
-    return { label: y, value: y }
-  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -188,10 +184,12 @@ export default function DividendForm({
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Year
                   </label>
-                  <SearchableDropdown
-                    options={yearOptions}
+                  <YearPicker
                     value={year}
                     onChange={setYear}
+                    placeholder="Select Year"
+                    minYear={2010}
+                    maxYear={2075}
                     buttonClassName="px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-medium min-h-[46px]"
                   />
                 </div>

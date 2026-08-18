@@ -5,9 +5,10 @@ import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, AreaChart, Area
 } from 'recharts'
-import { ArrowUpRight, ArrowDownRight, Wallet, PieChart as PieChartIcon, TrendingUp, Activity, Banknote, RefreshCw, ChevronDown, Search } from 'lucide-react'
+import { ArrowUpRight, ArrowDownRight, Wallet, PieChart as PieChartIcon, TrendingUp, Activity, Banknote, RefreshCw, ChevronDown, Search, TrendingDown } from 'lucide-react'
 import { syncDashboardData } from '@/app/dashboard/actions'
 import toast from 'react-hot-toast'
+import { useTheme } from 'next-themes'
 
 type Transaction = {
   id: string
@@ -124,10 +125,11 @@ export default function DashboardClient({
   lastSyncTime?: string | null,
   dict: any
 }) {
-  
+  const { theme } = useTheme()
   const [isPending, startTransition] = useTransition()
   const [selectedDividendYear, setSelectedDividendYear] = useState<number>(new Date().getFullYear())
   const [selectedActivityYear, setSelectedActivityYear] = useState<number>(new Date().getFullYear())
+  const [selectedSellYear, setSelectedSellYear] = useState<number>(new Date().getFullYear())
 
   const dividendYears = useMemo(() => {
     const years: number[] = []
@@ -154,6 +156,20 @@ export default function DashboardClient({
     return years.sort((a, b) => a - b)
   }, [transactions])
 
+  const sellYears = useMemo(() => {
+    const years: number[] = []
+    for(let y = 2025; y <= 2075; y++) {
+      years.push(y)
+    }
+    transactions.forEach(t => {
+      if (t.type === 'SELL') {
+        const y = new Date(t.transaction_date).getFullYear()
+        if(!years.includes(y)) years.push(y)
+      }
+    })
+    return years.sort((a, b) => a - b)
+  }, [transactions])
+
   const handleSync = () => {
     startTransition(async () => {
       try {
@@ -174,6 +190,12 @@ export default function DashboardClient({
       return acc + (stock.total_quantity * stock.current_price)
     }, 0)
     const totalDividend = dividends.reduce((acc, div) => acc + (div.cash_amount || 0), 0)
+    const totalSellAmount = transactions.reduce((acc, txn) => {
+      if (txn.type === 'SELL') {
+        return acc + ((txn.quantity * txn.price_per_unit) - txn.brokerage_fee)
+      }
+      return acc
+    }, 0)
     
     // Unrealized P/L = Current Value - Invested Value
     const totalProfitLoss = currentPortfolioValue > 0 ? (currentPortfolioValue - totalInvested) : 0
@@ -183,9 +205,10 @@ export default function DashboardClient({
       totalDividend, 
       totalShares: Math.max(0, totalShares), 
       totalProfitLoss,
-      currentPortfolioValue
+      currentPortfolioValue,
+      totalSellAmount: Math.max(0, totalSellAmount)
     }
-  }, [stocks, dividends])
+  }, [stocks, dividends, transactions])
 
   // 2. Portfolio Allocation (Pie Chart) & Sector Allocation
   const { portfolioData, sectorData, totalPortfolioValue } = useMemo(() => {
@@ -306,6 +329,47 @@ export default function DashboardClient({
   }, [dividendHistoryData])
 
 
+  // 5. Sell History (Bar Chart - Selected Year)
+  const sellHistoryData = useMemo(() => {
+    const monthlyStats = new Map<string, { amount: number, details: { symbol: string, amount: number, quantity: number }[] }>()
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    months.forEach(m => {
+      monthlyStats.set(`${m} ${selectedSellYear.toString().slice(-2)}`, { amount: 0, details: [] })
+    })
+
+    transactions.forEach(txn => {
+      if (txn.type !== 'SELL') return
+      const dateObj = new Date(txn.transaction_date)
+      if (dateObj.getFullYear() === selectedSellYear) {
+        const key = dateObj.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })
+        if (monthlyStats.has(key)) {
+          const stat = monthlyStats.get(key)!
+          const amount = (txn.quantity * txn.price_per_unit) - txn.brokerage_fee
+          stat.amount += amount
+          const existing = stat.details.find(d => d.symbol === txn.stocks.symbol)
+          if (existing) {
+            existing.amount += amount
+            existing.quantity += txn.quantity
+          } else {
+            stat.details.push({ symbol: txn.stocks.symbol, amount, quantity: txn.quantity })
+          }
+        }
+      }
+    })
+
+    return Array.from(monthlyStats.entries()).map(([date, data]) => ({
+      date,
+      amount: data.amount,
+      details: data.details.sort((a, b) => b.amount - a.amount)
+    }))
+  }, [transactions, selectedSellYear])
+
+  const selectedYearTotalSell = useMemo(() => {
+    return sellHistoryData.reduce((acc, curr) => acc + curr.amount, 0)
+  }, [sellHistoryData])
+
+
   // Tooltips
   const CustomBarTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -381,6 +445,33 @@ export default function DashboardClient({
     return null
   }
 
+  const CustomSellTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload
+      return (
+        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
+          <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
+          <p className="text-xs font-bold text-rose-600 mb-2">
+            Total: ৳{data.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </p>
+          {data.details && data.details.length > 0 && (
+            <div className="space-y-1.5">
+              {data.details.map((d: any, i: number) => (
+                <div key={i} className="flex justify-between items-center text-[11px]">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium">
+                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
+                  </span>
+                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+    return null
+  }
+
   // 5. Recent Trades
   const recentTrades = useMemo(() => {
     return [...transactions]
@@ -393,7 +484,7 @@ export default function DashboardClient({
     <div className="w-full space-y-3 px-4 sm:px-0">
       
       {/* 1. KPI Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {/* Total Invested */}
         <div className="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-gray-900 p-4 rounded-xl border border-indigo-100/50 dark:border-indigo-800/30 shadow-md shadow-indigo-100/20 dark:shadow-none flex flex-col justify-between">
           <div className="flex justify-between items-start relative z-10">
@@ -408,6 +499,22 @@ export default function DashboardClient({
             </div>
           </div>
           <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-400/10 dark:bg-indigo-600/10 rounded-full blur-2xl"></div>
+        </div>
+        
+        {/* Total Sell Amount */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-rose-50 to-white dark:from-rose-900/20 dark:to-gray-900 p-4 rounded-xl border border-rose-100/50 dark:border-rose-800/30 shadow-md shadow-rose-100/20 dark:shadow-none flex flex-col justify-between">
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+              <p className="text-[10px] font-semibold text-rose-600/70 dark:text-rose-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalSellAmount}</p>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                ৳{kpis.totalSellAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </h2>
+            </div>
+            <div className="p-2 bg-rose-100/50 dark:bg-rose-900/50 rounded-lg backdrop-blur-sm">
+              <TrendingDown className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+            </div>
+          </div>
+          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-rose-400/10 dark:bg-rose-600/10 rounded-full blur-2xl"></div>
         </div>
         
         {/* Total Dividend */}
@@ -729,7 +836,7 @@ export default function DashboardClient({
                     tick={{ fill: '#6b7280', fontSize: 10 }}
                     tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
                   />
-                  <RechartsTooltip content={<CustomBarTooltip />} cursor={{ fill: '#f3f4f6' }} />
+                  <RechartsTooltip content={<CustomBarTooltip />} cursor={{ fill: theme === 'dark' ? '#1e293b' : '#f3f4f6' }} />
                   <Bar dataKey="buyAmount" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={40} />
                 </BarChart>
               </ResponsiveContainer>
@@ -779,14 +886,59 @@ export default function DashboardClient({
                 tick={{ fill: '#6b7280', fontSize: 10 }}
                 tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
               />
-              <RechartsTooltip content={<CustomDividendTooltip />} cursor={{ fill: '#f3f4f6' }} />
+              <RechartsTooltip content={<CustomDividendTooltip />} cursor={{ fill: theme === 'dark' ? '#1e293b' : '#f3f4f6' }} />
               <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* 6. Recent Trades Row */}
+      {/* 6. Sell Income Row */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
+        <div className="mb-4 flex justify-between items-center">
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.sellIncome}</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.monthlyBreakdown}</p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <YearSelect 
+              value={selectedSellYear}
+              onChange={(y) => setSelectedSellYear(y)}
+              years={sellYears}
+            />
+            <div className="text-right hidden sm:block bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-lg border border-rose-100 dark:border-rose-800/30">
+              <p className="text-[13px] font-extrabold text-rose-600 dark:text-rose-400">
+                ৳{selectedYearTotalSell.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex-grow min-h-[250px]">
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={sellHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+              <XAxis 
+                dataKey="date" 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: '#6b7280', fontSize: 10 }} 
+                dy={10}
+              />
+              <YAxis 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: '#6b7280', fontSize: 10 }}
+                tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
+              />
+              <RechartsTooltip content={<CustomSellTooltip />} cursor={{ fill: theme === 'dark' ? '#1e293b' : '#f3f4f6' }} />
+              <Bar dataKey="amount" fill="#e11d48" radius={[4, 4, 0, 0]} maxBarSize={40} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* 7. Recent Trades Row */}
       <div className="bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden w-full">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
           <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.recentTrades}</h3>

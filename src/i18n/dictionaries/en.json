@@ -32,12 +32,14 @@
   },
   "dashboard": {
     "totalInvested": "Total Invested",
+    "totalSellAmount": "Total Sell Amount",
     "totalDividend": "Total Dividend",
     "totalShares": "Total Shares",
     "unrealizedPL": "Unrealized P/L",
     "portfolioAllocation": "Portfolio Allocation",
     "sectorAllocation": "Sector Allocation",
     "tradeActivity": "Trade Activity",
+    "sellIncome": "Sell Income",
     "dailyBreakdown": "Daily breakdown (Amount ৳)",
     "dividendIncome": "Dividend Income",
     "monthlyBreakdown": "Monthly breakdown (Amount ৳)",
@@ -79,5 +81,12 @@
     "sellShares": "Sell Shares",
     "avgDown": "Avg Down",
     "noShares": "No shares in your portfolio."
+  },
+  "ledger": {
+    "totalShare": "Total Share",
+    "totalBuyPrice": "Total Buy Price",
+    "totalSellPrice": "Total Sell Price",
+    "totalCashDividend": "Total Cash Dividend",
+    "totalBonusStock": "Total Bonus Stock"
   }
 }

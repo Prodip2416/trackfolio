@@ -32,12 +32,14 @@
   },
   "dashboard": {
     "totalInvested": "মোট বিনিয়োগ",
+    "totalSellAmount": "মোট বিক্রয়",
     "totalDividend": "মোট ডিভিডেন্ড",
     "totalShares": "মোট শেয়ার",
     "unrealizedPL": "আনরিয়েলাইজড লাভ/ক্ষতি",
     "portfolioAllocation": "পোর্টফোলিও অ্যালোকেশন",
     "sectorAllocation": "সেক্টর অ্যালোকেশন",
     "tradeActivity": "ট্রেড অ্যাক্টিভিটি",
+    "sellIncome": "বিক্রয় আয়",
     "dailyBreakdown": "দৈনিক ব্রেকডাউন (টাকা)",
     "dividendIncome": "ডিভিডেন্ড আয়",
     "monthlyBreakdown": "মাসিক ব্রেকডাউন (টাকা)",
@@ -70,14 +72,21 @@
     "portfolioHoldings": "পোর্টফোলিও হোল্ডিংস",
     "currentValue": "বর্তমান মূল্য",
     "todaysChange": "আজকের পরিবর্তন",
-    "avgCost": "গড় মূল্য",
+    "avgCost": "গড় মূল্য",
     "marketPrice": "মার্কেট মূল্য",
     "unrealized": "আনরিয়েলাইজড",
     "growth": "গ্রোথ",
     "actions": "অ্যাকশনস",
     "buyMore": "আরও কিনুন",
-    "sellShares": "শেয়ার বিক্রি",
+    "sellShares": "শেয়ার বিক্রি",
     "avgDown": "অ্যাভারেজ ডাউন",
-    "noShares": "আপনার পোর্টফোলিওতে কোনো শেয়ার নেই।"
+    "noShares": "আপনার পোর্টফোলিওতে কোনো শেয়ার নেই।"
+  },
+  "ledger": {
+    "totalShare": "মোট শেয়ার",
+    "totalBuyPrice": "মোট ক্রয় মূল্য",
+    "totalSellPrice": "মোট বিক্রয় মূল্য",
+    "totalCashDividend": "মোট নগদ ডিভিডেন্ট",
+    "totalBonusStock": "মোট বোনাস স্টক"
   }
 }

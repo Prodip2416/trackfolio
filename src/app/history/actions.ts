@@ -7,12 +7,14 @@ export async function getHistoryData({
   activeTab,
   filterStock,
   filterYear,
+  filterMonth,
   currentPage,
   itemsPerPage = 10,
 }: {
   activeTab: 'BUY' | 'SELL' | 'DIVIDEND'
   filterStock: string
   filterYear: string
+  filterMonth?: string
   currentPage: number
   itemsPerPage?: number
 }) {
@@ -24,6 +26,8 @@ export async function getHistoryData({
   }
 
   const skip = (currentPage - 1) * itemsPerPage
+
+  const monthNum = filterMonth && filterMonth !== 'ALL' ? parseInt(filterMonth, 10) : null
 
   if (activeTab === 'DIVIDEND') {
     // Base WHERE clause
@@ -38,11 +42,20 @@ export async function getHistoryData({
     // Build Date condition
     const dateCondition: any = {}
     
-    // If year is selected, the date must start with that year
-    // For Prisma, we can use `gte` and `lt` for the year boundaries if it's a DateTime field
-    if (filterYear !== 'ALL') {
+    if (filterYear !== 'ALL' && monthNum !== null) {
+      const monthStr = String(monthNum).padStart(2, '0')
+      dateCondition.gte = new Date(`${filterYear}-${monthStr}-01T00:00:00.000Z`)
+      const lastDay = new Date(parseInt(filterYear), monthNum, 0).getDate()
+      dateCondition.lt = new Date(`${filterYear}-${monthStr}-${lastDay}T23:59:59.999Z`)
+    } else if (filterYear !== 'ALL') {
       dateCondition.gte = new Date(`${filterYear}-01-01T00:00:00.000Z`)
       dateCondition.lt = new Date(`${parseInt(filterYear) + 1}-01-01T00:00:00.000Z`)
+    } else if (monthNum !== null) {
+      const year = new Date().getFullYear()
+      const monthStr = String(monthNum).padStart(2, '0')
+      dateCondition.gte = new Date(`${year}-${monthStr}-01T00:00:00.000Z`)
+      const lastDay = new Date(year, monthNum, 0).getDate()
+      dateCondition.lt = new Date(`${year}-${monthStr}-${lastDay}T23:59:59.999Z`)
     }
 
     if (Object.keys(dateCondition).length > 0) {
@@ -120,9 +133,20 @@ export async function getHistoryData({
     // Build Date condition
     const dateCondition: any = {}
     
-    if (filterYear !== 'ALL') {
+    if (filterYear !== 'ALL' && monthNum !== null) {
+      const monthStr = String(monthNum).padStart(2, '0')
+      dateCondition.gte = new Date(`${filterYear}-${monthStr}-01T00:00:00.000Z`)
+      const lastDay = new Date(parseInt(filterYear), monthNum, 0).getDate()
+      dateCondition.lt = new Date(`${filterYear}-${monthStr}-${lastDay}T23:59:59.999Z`)
+    } else if (filterYear !== 'ALL') {
       dateCondition.gte = new Date(`${filterYear}-01-01T00:00:00.000Z`)
       dateCondition.lt = new Date(`${parseInt(filterYear) + 1}-01-01T00:00:00.000Z`)
+    } else if (monthNum !== null) {
+      const year = new Date().getFullYear()
+      const monthStr = String(monthNum).padStart(2, '0')
+      dateCondition.gte = new Date(`${year}-${monthStr}-01T00:00:00.000Z`)
+      const lastDay = new Date(year, monthNum, 0).getDate()
+      dateCondition.lt = new Date(`${year}-${monthStr}-${lastDay}T23:59:59.999Z`)
     }
 
     if (Object.keys(dateCondition).length > 0) {

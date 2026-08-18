@@ -46,6 +46,7 @@ export default function HistoryClient({
   const [activeTab, setActiveTab] = useState<'BUY' | 'SELL' | 'DIVIDEND'>('BUY')
   const [filterStock, setFilterStock] = useState('ALL')
   const [filterYear, setFilterYear] = useState(new Date().getFullYear().toString())
+  const [filterMonth, setFilterMonth] = useState('ALL')
   
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
@@ -83,7 +84,7 @@ export default function HistoryClient({
   useEffect(() => {
     setCurrentPage(1)
     setData([]) // Clear data so old tab's data doesn't render in new tab's columns
-  }, [activeTab, filterStock, filterYear])
+  }, [activeTab, filterStock, filterYear, filterMonth])
 
   // Fetch data from backend whenever filters or page change
   useEffect(() => {
@@ -94,6 +95,7 @@ export default function HistoryClient({
           activeTab,
           filterStock,
           filterYear,
+          filterMonth,
           currentPage,
           itemsPerPage
         })
@@ -110,14 +112,23 @@ export default function HistoryClient({
     }
 
     fetchData()
-  }, [activeTab, filterStock, filterYear, currentPage, refreshTrigger])
+  }, [activeTab, filterStock, filterYear, filterMonth, currentPage, refreshTrigger])
 
 
   const yearOptions = useMemo(() => {
     const options = [{ label: 'All Years', value: 'ALL' }]
-    for (let i = 2025; i <= 2075; i++) {
+    for (let i = 2010; i <= 2075; i++) {
       options.push({ label: i.toString(), value: i.toString() })
     }
+    return options
+  }, [])
+
+  const monthOptions = useMemo(() => {
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const options = [{ label: 'All Months', value: 'ALL' }]
+    monthNames.forEach((m, i) => {
+      options.push({ label: m, value: (i + 1).toString() })
+    })
     return options
   }, [])
 
@@ -206,7 +217,7 @@ export default function HistoryClient({
         <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-slate-800 rounded-2xl relative transition-colors flex-1 flex flex-col min-h-0">
           
           {/* Filters Section Right Above Table */}
-          <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-10 transition-colors shrink-0">
+          <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-30 transition-colors shrink-0">
             <div className="flex flex-wrap items-center gap-2">
               <div className="hidden sm:flex items-center justify-center w-8 h-8 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-400">
                 <Filter className="w-3.5 h-3.5" />
@@ -234,11 +245,23 @@ export default function HistoryClient({
                 />
               </div>
 
-              {(filterStock !== 'ALL' || filterYear !== 'ALL') && (
+              <div className="w-[135px] sm:w-[145px]">
+                <SearchableDropdown
+                  options={monthOptions}
+                  value={filterMonth}
+                  onChange={setFilterMonth}
+                  placeholder="All Months"
+                  searchPlaceholder="Search month..."
+                  buttonClassName="px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
+                />
+              </div>
+
+              {(filterStock !== 'ALL' || filterYear !== 'ALL' || filterMonth !== 'ALL') && (
                 <button 
                   onClick={() => {
                     setFilterStock('ALL')
                     setFilterYear('ALL')
+                    setFilterMonth('ALL')
                   }}
                   className="px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
                 >

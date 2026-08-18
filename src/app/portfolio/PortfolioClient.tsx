@@ -35,6 +35,14 @@ export default function PortfolioClient({
 }) {
   const [selectedStockForCalc, setSelectedStockForCalc] = useState<StockHolding | null>(null)
 
+  const sortedStocks = useMemo(() => {
+    return [...stocks].sort((a, b) => {
+      const plA = (a.total_quantity * a.latest_price) - a.total_investment
+      const plB = (b.total_quantity * b.latest_price) - b.total_investment
+      return plB - plA // Descending: Highest Profit to Highest Loss
+    })
+  }, [stocks])
+
   return (
     <div className="w-full">
       <div className="px-4 sm:px-0">
@@ -54,13 +62,14 @@ export default function PortfolioClient({
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.marketPrice}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Portfolio Price</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.totalInvested}</th>
+                  <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Unrealized P/L</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.date}</th>
                   <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.avgDown}</th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800">
-                {stocks.length > 0 ? (
-                  stocks.map((stock) => (
+                {sortedStocks.length > 0 ? (
+                  sortedStocks.map((stock) => (
                     <tr key={stock.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800 transition-colors duration-200 group">
                       <td className="px-4 py-2 whitespace-nowrap">
                         <div className="flex items-center">
@@ -102,6 +111,22 @@ export default function PortfolioClient({
                       <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-bold text-gray-900 dark:text-white">
                         {stock.total_investment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
+                      <td className="px-4 py-2 whitespace-nowrap text-right">
+                        {(() => {
+                          const pl = (stock.total_quantity * stock.latest_price) - stock.total_investment;
+                          const plPercent = stock.total_investment > 0 ? (pl / stock.total_investment) * 100 : 0;
+                          return (
+                            <div className="flex flex-col items-end">
+                              <span className={`text-xs font-bold ${pl > 0 ? 'text-green-600 dark:text-green-400' : pl < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-500'}`}>
+                                {pl > 0 ? '+' : ''}{pl.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                              <span className={`text-[10px] font-medium ${pl > 0 ? 'text-green-600/70 dark:text-green-400/70' : pl < 0 ? 'text-rose-600/70 dark:text-rose-400/70' : 'text-gray-400'}`}>
+                                {pl > 0 ? '+' : ''}{plPercent.toFixed(2)}%
+                              </span>
+                            </div>
+                          )
+                        })()}
+                      </td>
                       <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium text-gray-500 dark:text-gray-400">
                         {new Date(stock.updated_at).toLocaleDateString('en-GB', {
                           day: '2-digit',
@@ -124,7 +149,7 @@ export default function PortfolioClient({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="px-6 py-16 text-center">
+                    <td colSpan={9} className="px-6 py-16 text-center">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-50 mb-3">
                         <Briefcase className="w-5 h-5 text-gray-400" />
                       </div>
