@@ -178,6 +178,16 @@ export type stocks = $Result.DefaultSelection<Prisma.$stocksPayload>
  * This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
  */
 export type transactions = $Result.DefaultSelection<Prisma.$transactionsPayload>
+/**
+ * Model watchlist
+ * User's watchlist of DSE stocks
+ */
+export type watchlist = $Result.DefaultSelection<Prisma.$watchlistPayload>
+/**
+ * Model price_alerts
+ * Price alert ranges for buy/sell
+ */
+export type price_alerts = $Result.DefaultSelection<Prisma.$price_alertsPayload>
 
 /**
  * Enums
@@ -723,6 +733,26 @@ export class PrismaClient<
     * ```
     */
   get transactions(): Prisma.transactionsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.watchlist`: Exposes CRUD operations for the **watchlist** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Watchlists
+    * const watchlists = await prisma.watchlist.findMany()
+    * ```
+    */
+  get watchlist(): Prisma.watchlistDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.price_alerts`: Exposes CRUD operations for the **price_alerts** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Price_alerts
+    * const price_alerts = await prisma.price_alerts.findMany()
+    * ```
+    */
+  get price_alerts(): Prisma.price_alertsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1197,7 +1227,9 @@ export namespace Prisma {
     dse_companies: 'dse_companies',
     profiles: 'profiles',
     stocks: 'stocks',
-    transactions: 'transactions'
+    transactions: 'transactions',
+    watchlist: 'watchlist',
+    price_alerts: 'price_alerts'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1213,7 +1245,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "audit_log_entries" | "custom_oauth_providers" | "flow_state" | "identities" | "instances" | "mfa_amr_claims" | "mfa_challenges" | "mfa_factors" | "oauth_authorizations" | "oauth_client_states" | "oauth_clients" | "oauth_consents" | "one_time_tokens" | "refresh_tokens" | "saml_providers" | "saml_relay_states" | "schema_migrations" | "sessions" | "sso_domains" | "sso_providers" | "users" | "webauthn_challenges" | "webauthn_credentials" | "dividends" | "dse_companies" | "profiles" | "stocks" | "transactions"
+      modelProps: "audit_log_entries" | "custom_oauth_providers" | "flow_state" | "identities" | "instances" | "mfa_amr_claims" | "mfa_challenges" | "mfa_factors" | "oauth_authorizations" | "oauth_client_states" | "oauth_clients" | "oauth_consents" | "one_time_tokens" | "refresh_tokens" | "saml_providers" | "saml_relay_states" | "schema_migrations" | "sessions" | "sso_domains" | "sso_providers" | "users" | "webauthn_challenges" | "webauthn_credentials" | "dividends" | "dse_companies" | "profiles" | "stocks" | "transactions" | "watchlist" | "price_alerts"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3289,6 +3321,154 @@ export namespace Prisma {
           }
         }
       }
+      watchlist: {
+        payload: Prisma.$watchlistPayload<ExtArgs>
+        fields: Prisma.watchlistFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.watchlistFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.watchlistFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>
+          }
+          findFirst: {
+            args: Prisma.watchlistFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.watchlistFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>
+          }
+          findMany: {
+            args: Prisma.watchlistFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>[]
+          }
+          create: {
+            args: Prisma.watchlistCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>
+          }
+          createMany: {
+            args: Prisma.watchlistCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.watchlistCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>[]
+          }
+          delete: {
+            args: Prisma.watchlistDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>
+          }
+          update: {
+            args: Prisma.watchlistUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>
+          }
+          deleteMany: {
+            args: Prisma.watchlistDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.watchlistUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.watchlistUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>[]
+          }
+          upsert: {
+            args: Prisma.watchlistUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$watchlistPayload>
+          }
+          aggregate: {
+            args: Prisma.WatchlistAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWatchlist>
+          }
+          groupBy: {
+            args: Prisma.watchlistGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WatchlistGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.watchlistCountArgs<ExtArgs>
+            result: $Utils.Optional<WatchlistCountAggregateOutputType> | number
+          }
+        }
+      }
+      price_alerts: {
+        payload: Prisma.$price_alertsPayload<ExtArgs>
+        fields: Prisma.price_alertsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.price_alertsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.price_alertsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>
+          }
+          findFirst: {
+            args: Prisma.price_alertsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.price_alertsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>
+          }
+          findMany: {
+            args: Prisma.price_alertsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>[]
+          }
+          create: {
+            args: Prisma.price_alertsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>
+          }
+          createMany: {
+            args: Prisma.price_alertsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.price_alertsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>[]
+          }
+          delete: {
+            args: Prisma.price_alertsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>
+          }
+          update: {
+            args: Prisma.price_alertsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>
+          }
+          deleteMany: {
+            args: Prisma.price_alertsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.price_alertsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.price_alertsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>[]
+          }
+          upsert: {
+            args: Prisma.price_alertsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$price_alertsPayload>
+          }
+          aggregate: {
+            args: Prisma.Price_alertsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePrice_alerts>
+          }
+          groupBy: {
+            args: Prisma.price_alertsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Price_alertsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.price_alertsCountArgs<ExtArgs>
+            result: $Utils.Optional<Price_alertsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3440,6 +3620,8 @@ export namespace Prisma {
     profiles?: profilesOmit
     stocks?: stocksOmit
     transactions?: transactionsOmit
+    watchlist?: watchlistOmit
+    price_alerts?: price_alertsOmit
   }
 
   /* Types for Logging */
@@ -3848,12 +4030,16 @@ export namespace Prisma {
     dividends: number
     stocks: number
     transactions: number
+    watchlist: number
+    price_alerts: number
   }
 
   export type ProfilesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     dividends?: boolean | ProfilesCountOutputTypeCountDividendsArgs
     stocks?: boolean | ProfilesCountOutputTypeCountStocksArgs
     transactions?: boolean | ProfilesCountOutputTypeCountTransactionsArgs
+    watchlist?: boolean | ProfilesCountOutputTypeCountWatchlistArgs
+    price_alerts?: boolean | ProfilesCountOutputTypeCountPrice_alertsArgs
   }
 
   // Custom InputTypes
@@ -3886,6 +4072,20 @@ export namespace Prisma {
    */
   export type ProfilesCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: transactionsWhereInput
+  }
+
+  /**
+   * ProfilesCountOutputType without action
+   */
+  export type ProfilesCountOutputTypeCountWatchlistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: watchlistWhereInput
+  }
+
+  /**
+   * ProfilesCountOutputType without action
+   */
+  export type ProfilesCountOutputTypeCountPrice_alertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: price_alertsWhereInput
   }
 
 
@@ -32970,6 +33170,8 @@ export namespace Prisma {
     users?: boolean | usersDefaultArgs<ExtArgs>
     stocks?: boolean | profiles$stocksArgs<ExtArgs>
     transactions?: boolean | profiles$transactionsArgs<ExtArgs>
+    watchlist?: boolean | profiles$watchlistArgs<ExtArgs>
+    price_alerts?: boolean | profiles$price_alertsArgs<ExtArgs>
     _count?: boolean | ProfilesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profiles"]>
 
@@ -33014,6 +33216,8 @@ export namespace Prisma {
     users?: boolean | usersDefaultArgs<ExtArgs>
     stocks?: boolean | profiles$stocksArgs<ExtArgs>
     transactions?: boolean | profiles$transactionsArgs<ExtArgs>
+    watchlist?: boolean | profiles$watchlistArgs<ExtArgs>
+    price_alerts?: boolean | profiles$price_alertsArgs<ExtArgs>
     _count?: boolean | ProfilesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type profilesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -33030,6 +33234,8 @@ export namespace Prisma {
       users: Prisma.$usersPayload<ExtArgs>
       stocks: Prisma.$stocksPayload<ExtArgs>[]
       transactions: Prisma.$transactionsPayload<ExtArgs>[]
+      watchlist: Prisma.$watchlistPayload<ExtArgs>[]
+      price_alerts: Prisma.$price_alertsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -33438,6 +33644,8 @@ export namespace Prisma {
     users<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     stocks<T extends profiles$stocksArgs<ExtArgs> = {}>(args?: Subset<T, profiles$stocksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$stocksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends profiles$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, profiles$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$transactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    watchlist<T extends profiles$watchlistArgs<ExtArgs> = {}>(args?: Subset<T, profiles$watchlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    price_alerts<T extends profiles$price_alertsArgs<ExtArgs> = {}>(args?: Subset<T, profiles$price_alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -33945,6 +34153,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionsScalarFieldEnum | TransactionsScalarFieldEnum[]
+  }
+
+  /**
+   * profiles.watchlist
+   */
+  export type profiles$watchlistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    where?: watchlistWhereInput
+    orderBy?: watchlistOrderByWithRelationInput | watchlistOrderByWithRelationInput[]
+    cursor?: watchlistWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WatchlistScalarFieldEnum | WatchlistScalarFieldEnum[]
+  }
+
+  /**
+   * profiles.price_alerts
+   */
+  export type profiles$price_alertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    where?: price_alertsWhereInput
+    orderBy?: price_alertsOrderByWithRelationInput | price_alertsOrderByWithRelationInput[]
+    cursor?: price_alertsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Price_alertsScalarFieldEnum | Price_alertsScalarFieldEnum[]
   }
 
   /**
@@ -36446,6 +36702,2268 @@ export namespace Prisma {
 
 
   /**
+   * Model watchlist
+   */
+
+  export type AggregateWatchlist = {
+    _count: WatchlistCountAggregateOutputType | null
+    _min: WatchlistMinAggregateOutputType | null
+    _max: WatchlistMaxAggregateOutputType | null
+  }
+
+  export type WatchlistMinAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    symbol: string | null
+    created_at: Date | null
+  }
+
+  export type WatchlistMaxAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    symbol: string | null
+    created_at: Date | null
+  }
+
+  export type WatchlistCountAggregateOutputType = {
+    id: number
+    user_id: number
+    symbol: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type WatchlistMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    created_at?: true
+  }
+
+  export type WatchlistMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    created_at?: true
+  }
+
+  export type WatchlistCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type WatchlistAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which watchlist to aggregate.
+     */
+    where?: watchlistWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of watchlists to fetch.
+     */
+    orderBy?: watchlistOrderByWithRelationInput | watchlistOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: watchlistWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` watchlists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` watchlists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned watchlists
+    **/
+    _count?: true | WatchlistCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WatchlistMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WatchlistMaxAggregateInputType
+  }
+
+  export type GetWatchlistAggregateType<T extends WatchlistAggregateArgs> = {
+        [P in keyof T & keyof AggregateWatchlist]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWatchlist[P]>
+      : GetScalarType<T[P], AggregateWatchlist[P]>
+  }
+
+
+
+
+  export type watchlistGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: watchlistWhereInput
+    orderBy?: watchlistOrderByWithAggregationInput | watchlistOrderByWithAggregationInput[]
+    by: WatchlistScalarFieldEnum[] | WatchlistScalarFieldEnum
+    having?: watchlistScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WatchlistCountAggregateInputType | true
+    _min?: WatchlistMinAggregateInputType
+    _max?: WatchlistMaxAggregateInputType
+  }
+
+  export type WatchlistGroupByOutputType = {
+    id: string
+    user_id: string | null
+    symbol: string
+    created_at: Date | null
+    _count: WatchlistCountAggregateOutputType | null
+    _min: WatchlistMinAggregateOutputType | null
+    _max: WatchlistMaxAggregateOutputType | null
+  }
+
+  type GetWatchlistGroupByPayload<T extends watchlistGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WatchlistGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WatchlistGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WatchlistGroupByOutputType[P]>
+            : GetScalarType<T[P], WatchlistGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type watchlistSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    created_at?: boolean
+    profiles?: boolean | watchlist$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["watchlist"]>
+
+  export type watchlistSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    created_at?: boolean
+    profiles?: boolean | watchlist$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["watchlist"]>
+
+  export type watchlistSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    created_at?: boolean
+    profiles?: boolean | watchlist$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["watchlist"]>
+
+  export type watchlistSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    created_at?: boolean
+  }
+
+  export type watchlistOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "symbol" | "created_at", ExtArgs["result"]["watchlist"]>
+  export type watchlistInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profiles?: boolean | watchlist$profilesArgs<ExtArgs>
+  }
+  export type watchlistIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profiles?: boolean | watchlist$profilesArgs<ExtArgs>
+  }
+  export type watchlistIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profiles?: boolean | watchlist$profilesArgs<ExtArgs>
+  }
+
+  export type $watchlistPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "watchlist"
+    objects: {
+      profiles: Prisma.$profilesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      user_id: string | null
+      symbol: string
+      created_at: Date | null
+    }, ExtArgs["result"]["watchlist"]>
+    composites: {}
+  }
+
+  type watchlistGetPayload<S extends boolean | null | undefined | watchlistDefaultArgs> = $Result.GetResult<Prisma.$watchlistPayload, S>
+
+  type watchlistCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<watchlistFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WatchlistCountAggregateInputType | true
+    }
+
+  export interface watchlistDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['watchlist'], meta: { name: 'watchlist' } }
+    /**
+     * Find zero or one Watchlist that matches the filter.
+     * @param {watchlistFindUniqueArgs} args - Arguments to find a Watchlist
+     * @example
+     * // Get one Watchlist
+     * const watchlist = await prisma.watchlist.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends watchlistFindUniqueArgs>(args: SelectSubset<T, watchlistFindUniqueArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Watchlist that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {watchlistFindUniqueOrThrowArgs} args - Arguments to find a Watchlist
+     * @example
+     * // Get one Watchlist
+     * const watchlist = await prisma.watchlist.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends watchlistFindUniqueOrThrowArgs>(args: SelectSubset<T, watchlistFindUniqueOrThrowArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Watchlist that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {watchlistFindFirstArgs} args - Arguments to find a Watchlist
+     * @example
+     * // Get one Watchlist
+     * const watchlist = await prisma.watchlist.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends watchlistFindFirstArgs>(args?: SelectSubset<T, watchlistFindFirstArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Watchlist that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {watchlistFindFirstOrThrowArgs} args - Arguments to find a Watchlist
+     * @example
+     * // Get one Watchlist
+     * const watchlist = await prisma.watchlist.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends watchlistFindFirstOrThrowArgs>(args?: SelectSubset<T, watchlistFindFirstOrThrowArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Watchlists that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {watchlistFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Watchlists
+     * const watchlists = await prisma.watchlist.findMany()
+     * 
+     * // Get first 10 Watchlists
+     * const watchlists = await prisma.watchlist.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const watchlistWithIdOnly = await prisma.watchlist.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends watchlistFindManyArgs>(args?: SelectSubset<T, watchlistFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Watchlist.
+     * @param {watchlistCreateArgs} args - Arguments to create a Watchlist.
+     * @example
+     * // Create one Watchlist
+     * const Watchlist = await prisma.watchlist.create({
+     *   data: {
+     *     // ... data to create a Watchlist
+     *   }
+     * })
+     * 
+     */
+    create<T extends watchlistCreateArgs>(args: SelectSubset<T, watchlistCreateArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Watchlists.
+     * @param {watchlistCreateManyArgs} args - Arguments to create many Watchlists.
+     * @example
+     * // Create many Watchlists
+     * const watchlist = await prisma.watchlist.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends watchlistCreateManyArgs>(args?: SelectSubset<T, watchlistCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Watchlists and returns the data saved in the database.
+     * @param {watchlistCreateManyAndReturnArgs} args - Arguments to create many Watchlists.
+     * @example
+     * // Create many Watchlists
+     * const watchlist = await prisma.watchlist.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Watchlists and only return the `id`
+     * const watchlistWithIdOnly = await prisma.watchlist.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends watchlistCreateManyAndReturnArgs>(args?: SelectSubset<T, watchlistCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Watchlist.
+     * @param {watchlistDeleteArgs} args - Arguments to delete one Watchlist.
+     * @example
+     * // Delete one Watchlist
+     * const Watchlist = await prisma.watchlist.delete({
+     *   where: {
+     *     // ... filter to delete one Watchlist
+     *   }
+     * })
+     * 
+     */
+    delete<T extends watchlistDeleteArgs>(args: SelectSubset<T, watchlistDeleteArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Watchlist.
+     * @param {watchlistUpdateArgs} args - Arguments to update one Watchlist.
+     * @example
+     * // Update one Watchlist
+     * const watchlist = await prisma.watchlist.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends watchlistUpdateArgs>(args: SelectSubset<T, watchlistUpdateArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Watchlists.
+     * @param {watchlistDeleteManyArgs} args - Arguments to filter Watchlists to delete.
+     * @example
+     * // Delete a few Watchlists
+     * const { count } = await prisma.watchlist.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends watchlistDeleteManyArgs>(args?: SelectSubset<T, watchlistDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Watchlists.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {watchlistUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Watchlists
+     * const watchlist = await prisma.watchlist.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends watchlistUpdateManyArgs>(args: SelectSubset<T, watchlistUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Watchlists and returns the data updated in the database.
+     * @param {watchlistUpdateManyAndReturnArgs} args - Arguments to update many Watchlists.
+     * @example
+     * // Update many Watchlists
+     * const watchlist = await prisma.watchlist.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Watchlists and only return the `id`
+     * const watchlistWithIdOnly = await prisma.watchlist.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends watchlistUpdateManyAndReturnArgs>(args: SelectSubset<T, watchlistUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Watchlist.
+     * @param {watchlistUpsertArgs} args - Arguments to update or create a Watchlist.
+     * @example
+     * // Update or create a Watchlist
+     * const watchlist = await prisma.watchlist.upsert({
+     *   create: {
+     *     // ... data to create a Watchlist
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Watchlist we want to update
+     *   }
+     * })
+     */
+    upsert<T extends watchlistUpsertArgs>(args: SelectSubset<T, watchlistUpsertArgs<ExtArgs>>): Prisma__watchlistClient<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Watchlists.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {watchlistCountArgs} args - Arguments to filter Watchlists to count.
+     * @example
+     * // Count the number of Watchlists
+     * const count = await prisma.watchlist.count({
+     *   where: {
+     *     // ... the filter for the Watchlists we want to count
+     *   }
+     * })
+    **/
+    count<T extends watchlistCountArgs>(
+      args?: Subset<T, watchlistCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WatchlistCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Watchlist.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WatchlistAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WatchlistAggregateArgs>(args: Subset<T, WatchlistAggregateArgs>): Prisma.PrismaPromise<GetWatchlistAggregateType<T>>
+
+    /**
+     * Group by Watchlist.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {watchlistGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends watchlistGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: watchlistGroupByArgs['orderBy'] }
+        : { orderBy?: watchlistGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, watchlistGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWatchlistGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the watchlist model
+   */
+  readonly fields: watchlistFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for watchlist.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__watchlistClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    profiles<T extends watchlist$profilesArgs<ExtArgs> = {}>(args?: Subset<T, watchlist$profilesArgs<ExtArgs>>): Prisma__profilesClient<$Result.GetResult<Prisma.$profilesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the watchlist model
+   */
+  interface watchlistFieldRefs {
+    readonly id: FieldRef<"watchlist", 'String'>
+    readonly user_id: FieldRef<"watchlist", 'String'>
+    readonly symbol: FieldRef<"watchlist", 'String'>
+    readonly created_at: FieldRef<"watchlist", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * watchlist findUnique
+   */
+  export type watchlistFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * Filter, which watchlist to fetch.
+     */
+    where: watchlistWhereUniqueInput
+  }
+
+  /**
+   * watchlist findUniqueOrThrow
+   */
+  export type watchlistFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * Filter, which watchlist to fetch.
+     */
+    where: watchlistWhereUniqueInput
+  }
+
+  /**
+   * watchlist findFirst
+   */
+  export type watchlistFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * Filter, which watchlist to fetch.
+     */
+    where?: watchlistWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of watchlists to fetch.
+     */
+    orderBy?: watchlistOrderByWithRelationInput | watchlistOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for watchlists.
+     */
+    cursor?: watchlistWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` watchlists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` watchlists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of watchlists.
+     */
+    distinct?: WatchlistScalarFieldEnum | WatchlistScalarFieldEnum[]
+  }
+
+  /**
+   * watchlist findFirstOrThrow
+   */
+  export type watchlistFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * Filter, which watchlist to fetch.
+     */
+    where?: watchlistWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of watchlists to fetch.
+     */
+    orderBy?: watchlistOrderByWithRelationInput | watchlistOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for watchlists.
+     */
+    cursor?: watchlistWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` watchlists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` watchlists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of watchlists.
+     */
+    distinct?: WatchlistScalarFieldEnum | WatchlistScalarFieldEnum[]
+  }
+
+  /**
+   * watchlist findMany
+   */
+  export type watchlistFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * Filter, which watchlists to fetch.
+     */
+    where?: watchlistWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of watchlists to fetch.
+     */
+    orderBy?: watchlistOrderByWithRelationInput | watchlistOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing watchlists.
+     */
+    cursor?: watchlistWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` watchlists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` watchlists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of watchlists.
+     */
+    distinct?: WatchlistScalarFieldEnum | WatchlistScalarFieldEnum[]
+  }
+
+  /**
+   * watchlist create
+   */
+  export type watchlistCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * The data needed to create a watchlist.
+     */
+    data: XOR<watchlistCreateInput, watchlistUncheckedCreateInput>
+  }
+
+  /**
+   * watchlist createMany
+   */
+  export type watchlistCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many watchlists.
+     */
+    data: watchlistCreateManyInput | watchlistCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * watchlist createManyAndReturn
+   */
+  export type watchlistCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * The data used to create many watchlists.
+     */
+    data: watchlistCreateManyInput | watchlistCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * watchlist update
+   */
+  export type watchlistUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * The data needed to update a watchlist.
+     */
+    data: XOR<watchlistUpdateInput, watchlistUncheckedUpdateInput>
+    /**
+     * Choose, which watchlist to update.
+     */
+    where: watchlistWhereUniqueInput
+  }
+
+  /**
+   * watchlist updateMany
+   */
+  export type watchlistUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update watchlists.
+     */
+    data: XOR<watchlistUpdateManyMutationInput, watchlistUncheckedUpdateManyInput>
+    /**
+     * Filter which watchlists to update
+     */
+    where?: watchlistWhereInput
+    /**
+     * Limit how many watchlists to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * watchlist updateManyAndReturn
+   */
+  export type watchlistUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * The data used to update watchlists.
+     */
+    data: XOR<watchlistUpdateManyMutationInput, watchlistUncheckedUpdateManyInput>
+    /**
+     * Filter which watchlists to update
+     */
+    where?: watchlistWhereInput
+    /**
+     * Limit how many watchlists to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * watchlist upsert
+   */
+  export type watchlistUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * The filter to search for the watchlist to update in case it exists.
+     */
+    where: watchlistWhereUniqueInput
+    /**
+     * In case the watchlist found by the `where` argument doesn't exist, create a new watchlist with this data.
+     */
+    create: XOR<watchlistCreateInput, watchlistUncheckedCreateInput>
+    /**
+     * In case the watchlist was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<watchlistUpdateInput, watchlistUncheckedUpdateInput>
+  }
+
+  /**
+   * watchlist delete
+   */
+  export type watchlistDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+    /**
+     * Filter which watchlist to delete.
+     */
+    where: watchlistWhereUniqueInput
+  }
+
+  /**
+   * watchlist deleteMany
+   */
+  export type watchlistDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which watchlists to delete
+     */
+    where?: watchlistWhereInput
+    /**
+     * Limit how many watchlists to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * watchlist.profiles
+   */
+  export type watchlist$profilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the profiles
+     */
+    select?: profilesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the profiles
+     */
+    omit?: profilesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: profilesInclude<ExtArgs> | null
+    where?: profilesWhereInput
+  }
+
+  /**
+   * watchlist without action
+   */
+  export type watchlistDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the watchlist
+     */
+    select?: watchlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the watchlist
+     */
+    omit?: watchlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: watchlistInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model price_alerts
+   */
+
+  export type AggregatePrice_alerts = {
+    _count: Price_alertsCountAggregateOutputType | null
+    _avg: Price_alertsAvgAggregateOutputType | null
+    _sum: Price_alertsSumAggregateOutputType | null
+    _min: Price_alertsMinAggregateOutputType | null
+    _max: Price_alertsMaxAggregateOutputType | null
+  }
+
+  export type Price_alertsAvgAggregateOutputType = {
+    buy_min_price: Decimal | null
+    buy_max_price: Decimal | null
+    sell_min_price: Decimal | null
+    sell_max_price: Decimal | null
+  }
+
+  export type Price_alertsSumAggregateOutputType = {
+    buy_min_price: Decimal | null
+    buy_max_price: Decimal | null
+    sell_min_price: Decimal | null
+    sell_max_price: Decimal | null
+  }
+
+  export type Price_alertsMinAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    symbol: string | null
+    buy_min_price: Decimal | null
+    buy_max_price: Decimal | null
+    sell_min_price: Decimal | null
+    sell_max_price: Decimal | null
+    is_buy_triggered: boolean | null
+    is_sell_triggered: boolean | null
+    created_at: Date | null
+  }
+
+  export type Price_alertsMaxAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    symbol: string | null
+    buy_min_price: Decimal | null
+    buy_max_price: Decimal | null
+    sell_min_price: Decimal | null
+    sell_max_price: Decimal | null
+    is_buy_triggered: boolean | null
+    is_sell_triggered: boolean | null
+    created_at: Date | null
+  }
+
+  export type Price_alertsCountAggregateOutputType = {
+    id: number
+    user_id: number
+    symbol: number
+    buy_min_price: number
+    buy_max_price: number
+    sell_min_price: number
+    sell_max_price: number
+    is_buy_triggered: number
+    is_sell_triggered: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type Price_alertsAvgAggregateInputType = {
+    buy_min_price?: true
+    buy_max_price?: true
+    sell_min_price?: true
+    sell_max_price?: true
+  }
+
+  export type Price_alertsSumAggregateInputType = {
+    buy_min_price?: true
+    buy_max_price?: true
+    sell_min_price?: true
+    sell_max_price?: true
+  }
+
+  export type Price_alertsMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    buy_min_price?: true
+    buy_max_price?: true
+    sell_min_price?: true
+    sell_max_price?: true
+    is_buy_triggered?: true
+    is_sell_triggered?: true
+    created_at?: true
+  }
+
+  export type Price_alertsMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    buy_min_price?: true
+    buy_max_price?: true
+    sell_min_price?: true
+    sell_max_price?: true
+    is_buy_triggered?: true
+    is_sell_triggered?: true
+    created_at?: true
+  }
+
+  export type Price_alertsCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    buy_min_price?: true
+    buy_max_price?: true
+    sell_min_price?: true
+    sell_max_price?: true
+    is_buy_triggered?: true
+    is_sell_triggered?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type Price_alertsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which price_alerts to aggregate.
+     */
+    where?: price_alertsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of price_alerts to fetch.
+     */
+    orderBy?: price_alertsOrderByWithRelationInput | price_alertsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: price_alertsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` price_alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` price_alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned price_alerts
+    **/
+    _count?: true | Price_alertsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Price_alertsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Price_alertsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Price_alertsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Price_alertsMaxAggregateInputType
+  }
+
+  export type GetPrice_alertsAggregateType<T extends Price_alertsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePrice_alerts]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePrice_alerts[P]>
+      : GetScalarType<T[P], AggregatePrice_alerts[P]>
+  }
+
+
+
+
+  export type price_alertsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: price_alertsWhereInput
+    orderBy?: price_alertsOrderByWithAggregationInput | price_alertsOrderByWithAggregationInput[]
+    by: Price_alertsScalarFieldEnum[] | Price_alertsScalarFieldEnum
+    having?: price_alertsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Price_alertsCountAggregateInputType | true
+    _avg?: Price_alertsAvgAggregateInputType
+    _sum?: Price_alertsSumAggregateInputType
+    _min?: Price_alertsMinAggregateInputType
+    _max?: Price_alertsMaxAggregateInputType
+  }
+
+  export type Price_alertsGroupByOutputType = {
+    id: string
+    user_id: string | null
+    symbol: string
+    buy_min_price: Decimal | null
+    buy_max_price: Decimal | null
+    sell_min_price: Decimal | null
+    sell_max_price: Decimal | null
+    is_buy_triggered: boolean
+    is_sell_triggered: boolean
+    created_at: Date | null
+    _count: Price_alertsCountAggregateOutputType | null
+    _avg: Price_alertsAvgAggregateOutputType | null
+    _sum: Price_alertsSumAggregateOutputType | null
+    _min: Price_alertsMinAggregateOutputType | null
+    _max: Price_alertsMaxAggregateOutputType | null
+  }
+
+  type GetPrice_alertsGroupByPayload<T extends price_alertsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Price_alertsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Price_alertsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Price_alertsGroupByOutputType[P]>
+            : GetScalarType<T[P], Price_alertsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type price_alertsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    buy_min_price?: boolean
+    buy_max_price?: boolean
+    sell_min_price?: boolean
+    sell_max_price?: boolean
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: boolean
+    profiles?: boolean | price_alerts$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["price_alerts"]>
+
+  export type price_alertsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    buy_min_price?: boolean
+    buy_max_price?: boolean
+    sell_min_price?: boolean
+    sell_max_price?: boolean
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: boolean
+    profiles?: boolean | price_alerts$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["price_alerts"]>
+
+  export type price_alertsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    buy_min_price?: boolean
+    buy_max_price?: boolean
+    sell_min_price?: boolean
+    sell_max_price?: boolean
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: boolean
+    profiles?: boolean | price_alerts$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["price_alerts"]>
+
+  export type price_alertsSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    buy_min_price?: boolean
+    buy_max_price?: boolean
+    sell_min_price?: boolean
+    sell_max_price?: boolean
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: boolean
+  }
+
+  export type price_alertsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "symbol" | "buy_min_price" | "buy_max_price" | "sell_min_price" | "sell_max_price" | "is_buy_triggered" | "is_sell_triggered" | "created_at", ExtArgs["result"]["price_alerts"]>
+  export type price_alertsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profiles?: boolean | price_alerts$profilesArgs<ExtArgs>
+  }
+  export type price_alertsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profiles?: boolean | price_alerts$profilesArgs<ExtArgs>
+  }
+  export type price_alertsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    profiles?: boolean | price_alerts$profilesArgs<ExtArgs>
+  }
+
+  export type $price_alertsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "price_alerts"
+    objects: {
+      profiles: Prisma.$profilesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      user_id: string | null
+      symbol: string
+      buy_min_price: Prisma.Decimal | null
+      buy_max_price: Prisma.Decimal | null
+      sell_min_price: Prisma.Decimal | null
+      sell_max_price: Prisma.Decimal | null
+      is_buy_triggered: boolean
+      is_sell_triggered: boolean
+      created_at: Date | null
+    }, ExtArgs["result"]["price_alerts"]>
+    composites: {}
+  }
+
+  type price_alertsGetPayload<S extends boolean | null | undefined | price_alertsDefaultArgs> = $Result.GetResult<Prisma.$price_alertsPayload, S>
+
+  type price_alertsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<price_alertsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Price_alertsCountAggregateInputType | true
+    }
+
+  export interface price_alertsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['price_alerts'], meta: { name: 'price_alerts' } }
+    /**
+     * Find zero or one Price_alerts that matches the filter.
+     * @param {price_alertsFindUniqueArgs} args - Arguments to find a Price_alerts
+     * @example
+     * // Get one Price_alerts
+     * const price_alerts = await prisma.price_alerts.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends price_alertsFindUniqueArgs>(args: SelectSubset<T, price_alertsFindUniqueArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Price_alerts that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {price_alertsFindUniqueOrThrowArgs} args - Arguments to find a Price_alerts
+     * @example
+     * // Get one Price_alerts
+     * const price_alerts = await prisma.price_alerts.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends price_alertsFindUniqueOrThrowArgs>(args: SelectSubset<T, price_alertsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Price_alerts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {price_alertsFindFirstArgs} args - Arguments to find a Price_alerts
+     * @example
+     * // Get one Price_alerts
+     * const price_alerts = await prisma.price_alerts.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends price_alertsFindFirstArgs>(args?: SelectSubset<T, price_alertsFindFirstArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Price_alerts that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {price_alertsFindFirstOrThrowArgs} args - Arguments to find a Price_alerts
+     * @example
+     * // Get one Price_alerts
+     * const price_alerts = await prisma.price_alerts.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends price_alertsFindFirstOrThrowArgs>(args?: SelectSubset<T, price_alertsFindFirstOrThrowArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Price_alerts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {price_alertsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Price_alerts
+     * const price_alerts = await prisma.price_alerts.findMany()
+     * 
+     * // Get first 10 Price_alerts
+     * const price_alerts = await prisma.price_alerts.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const price_alertsWithIdOnly = await prisma.price_alerts.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends price_alertsFindManyArgs>(args?: SelectSubset<T, price_alertsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Price_alerts.
+     * @param {price_alertsCreateArgs} args - Arguments to create a Price_alerts.
+     * @example
+     * // Create one Price_alerts
+     * const Price_alerts = await prisma.price_alerts.create({
+     *   data: {
+     *     // ... data to create a Price_alerts
+     *   }
+     * })
+     * 
+     */
+    create<T extends price_alertsCreateArgs>(args: SelectSubset<T, price_alertsCreateArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Price_alerts.
+     * @param {price_alertsCreateManyArgs} args - Arguments to create many Price_alerts.
+     * @example
+     * // Create many Price_alerts
+     * const price_alerts = await prisma.price_alerts.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends price_alertsCreateManyArgs>(args?: SelectSubset<T, price_alertsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Price_alerts and returns the data saved in the database.
+     * @param {price_alertsCreateManyAndReturnArgs} args - Arguments to create many Price_alerts.
+     * @example
+     * // Create many Price_alerts
+     * const price_alerts = await prisma.price_alerts.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Price_alerts and only return the `id`
+     * const price_alertsWithIdOnly = await prisma.price_alerts.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends price_alertsCreateManyAndReturnArgs>(args?: SelectSubset<T, price_alertsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Price_alerts.
+     * @param {price_alertsDeleteArgs} args - Arguments to delete one Price_alerts.
+     * @example
+     * // Delete one Price_alerts
+     * const Price_alerts = await prisma.price_alerts.delete({
+     *   where: {
+     *     // ... filter to delete one Price_alerts
+     *   }
+     * })
+     * 
+     */
+    delete<T extends price_alertsDeleteArgs>(args: SelectSubset<T, price_alertsDeleteArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Price_alerts.
+     * @param {price_alertsUpdateArgs} args - Arguments to update one Price_alerts.
+     * @example
+     * // Update one Price_alerts
+     * const price_alerts = await prisma.price_alerts.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends price_alertsUpdateArgs>(args: SelectSubset<T, price_alertsUpdateArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Price_alerts.
+     * @param {price_alertsDeleteManyArgs} args - Arguments to filter Price_alerts to delete.
+     * @example
+     * // Delete a few Price_alerts
+     * const { count } = await prisma.price_alerts.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends price_alertsDeleteManyArgs>(args?: SelectSubset<T, price_alertsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Price_alerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {price_alertsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Price_alerts
+     * const price_alerts = await prisma.price_alerts.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends price_alertsUpdateManyArgs>(args: SelectSubset<T, price_alertsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Price_alerts and returns the data updated in the database.
+     * @param {price_alertsUpdateManyAndReturnArgs} args - Arguments to update many Price_alerts.
+     * @example
+     * // Update many Price_alerts
+     * const price_alerts = await prisma.price_alerts.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Price_alerts and only return the `id`
+     * const price_alertsWithIdOnly = await prisma.price_alerts.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends price_alertsUpdateManyAndReturnArgs>(args: SelectSubset<T, price_alertsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Price_alerts.
+     * @param {price_alertsUpsertArgs} args - Arguments to update or create a Price_alerts.
+     * @example
+     * // Update or create a Price_alerts
+     * const price_alerts = await prisma.price_alerts.upsert({
+     *   create: {
+     *     // ... data to create a Price_alerts
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Price_alerts we want to update
+     *   }
+     * })
+     */
+    upsert<T extends price_alertsUpsertArgs>(args: SelectSubset<T, price_alertsUpsertArgs<ExtArgs>>): Prisma__price_alertsClient<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Price_alerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {price_alertsCountArgs} args - Arguments to filter Price_alerts to count.
+     * @example
+     * // Count the number of Price_alerts
+     * const count = await prisma.price_alerts.count({
+     *   where: {
+     *     // ... the filter for the Price_alerts we want to count
+     *   }
+     * })
+    **/
+    count<T extends price_alertsCountArgs>(
+      args?: Subset<T, price_alertsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Price_alertsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Price_alerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Price_alertsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Price_alertsAggregateArgs>(args: Subset<T, Price_alertsAggregateArgs>): Prisma.PrismaPromise<GetPrice_alertsAggregateType<T>>
+
+    /**
+     * Group by Price_alerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {price_alertsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends price_alertsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: price_alertsGroupByArgs['orderBy'] }
+        : { orderBy?: price_alertsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, price_alertsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPrice_alertsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the price_alerts model
+   */
+  readonly fields: price_alertsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for price_alerts.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__price_alertsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    profiles<T extends price_alerts$profilesArgs<ExtArgs> = {}>(args?: Subset<T, price_alerts$profilesArgs<ExtArgs>>): Prisma__profilesClient<$Result.GetResult<Prisma.$profilesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the price_alerts model
+   */
+  interface price_alertsFieldRefs {
+    readonly id: FieldRef<"price_alerts", 'String'>
+    readonly user_id: FieldRef<"price_alerts", 'String'>
+    readonly symbol: FieldRef<"price_alerts", 'String'>
+    readonly buy_min_price: FieldRef<"price_alerts", 'Decimal'>
+    readonly buy_max_price: FieldRef<"price_alerts", 'Decimal'>
+    readonly sell_min_price: FieldRef<"price_alerts", 'Decimal'>
+    readonly sell_max_price: FieldRef<"price_alerts", 'Decimal'>
+    readonly is_buy_triggered: FieldRef<"price_alerts", 'Boolean'>
+    readonly is_sell_triggered: FieldRef<"price_alerts", 'Boolean'>
+    readonly created_at: FieldRef<"price_alerts", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * price_alerts findUnique
+   */
+  export type price_alertsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * Filter, which price_alerts to fetch.
+     */
+    where: price_alertsWhereUniqueInput
+  }
+
+  /**
+   * price_alerts findUniqueOrThrow
+   */
+  export type price_alertsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * Filter, which price_alerts to fetch.
+     */
+    where: price_alertsWhereUniqueInput
+  }
+
+  /**
+   * price_alerts findFirst
+   */
+  export type price_alertsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * Filter, which price_alerts to fetch.
+     */
+    where?: price_alertsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of price_alerts to fetch.
+     */
+    orderBy?: price_alertsOrderByWithRelationInput | price_alertsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for price_alerts.
+     */
+    cursor?: price_alertsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` price_alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` price_alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of price_alerts.
+     */
+    distinct?: Price_alertsScalarFieldEnum | Price_alertsScalarFieldEnum[]
+  }
+
+  /**
+   * price_alerts findFirstOrThrow
+   */
+  export type price_alertsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * Filter, which price_alerts to fetch.
+     */
+    where?: price_alertsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of price_alerts to fetch.
+     */
+    orderBy?: price_alertsOrderByWithRelationInput | price_alertsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for price_alerts.
+     */
+    cursor?: price_alertsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` price_alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` price_alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of price_alerts.
+     */
+    distinct?: Price_alertsScalarFieldEnum | Price_alertsScalarFieldEnum[]
+  }
+
+  /**
+   * price_alerts findMany
+   */
+  export type price_alertsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * Filter, which price_alerts to fetch.
+     */
+    where?: price_alertsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of price_alerts to fetch.
+     */
+    orderBy?: price_alertsOrderByWithRelationInput | price_alertsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing price_alerts.
+     */
+    cursor?: price_alertsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` price_alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` price_alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of price_alerts.
+     */
+    distinct?: Price_alertsScalarFieldEnum | Price_alertsScalarFieldEnum[]
+  }
+
+  /**
+   * price_alerts create
+   */
+  export type price_alertsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a price_alerts.
+     */
+    data: XOR<price_alertsCreateInput, price_alertsUncheckedCreateInput>
+  }
+
+  /**
+   * price_alerts createMany
+   */
+  export type price_alertsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many price_alerts.
+     */
+    data: price_alertsCreateManyInput | price_alertsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * price_alerts createManyAndReturn
+   */
+  export type price_alertsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * The data used to create many price_alerts.
+     */
+    data: price_alertsCreateManyInput | price_alertsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * price_alerts update
+   */
+  export type price_alertsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a price_alerts.
+     */
+    data: XOR<price_alertsUpdateInput, price_alertsUncheckedUpdateInput>
+    /**
+     * Choose, which price_alerts to update.
+     */
+    where: price_alertsWhereUniqueInput
+  }
+
+  /**
+   * price_alerts updateMany
+   */
+  export type price_alertsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update price_alerts.
+     */
+    data: XOR<price_alertsUpdateManyMutationInput, price_alertsUncheckedUpdateManyInput>
+    /**
+     * Filter which price_alerts to update
+     */
+    where?: price_alertsWhereInput
+    /**
+     * Limit how many price_alerts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * price_alerts updateManyAndReturn
+   */
+  export type price_alertsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * The data used to update price_alerts.
+     */
+    data: XOR<price_alertsUpdateManyMutationInput, price_alertsUncheckedUpdateManyInput>
+    /**
+     * Filter which price_alerts to update
+     */
+    where?: price_alertsWhereInput
+    /**
+     * Limit how many price_alerts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * price_alerts upsert
+   */
+  export type price_alertsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the price_alerts to update in case it exists.
+     */
+    where: price_alertsWhereUniqueInput
+    /**
+     * In case the price_alerts found by the `where` argument doesn't exist, create a new price_alerts with this data.
+     */
+    create: XOR<price_alertsCreateInput, price_alertsUncheckedCreateInput>
+    /**
+     * In case the price_alerts was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<price_alertsUpdateInput, price_alertsUncheckedUpdateInput>
+  }
+
+  /**
+   * price_alerts delete
+   */
+  export type price_alertsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+    /**
+     * Filter which price_alerts to delete.
+     */
+    where: price_alertsWhereUniqueInput
+  }
+
+  /**
+   * price_alerts deleteMany
+   */
+  export type price_alertsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which price_alerts to delete
+     */
+    where?: price_alertsWhereInput
+    /**
+     * Limit how many price_alerts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * price_alerts.profiles
+   */
+  export type price_alerts$profilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the profiles
+     */
+    select?: profilesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the profiles
+     */
+    omit?: profilesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: profilesInclude<ExtArgs> | null
+    where?: profilesWhereInput
+  }
+
+  /**
+   * price_alerts without action
+   */
+  export type price_alertsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the price_alerts
+     */
+    select?: price_alertsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the price_alerts
+     */
+    omit?: price_alertsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: price_alertsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -36915,6 +39433,32 @@ export namespace Prisma {
   };
 
   export type TransactionsScalarFieldEnum = (typeof TransactionsScalarFieldEnum)[keyof typeof TransactionsScalarFieldEnum]
+
+
+  export const WatchlistScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    symbol: 'symbol',
+    created_at: 'created_at'
+  };
+
+  export type WatchlistScalarFieldEnum = (typeof WatchlistScalarFieldEnum)[keyof typeof WatchlistScalarFieldEnum]
+
+
+  export const Price_alertsScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    symbol: 'symbol',
+    buy_min_price: 'buy_min_price',
+    buy_max_price: 'buy_max_price',
+    sell_min_price: 'sell_min_price',
+    sell_max_price: 'sell_max_price',
+    is_buy_triggered: 'is_buy_triggered',
+    is_sell_triggered: 'is_sell_triggered',
+    created_at: 'created_at'
+  };
+
+  export type Price_alertsScalarFieldEnum = (typeof Price_alertsScalarFieldEnum)[keyof typeof Price_alertsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -39385,6 +41929,8 @@ export namespace Prisma {
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     stocks?: StocksListRelationFilter
     transactions?: TransactionsListRelationFilter
+    watchlist?: WatchlistListRelationFilter
+    price_alerts?: Price_alertsListRelationFilter
   }
 
   export type profilesOrderByWithRelationInput = {
@@ -39400,6 +41946,8 @@ export namespace Prisma {
     users?: usersOrderByWithRelationInput
     stocks?: stocksOrderByRelationAggregateInput
     transactions?: transactionsOrderByRelationAggregateInput
+    watchlist?: watchlistOrderByRelationAggregateInput
+    price_alerts?: price_alertsOrderByRelationAggregateInput
   }
 
   export type profilesWhereUniqueInput = Prisma.AtLeast<{
@@ -39418,6 +41966,8 @@ export namespace Prisma {
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     stocks?: StocksListRelationFilter
     transactions?: TransactionsListRelationFilter
+    watchlist?: WatchlistListRelationFilter
+    price_alerts?: Price_alertsListRelationFilter
   }, "id">
 
   export type profilesOrderByWithAggregationInput = {
@@ -39622,6 +42172,140 @@ export namespace Prisma {
     brokerage_fee?: DecimalNullableWithAggregatesFilter<"transactions"> | Decimal | DecimalJsLike | number | string | null
     note?: StringNullableWithAggregatesFilter<"transactions"> | string | null
     created_at?: DateTimeNullableWithAggregatesFilter<"transactions"> | Date | string | null
+  }
+
+  export type watchlistWhereInput = {
+    AND?: watchlistWhereInput | watchlistWhereInput[]
+    OR?: watchlistWhereInput[]
+    NOT?: watchlistWhereInput | watchlistWhereInput[]
+    id?: UuidFilter<"watchlist"> | string
+    user_id?: UuidNullableFilter<"watchlist"> | string | null
+    symbol?: StringFilter<"watchlist"> | string
+    created_at?: DateTimeNullableFilter<"watchlist"> | Date | string | null
+    profiles?: XOR<ProfilesNullableScalarRelationFilter, profilesWhereInput> | null
+  }
+
+  export type watchlistOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    symbol?: SortOrder
+    created_at?: SortOrderInput | SortOrder
+    profiles?: profilesOrderByWithRelationInput
+  }
+
+  export type watchlistWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    user_id_symbol?: watchlistUser_idSymbolCompoundUniqueInput
+    AND?: watchlistWhereInput | watchlistWhereInput[]
+    OR?: watchlistWhereInput[]
+    NOT?: watchlistWhereInput | watchlistWhereInput[]
+    user_id?: UuidNullableFilter<"watchlist"> | string | null
+    symbol?: StringFilter<"watchlist"> | string
+    created_at?: DateTimeNullableFilter<"watchlist"> | Date | string | null
+    profiles?: XOR<ProfilesNullableScalarRelationFilter, profilesWhereInput> | null
+  }, "id" | "user_id_symbol">
+
+  export type watchlistOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    symbol?: SortOrder
+    created_at?: SortOrderInput | SortOrder
+    _count?: watchlistCountOrderByAggregateInput
+    _max?: watchlistMaxOrderByAggregateInput
+    _min?: watchlistMinOrderByAggregateInput
+  }
+
+  export type watchlistScalarWhereWithAggregatesInput = {
+    AND?: watchlistScalarWhereWithAggregatesInput | watchlistScalarWhereWithAggregatesInput[]
+    OR?: watchlistScalarWhereWithAggregatesInput[]
+    NOT?: watchlistScalarWhereWithAggregatesInput | watchlistScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"watchlist"> | string
+    user_id?: UuidNullableWithAggregatesFilter<"watchlist"> | string | null
+    symbol?: StringWithAggregatesFilter<"watchlist"> | string
+    created_at?: DateTimeNullableWithAggregatesFilter<"watchlist"> | Date | string | null
+  }
+
+  export type price_alertsWhereInput = {
+    AND?: price_alertsWhereInput | price_alertsWhereInput[]
+    OR?: price_alertsWhereInput[]
+    NOT?: price_alertsWhereInput | price_alertsWhereInput[]
+    id?: UuidFilter<"price_alerts"> | string
+    user_id?: UuidNullableFilter<"price_alerts"> | string | null
+    symbol?: StringFilter<"price_alerts"> | string
+    buy_min_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFilter<"price_alerts"> | boolean
+    is_sell_triggered?: BoolFilter<"price_alerts"> | boolean
+    created_at?: DateTimeNullableFilter<"price_alerts"> | Date | string | null
+    profiles?: XOR<ProfilesNullableScalarRelationFilter, profilesWhereInput> | null
+  }
+
+  export type price_alertsOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    symbol?: SortOrder
+    buy_min_price?: SortOrderInput | SortOrder
+    buy_max_price?: SortOrderInput | SortOrder
+    sell_min_price?: SortOrderInput | SortOrder
+    sell_max_price?: SortOrderInput | SortOrder
+    is_buy_triggered?: SortOrder
+    is_sell_triggered?: SortOrder
+    created_at?: SortOrderInput | SortOrder
+    profiles?: profilesOrderByWithRelationInput
+  }
+
+  export type price_alertsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    user_id_symbol?: price_alertsUser_idSymbolCompoundUniqueInput
+    AND?: price_alertsWhereInput | price_alertsWhereInput[]
+    OR?: price_alertsWhereInput[]
+    NOT?: price_alertsWhereInput | price_alertsWhereInput[]
+    user_id?: UuidNullableFilter<"price_alerts"> | string | null
+    symbol?: StringFilter<"price_alerts"> | string
+    buy_min_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFilter<"price_alerts"> | boolean
+    is_sell_triggered?: BoolFilter<"price_alerts"> | boolean
+    created_at?: DateTimeNullableFilter<"price_alerts"> | Date | string | null
+    profiles?: XOR<ProfilesNullableScalarRelationFilter, profilesWhereInput> | null
+  }, "id" | "user_id_symbol">
+
+  export type price_alertsOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    symbol?: SortOrder
+    buy_min_price?: SortOrderInput | SortOrder
+    buy_max_price?: SortOrderInput | SortOrder
+    sell_min_price?: SortOrderInput | SortOrder
+    sell_max_price?: SortOrderInput | SortOrder
+    is_buy_triggered?: SortOrder
+    is_sell_triggered?: SortOrder
+    created_at?: SortOrderInput | SortOrder
+    _count?: price_alertsCountOrderByAggregateInput
+    _avg?: price_alertsAvgOrderByAggregateInput
+    _max?: price_alertsMaxOrderByAggregateInput
+    _min?: price_alertsMinOrderByAggregateInput
+    _sum?: price_alertsSumOrderByAggregateInput
+  }
+
+  export type price_alertsScalarWhereWithAggregatesInput = {
+    AND?: price_alertsScalarWhereWithAggregatesInput | price_alertsScalarWhereWithAggregatesInput[]
+    OR?: price_alertsScalarWhereWithAggregatesInput[]
+    NOT?: price_alertsScalarWhereWithAggregatesInput | price_alertsScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"price_alerts"> | string
+    user_id?: UuidNullableWithAggregatesFilter<"price_alerts"> | string | null
+    symbol?: StringWithAggregatesFilter<"price_alerts"> | string
+    buy_min_price?: DecimalNullableWithAggregatesFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: DecimalNullableWithAggregatesFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: DecimalNullableWithAggregatesFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: DecimalNullableWithAggregatesFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolWithAggregatesFilter<"price_alerts"> | boolean
+    is_sell_triggered?: BoolWithAggregatesFilter<"price_alerts"> | boolean
+    created_at?: DateTimeNullableWithAggregatesFilter<"price_alerts"> | Date | string | null
   }
 
   export type audit_log_entriesCreateInput = {
@@ -42055,6 +44739,8 @@ export namespace Prisma {
     users: usersCreateNestedOneWithoutProfilesInput
     stocks?: stocksCreateNestedManyWithoutProfilesInput
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateInput = {
@@ -42069,6 +44755,8 @@ export namespace Prisma {
     dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUpdateInput = {
@@ -42083,6 +44771,8 @@ export namespace Prisma {
     users?: usersUpdateOneRequiredWithoutProfilesNestedInput
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateInput = {
@@ -42097,6 +44787,8 @@ export namespace Prisma {
     dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesCreateManyInput = {
@@ -42314,6 +45006,144 @@ export namespace Prisma {
     transaction_date?: DateTimeFieldUpdateOperationsInput | Date | string
     brokerage_fee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type watchlistCreateInput = {
+    id?: string
+    symbol: string
+    created_at?: Date | string | null
+    profiles?: profilesCreateNestedOneWithoutWatchlistInput
+  }
+
+  export type watchlistUncheckedCreateInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    created_at?: Date | string | null
+  }
+
+  export type watchlistUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profiles?: profilesUpdateOneWithoutWatchlistNestedInput
+  }
+
+  export type watchlistUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type watchlistCreateManyInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    created_at?: Date | string | null
+  }
+
+  export type watchlistUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type watchlistUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type price_alertsCreateInput = {
+    id?: string
+    symbol: string
+    buy_min_price?: Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: Date | string | null
+    profiles?: profilesCreateNestedOneWithoutPrice_alertsInput
+  }
+
+  export type price_alertsUncheckedCreateInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    buy_min_price?: Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: Date | string | null
+  }
+
+  export type price_alertsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profiles?: profilesUpdateOneWithoutPrice_alertsNestedInput
+  }
+
+  export type price_alertsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type price_alertsCreateManyInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    buy_min_price?: Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: Date | string | null
+  }
+
+  export type price_alertsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type price_alertsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -44226,11 +47056,31 @@ export namespace Prisma {
     none?: transactionsWhereInput
   }
 
+  export type WatchlistListRelationFilter = {
+    every?: watchlistWhereInput
+    some?: watchlistWhereInput
+    none?: watchlistWhereInput
+  }
+
+  export type Price_alertsListRelationFilter = {
+    every?: price_alertsWhereInput
+    some?: price_alertsWhereInput
+    none?: price_alertsWhereInput
+  }
+
   export type dividendsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type transactionsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type watchlistOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type price_alertsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -44420,6 +47270,90 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type watchlistUser_idSymbolCompoundUniqueInput = {
+    user_id: string
+    symbol: string
+  }
+
+  export type watchlistCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type watchlistMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type watchlistMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type price_alertsUser_idSymbolCompoundUniqueInput = {
+    user_id: string
+    symbol: string
+  }
+
+  export type price_alertsCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    buy_min_price?: SortOrder
+    buy_max_price?: SortOrder
+    sell_min_price?: SortOrder
+    sell_max_price?: SortOrder
+    is_buy_triggered?: SortOrder
+    is_sell_triggered?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type price_alertsAvgOrderByAggregateInput = {
+    buy_min_price?: SortOrder
+    buy_max_price?: SortOrder
+    sell_min_price?: SortOrder
+    sell_max_price?: SortOrder
+  }
+
+  export type price_alertsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    buy_min_price?: SortOrder
+    buy_max_price?: SortOrder
+    sell_min_price?: SortOrder
+    sell_max_price?: SortOrder
+    is_buy_triggered?: SortOrder
+    is_sell_triggered?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type price_alertsMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    buy_min_price?: SortOrder
+    buy_max_price?: SortOrder
+    sell_min_price?: SortOrder
+    sell_max_price?: SortOrder
+    is_buy_triggered?: SortOrder
+    is_sell_triggered?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type price_alertsSumOrderByAggregateInput = {
+    buy_min_price?: SortOrder
+    buy_max_price?: SortOrder
+    sell_min_price?: SortOrder
+    sell_max_price?: SortOrder
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -45708,6 +48642,20 @@ export namespace Prisma {
     connect?: transactionsWhereUniqueInput | transactionsWhereUniqueInput[]
   }
 
+  export type watchlistCreateNestedManyWithoutProfilesInput = {
+    create?: XOR<watchlistCreateWithoutProfilesInput, watchlistUncheckedCreateWithoutProfilesInput> | watchlistCreateWithoutProfilesInput[] | watchlistUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: watchlistCreateOrConnectWithoutProfilesInput | watchlistCreateOrConnectWithoutProfilesInput[]
+    createMany?: watchlistCreateManyProfilesInputEnvelope
+    connect?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+  }
+
+  export type price_alertsCreateNestedManyWithoutProfilesInput = {
+    create?: XOR<price_alertsCreateWithoutProfilesInput, price_alertsUncheckedCreateWithoutProfilesInput> | price_alertsCreateWithoutProfilesInput[] | price_alertsUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: price_alertsCreateOrConnectWithoutProfilesInput | price_alertsCreateOrConnectWithoutProfilesInput[]
+    createMany?: price_alertsCreateManyProfilesInputEnvelope
+    connect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+  }
+
   export type dividendsUncheckedCreateNestedManyWithoutProfilesInput = {
     create?: XOR<dividendsCreateWithoutProfilesInput, dividendsUncheckedCreateWithoutProfilesInput> | dividendsCreateWithoutProfilesInput[] | dividendsUncheckedCreateWithoutProfilesInput[]
     connectOrCreate?: dividendsCreateOrConnectWithoutProfilesInput | dividendsCreateOrConnectWithoutProfilesInput[]
@@ -45727,6 +48675,20 @@ export namespace Prisma {
     connectOrCreate?: transactionsCreateOrConnectWithoutProfilesInput | transactionsCreateOrConnectWithoutProfilesInput[]
     createMany?: transactionsCreateManyProfilesInputEnvelope
     connect?: transactionsWhereUniqueInput | transactionsWhereUniqueInput[]
+  }
+
+  export type watchlistUncheckedCreateNestedManyWithoutProfilesInput = {
+    create?: XOR<watchlistCreateWithoutProfilesInput, watchlistUncheckedCreateWithoutProfilesInput> | watchlistCreateWithoutProfilesInput[] | watchlistUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: watchlistCreateOrConnectWithoutProfilesInput | watchlistCreateOrConnectWithoutProfilesInput[]
+    createMany?: watchlistCreateManyProfilesInputEnvelope
+    connect?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+  }
+
+  export type price_alertsUncheckedCreateNestedManyWithoutProfilesInput = {
+    create?: XOR<price_alertsCreateWithoutProfilesInput, price_alertsUncheckedCreateWithoutProfilesInput> | price_alertsCreateWithoutProfilesInput[] | price_alertsUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: price_alertsCreateOrConnectWithoutProfilesInput | price_alertsCreateOrConnectWithoutProfilesInput[]
+    createMany?: price_alertsCreateManyProfilesInputEnvelope
+    connect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
   }
 
   export type dividendsUpdateManyWithoutProfilesNestedInput = {
@@ -45779,6 +48741,34 @@ export namespace Prisma {
     deleteMany?: transactionsScalarWhereInput | transactionsScalarWhereInput[]
   }
 
+  export type watchlistUpdateManyWithoutProfilesNestedInput = {
+    create?: XOR<watchlistCreateWithoutProfilesInput, watchlistUncheckedCreateWithoutProfilesInput> | watchlistCreateWithoutProfilesInput[] | watchlistUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: watchlistCreateOrConnectWithoutProfilesInput | watchlistCreateOrConnectWithoutProfilesInput[]
+    upsert?: watchlistUpsertWithWhereUniqueWithoutProfilesInput | watchlistUpsertWithWhereUniqueWithoutProfilesInput[]
+    createMany?: watchlistCreateManyProfilesInputEnvelope
+    set?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    disconnect?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    delete?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    connect?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    update?: watchlistUpdateWithWhereUniqueWithoutProfilesInput | watchlistUpdateWithWhereUniqueWithoutProfilesInput[]
+    updateMany?: watchlistUpdateManyWithWhereWithoutProfilesInput | watchlistUpdateManyWithWhereWithoutProfilesInput[]
+    deleteMany?: watchlistScalarWhereInput | watchlistScalarWhereInput[]
+  }
+
+  export type price_alertsUpdateManyWithoutProfilesNestedInput = {
+    create?: XOR<price_alertsCreateWithoutProfilesInput, price_alertsUncheckedCreateWithoutProfilesInput> | price_alertsCreateWithoutProfilesInput[] | price_alertsUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: price_alertsCreateOrConnectWithoutProfilesInput | price_alertsCreateOrConnectWithoutProfilesInput[]
+    upsert?: price_alertsUpsertWithWhereUniqueWithoutProfilesInput | price_alertsUpsertWithWhereUniqueWithoutProfilesInput[]
+    createMany?: price_alertsCreateManyProfilesInputEnvelope
+    set?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    disconnect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    delete?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    connect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    update?: price_alertsUpdateWithWhereUniqueWithoutProfilesInput | price_alertsUpdateWithWhereUniqueWithoutProfilesInput[]
+    updateMany?: price_alertsUpdateManyWithWhereWithoutProfilesInput | price_alertsUpdateManyWithWhereWithoutProfilesInput[]
+    deleteMany?: price_alertsScalarWhereInput | price_alertsScalarWhereInput[]
+  }
+
   export type dividendsUncheckedUpdateManyWithoutProfilesNestedInput = {
     create?: XOR<dividendsCreateWithoutProfilesInput, dividendsUncheckedCreateWithoutProfilesInput> | dividendsCreateWithoutProfilesInput[] | dividendsUncheckedCreateWithoutProfilesInput[]
     connectOrCreate?: dividendsCreateOrConnectWithoutProfilesInput | dividendsCreateOrConnectWithoutProfilesInput[]
@@ -45819,6 +48809,34 @@ export namespace Prisma {
     update?: transactionsUpdateWithWhereUniqueWithoutProfilesInput | transactionsUpdateWithWhereUniqueWithoutProfilesInput[]
     updateMany?: transactionsUpdateManyWithWhereWithoutProfilesInput | transactionsUpdateManyWithWhereWithoutProfilesInput[]
     deleteMany?: transactionsScalarWhereInput | transactionsScalarWhereInput[]
+  }
+
+  export type watchlistUncheckedUpdateManyWithoutProfilesNestedInput = {
+    create?: XOR<watchlistCreateWithoutProfilesInput, watchlistUncheckedCreateWithoutProfilesInput> | watchlistCreateWithoutProfilesInput[] | watchlistUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: watchlistCreateOrConnectWithoutProfilesInput | watchlistCreateOrConnectWithoutProfilesInput[]
+    upsert?: watchlistUpsertWithWhereUniqueWithoutProfilesInput | watchlistUpsertWithWhereUniqueWithoutProfilesInput[]
+    createMany?: watchlistCreateManyProfilesInputEnvelope
+    set?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    disconnect?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    delete?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    connect?: watchlistWhereUniqueInput | watchlistWhereUniqueInput[]
+    update?: watchlistUpdateWithWhereUniqueWithoutProfilesInput | watchlistUpdateWithWhereUniqueWithoutProfilesInput[]
+    updateMany?: watchlistUpdateManyWithWhereWithoutProfilesInput | watchlistUpdateManyWithWhereWithoutProfilesInput[]
+    deleteMany?: watchlistScalarWhereInput | watchlistScalarWhereInput[]
+  }
+
+  export type price_alertsUncheckedUpdateManyWithoutProfilesNestedInput = {
+    create?: XOR<price_alertsCreateWithoutProfilesInput, price_alertsUncheckedCreateWithoutProfilesInput> | price_alertsCreateWithoutProfilesInput[] | price_alertsUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: price_alertsCreateOrConnectWithoutProfilesInput | price_alertsCreateOrConnectWithoutProfilesInput[]
+    upsert?: price_alertsUpsertWithWhereUniqueWithoutProfilesInput | price_alertsUpsertWithWhereUniqueWithoutProfilesInput[]
+    createMany?: price_alertsCreateManyProfilesInputEnvelope
+    set?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    disconnect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    delete?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    connect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+    update?: price_alertsUpdateWithWhereUniqueWithoutProfilesInput | price_alertsUpdateWithWhereUniqueWithoutProfilesInput[]
+    updateMany?: price_alertsUpdateManyWithWhereWithoutProfilesInput | price_alertsUpdateManyWithWhereWithoutProfilesInput[]
+    deleteMany?: price_alertsScalarWhereInput | price_alertsScalarWhereInput[]
   }
 
   export type dse_companiesCreateNestedOneWithoutStocksInput = {
@@ -45977,6 +48995,38 @@ export namespace Prisma {
     delete?: profilesWhereInput | boolean
     connect?: profilesWhereUniqueInput
     update?: XOR<XOR<profilesUpdateToOneWithWhereWithoutTransactionsInput, profilesUpdateWithoutTransactionsInput>, profilesUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type profilesCreateNestedOneWithoutWatchlistInput = {
+    create?: XOR<profilesCreateWithoutWatchlistInput, profilesUncheckedCreateWithoutWatchlistInput>
+    connectOrCreate?: profilesCreateOrConnectWithoutWatchlistInput
+    connect?: profilesWhereUniqueInput
+  }
+
+  export type profilesUpdateOneWithoutWatchlistNestedInput = {
+    create?: XOR<profilesCreateWithoutWatchlistInput, profilesUncheckedCreateWithoutWatchlistInput>
+    connectOrCreate?: profilesCreateOrConnectWithoutWatchlistInput
+    upsert?: profilesUpsertWithoutWatchlistInput
+    disconnect?: profilesWhereInput | boolean
+    delete?: profilesWhereInput | boolean
+    connect?: profilesWhereUniqueInput
+    update?: XOR<XOR<profilesUpdateToOneWithWhereWithoutWatchlistInput, profilesUpdateWithoutWatchlistInput>, profilesUncheckedUpdateWithoutWatchlistInput>
+  }
+
+  export type profilesCreateNestedOneWithoutPrice_alertsInput = {
+    create?: XOR<profilesCreateWithoutPrice_alertsInput, profilesUncheckedCreateWithoutPrice_alertsInput>
+    connectOrCreate?: profilesCreateOrConnectWithoutPrice_alertsInput
+    connect?: profilesWhereUniqueInput
+  }
+
+  export type profilesUpdateOneWithoutPrice_alertsNestedInput = {
+    create?: XOR<profilesCreateWithoutPrice_alertsInput, profilesUncheckedCreateWithoutPrice_alertsInput>
+    connectOrCreate?: profilesCreateOrConnectWithoutPrice_alertsInput
+    upsert?: profilesUpsertWithoutPrice_alertsInput
+    disconnect?: profilesWhereInput | boolean
+    delete?: profilesWhereInput | boolean
+    connect?: profilesWhereUniqueInput
+    update?: XOR<XOR<profilesUpdateToOneWithWhereWithoutPrice_alertsInput, profilesUpdateWithoutPrice_alertsInput>, profilesUncheckedUpdateWithoutPrice_alertsInput>
   }
 
   export type NestedUuidNullableFilter<$PrismaModel = never> = {
@@ -49513,6 +52563,8 @@ export namespace Prisma {
     dividends?: dividendsCreateNestedManyWithoutProfilesInput
     stocks?: stocksCreateNestedManyWithoutProfilesInput
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutUsersInput = {
@@ -49526,6 +52578,8 @@ export namespace Prisma {
     dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutUsersInput = {
@@ -49762,6 +52816,8 @@ export namespace Prisma {
     dividends?: dividendsUpdateManyWithoutProfilesNestedInput
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutUsersInput = {
@@ -49775,6 +52831,8 @@ export namespace Prisma {
     dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type usersCreateWithoutWebauthn_challengesInput = {
@@ -50221,6 +53279,8 @@ export namespace Prisma {
     users: usersCreateNestedOneWithoutProfilesInput
     stocks?: stocksCreateNestedManyWithoutProfilesInput
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutDividendsInput = {
@@ -50234,6 +53294,8 @@ export namespace Prisma {
     updated_at?: Date | string | null
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutDividendsInput = {
@@ -50302,6 +53364,8 @@ export namespace Prisma {
     users?: usersUpdateOneRequiredWithoutProfilesNestedInput
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutDividendsInput = {
@@ -50315,6 +53379,8 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type stocksCreateWithoutDse_companyInput = {
@@ -50592,6 +53658,62 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type watchlistCreateWithoutProfilesInput = {
+    id?: string
+    symbol: string
+    created_at?: Date | string | null
+  }
+
+  export type watchlistUncheckedCreateWithoutProfilesInput = {
+    id?: string
+    symbol: string
+    created_at?: Date | string | null
+  }
+
+  export type watchlistCreateOrConnectWithoutProfilesInput = {
+    where: watchlistWhereUniqueInput
+    create: XOR<watchlistCreateWithoutProfilesInput, watchlistUncheckedCreateWithoutProfilesInput>
+  }
+
+  export type watchlistCreateManyProfilesInputEnvelope = {
+    data: watchlistCreateManyProfilesInput | watchlistCreateManyProfilesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type price_alertsCreateWithoutProfilesInput = {
+    id?: string
+    symbol: string
+    buy_min_price?: Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: Date | string | null
+  }
+
+  export type price_alertsUncheckedCreateWithoutProfilesInput = {
+    id?: string
+    symbol: string
+    buy_min_price?: Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: Date | string | null
+  }
+
+  export type price_alertsCreateOrConnectWithoutProfilesInput = {
+    where: price_alertsWhereUniqueInput
+    create: XOR<price_alertsCreateWithoutProfilesInput, price_alertsUncheckedCreateWithoutProfilesInput>
+  }
+
+  export type price_alertsCreateManyProfilesInputEnvelope = {
+    data: price_alertsCreateManyProfilesInput | price_alertsCreateManyProfilesInput[]
+    skipDuplicates?: boolean
+  }
+
   export type dividendsUpsertWithWhereUniqueWithoutProfilesInput = {
     where: dividendsWhereUniqueInput
     update: XOR<dividendsUpdateWithoutProfilesInput, dividendsUncheckedUpdateWithoutProfilesInput>
@@ -50776,6 +53898,64 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"transactions"> | Date | string | null
   }
 
+  export type watchlistUpsertWithWhereUniqueWithoutProfilesInput = {
+    where: watchlistWhereUniqueInput
+    update: XOR<watchlistUpdateWithoutProfilesInput, watchlistUncheckedUpdateWithoutProfilesInput>
+    create: XOR<watchlistCreateWithoutProfilesInput, watchlistUncheckedCreateWithoutProfilesInput>
+  }
+
+  export type watchlistUpdateWithWhereUniqueWithoutProfilesInput = {
+    where: watchlistWhereUniqueInput
+    data: XOR<watchlistUpdateWithoutProfilesInput, watchlistUncheckedUpdateWithoutProfilesInput>
+  }
+
+  export type watchlistUpdateManyWithWhereWithoutProfilesInput = {
+    where: watchlistScalarWhereInput
+    data: XOR<watchlistUpdateManyMutationInput, watchlistUncheckedUpdateManyWithoutProfilesInput>
+  }
+
+  export type watchlistScalarWhereInput = {
+    AND?: watchlistScalarWhereInput | watchlistScalarWhereInput[]
+    OR?: watchlistScalarWhereInput[]
+    NOT?: watchlistScalarWhereInput | watchlistScalarWhereInput[]
+    id?: UuidFilter<"watchlist"> | string
+    user_id?: UuidNullableFilter<"watchlist"> | string | null
+    symbol?: StringFilter<"watchlist"> | string
+    created_at?: DateTimeNullableFilter<"watchlist"> | Date | string | null
+  }
+
+  export type price_alertsUpsertWithWhereUniqueWithoutProfilesInput = {
+    where: price_alertsWhereUniqueInput
+    update: XOR<price_alertsUpdateWithoutProfilesInput, price_alertsUncheckedUpdateWithoutProfilesInput>
+    create: XOR<price_alertsCreateWithoutProfilesInput, price_alertsUncheckedCreateWithoutProfilesInput>
+  }
+
+  export type price_alertsUpdateWithWhereUniqueWithoutProfilesInput = {
+    where: price_alertsWhereUniqueInput
+    data: XOR<price_alertsUpdateWithoutProfilesInput, price_alertsUncheckedUpdateWithoutProfilesInput>
+  }
+
+  export type price_alertsUpdateManyWithWhereWithoutProfilesInput = {
+    where: price_alertsScalarWhereInput
+    data: XOR<price_alertsUpdateManyMutationInput, price_alertsUncheckedUpdateManyWithoutProfilesInput>
+  }
+
+  export type price_alertsScalarWhereInput = {
+    AND?: price_alertsScalarWhereInput | price_alertsScalarWhereInput[]
+    OR?: price_alertsScalarWhereInput[]
+    NOT?: price_alertsScalarWhereInput | price_alertsScalarWhereInput[]
+    id?: UuidFilter<"price_alerts"> | string
+    user_id?: UuidNullableFilter<"price_alerts"> | string | null
+    symbol?: StringFilter<"price_alerts"> | string
+    buy_min_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: DecimalNullableFilter<"price_alerts"> | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFilter<"price_alerts"> | boolean
+    is_sell_triggered?: BoolFilter<"price_alerts"> | boolean
+    created_at?: DateTimeNullableFilter<"price_alerts"> | Date | string | null
+  }
+
   export type dse_companiesCreateWithoutStocksInput = {
     id?: string
     symbol: string
@@ -50856,6 +54036,8 @@ export namespace Prisma {
     dividends?: dividendsCreateNestedManyWithoutProfilesInput
     users: usersCreateNestedOneWithoutProfilesInput
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutStocksInput = {
@@ -50869,6 +54051,8 @@ export namespace Prisma {
     updated_at?: Date | string | null
     dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutStocksInput = {
@@ -50987,6 +54171,8 @@ export namespace Prisma {
     dividends?: dividendsUpdateManyWithoutProfilesNestedInput
     users?: usersUpdateOneRequiredWithoutProfilesNestedInput
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutStocksInput = {
@@ -51000,6 +54186,8 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type transactionsUpsertWithWhereUniqueWithoutStocksInput = {
@@ -51062,6 +54250,8 @@ export namespace Prisma {
     dividends?: dividendsCreateNestedManyWithoutProfilesInput
     users: usersCreateNestedOneWithoutProfilesInput
     stocks?: stocksCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutTransactionsInput = {
@@ -51075,6 +54265,8 @@ export namespace Prisma {
     updated_at?: Date | string | null
     dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutTransactionsInput = {
@@ -51143,6 +54335,8 @@ export namespace Prisma {
     dividends?: dividendsUpdateManyWithoutProfilesNestedInput
     users?: usersUpdateOneRequiredWithoutProfilesNestedInput
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutTransactionsInput = {
@@ -51156,6 +54350,160 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type profilesCreateWithoutWatchlistInput = {
+    full_name?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    avatar_url?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    dividends?: dividendsCreateNestedManyWithoutProfilesInput
+    users: usersCreateNestedOneWithoutProfilesInput
+    stocks?: stocksCreateNestedManyWithoutProfilesInput
+    transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+  }
+
+  export type profilesUncheckedCreateWithoutWatchlistInput = {
+    id: string
+    full_name?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    avatar_url?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
+    stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
+    transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+  }
+
+  export type profilesCreateOrConnectWithoutWatchlistInput = {
+    where: profilesWhereUniqueInput
+    create: XOR<profilesCreateWithoutWatchlistInput, profilesUncheckedCreateWithoutWatchlistInput>
+  }
+
+  export type profilesUpsertWithoutWatchlistInput = {
+    update: XOR<profilesUpdateWithoutWatchlistInput, profilesUncheckedUpdateWithoutWatchlistInput>
+    create: XOR<profilesCreateWithoutWatchlistInput, profilesUncheckedCreateWithoutWatchlistInput>
+    where?: profilesWhereInput
+  }
+
+  export type profilesUpdateToOneWithWhereWithoutWatchlistInput = {
+    where?: profilesWhereInput
+    data: XOR<profilesUpdateWithoutWatchlistInput, profilesUncheckedUpdateWithoutWatchlistInput>
+  }
+
+  export type profilesUpdateWithoutWatchlistInput = {
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dividends?: dividendsUpdateManyWithoutProfilesNestedInput
+    users?: usersUpdateOneRequiredWithoutProfilesNestedInput
+    stocks?: stocksUpdateManyWithoutProfilesNestedInput
+    transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type profilesUncheckedUpdateWithoutWatchlistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
+    stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
+    transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type profilesCreateWithoutPrice_alertsInput = {
+    full_name?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    avatar_url?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    dividends?: dividendsCreateNestedManyWithoutProfilesInput
+    users: usersCreateNestedOneWithoutProfilesInput
+    stocks?: stocksCreateNestedManyWithoutProfilesInput
+    transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+  }
+
+  export type profilesUncheckedCreateWithoutPrice_alertsInput = {
+    id: string
+    full_name?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    avatar_url?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
+    stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
+    transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+  }
+
+  export type profilesCreateOrConnectWithoutPrice_alertsInput = {
+    where: profilesWhereUniqueInput
+    create: XOR<profilesCreateWithoutPrice_alertsInput, profilesUncheckedCreateWithoutPrice_alertsInput>
+  }
+
+  export type profilesUpsertWithoutPrice_alertsInput = {
+    update: XOR<profilesUpdateWithoutPrice_alertsInput, profilesUncheckedUpdateWithoutPrice_alertsInput>
+    create: XOR<profilesCreateWithoutPrice_alertsInput, profilesUncheckedCreateWithoutPrice_alertsInput>
+    where?: profilesWhereInput
+  }
+
+  export type profilesUpdateToOneWithWhereWithoutPrice_alertsInput = {
+    where?: profilesWhereInput
+    data: XOR<profilesUpdateWithoutPrice_alertsInput, profilesUncheckedUpdateWithoutPrice_alertsInput>
+  }
+
+  export type profilesUpdateWithoutPrice_alertsInput = {
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dividends?: dividendsUpdateManyWithoutProfilesNestedInput
+    users?: usersUpdateOneRequiredWithoutProfilesNestedInput
+    stocks?: stocksUpdateManyWithoutProfilesNestedInput
+    transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type profilesUncheckedUpdateWithoutPrice_alertsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
+    stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
+    transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type saml_relay_statesCreateManyFlow_stateInput = {
@@ -52105,6 +55453,24 @@ export namespace Prisma {
     created_at?: Date | string | null
   }
 
+  export type watchlistCreateManyProfilesInput = {
+    id?: string
+    symbol: string
+    created_at?: Date | string | null
+  }
+
+  export type price_alertsCreateManyProfilesInput = {
+    id?: string
+    symbol: string
+    buy_min_price?: Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: boolean
+    is_sell_triggered?: boolean
+    created_at?: Date | string | null
+  }
+
   export type dividendsUpdateWithoutProfilesInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: Enumdividend_typeFieldUpdateOperationsInput | $Enums.dividend_type
@@ -52217,6 +55583,60 @@ export namespace Prisma {
     transaction_date?: DateTimeFieldUpdateOperationsInput | Date | string
     brokerage_fee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type watchlistUpdateWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type watchlistUncheckedUpdateWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type watchlistUncheckedUpdateManyWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type price_alertsUpdateWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type price_alertsUncheckedUpdateWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type price_alertsUncheckedUpdateManyWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    buy_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buy_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_min_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
+    is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 

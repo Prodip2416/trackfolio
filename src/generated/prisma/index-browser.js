@@ -494,6 +494,26 @@ exports.Prisma.TransactionsScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.WatchlistScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  symbol: 'symbol',
+  created_at: 'created_at'
+};
+
+exports.Prisma.Price_alertsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  symbol: 'symbol',
+  buy_min_price: 'buy_min_price',
+  buy_max_price: 'buy_max_price',
+  sell_min_price: 'sell_min_price',
+  sell_max_price: 'sell_max_price',
+  is_buy_triggered: 'is_buy_triggered',
+  is_sell_triggered: 'is_sell_triggered',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -613,7 +633,9 @@ exports.Prisma.ModelName = {
   dse_companies: 'dse_companies',
   profiles: 'profiles',
   stocks: 'stocks',
-  transactions: 'transactions'
+  transactions: 'transactions',
+  watchlist: 'watchlist',
+  price_alerts: 'price_alerts'
 };
 
 /**
