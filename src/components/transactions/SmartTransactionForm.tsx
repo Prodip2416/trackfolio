@@ -220,7 +220,7 @@ export default function SmartTransactionForm({
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Search company (e.g. GP)"
                       disabled={!!initialData}
-                      className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white placeholder-gray-400 disabled:opacity-50"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400 placeholder-gray-400 disabled:opacity-50"
                     />
                     {isSearching && (
                       <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
@@ -246,7 +246,7 @@ export default function SmartTransactionForm({
                               {company.sector || 'N/A'}
                             </span>
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                          <div className="text-sm text-gray-500 dark:text-gray-300 truncate mt-0.5">
                             {company.company_name}
                           </div>
                         </div>
@@ -286,7 +286,7 @@ export default function SmartTransactionForm({
                   required
                   defaultValue={initialData?.quantity}
                   placeholder="e.g. 100"
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400"
                 />
               </div>
 
@@ -303,7 +303,7 @@ export default function SmartTransactionForm({
                   required
                   defaultValue={initialData?.price_per_unit}
                   placeholder="e.g. 45.5"
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400"
                 />
               </div>
             </div>
@@ -335,7 +335,7 @@ export default function SmartTransactionForm({
                   step="0.01"
                   defaultValue={initialData?.brokerage_fee || ''}
                   placeholder="0.00"
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400"
                 />
               </div>
             </div>

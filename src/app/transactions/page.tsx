@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import TransactionsClient from './TransactionsClient'
 import prisma from '@/lib/prisma'
+import { getDictionary } from '@/i18n/getDictionary'
 
 export const metadata = {
   title: 'Trade Log - TrackFolio',
@@ -16,6 +17,8 @@ export default async function TransactionsPage() {
   if (userError || !user) {
     redirect('/login')
   }
+
+  const dict = await getDictionary()
 
   // Fetch user's latest 10 entries across all time.
   const rawTransactions = await prisma.transactions.findMany({
@@ -47,7 +50,7 @@ export default async function TransactionsPage() {
 
   return (
     <AppLayout user={user} title="Trade Log">
-      <TransactionsClient initialTransactions={transactions as any} />
+      <TransactionsClient initialTransactions={transactions as any} dict={dict} />
     </AppLayout>
   )
 }

@@ -160,8 +160,8 @@ export default function PremiumDatePicker({
           onClick={() => handleDateClick(i)}
           className={`w-8 h-8 flex items-center justify-center text-sm rounded-full transition-all 
             ${isSelected ? 'bg-indigo-600 text-white font-bold shadow-md' 
-            : isToday ? 'bg-indigo-50 text-indigo-700 font-semibold' 
-            : 'text-gray-700 hover:bg-gray-100'}`}
+            : isToday ? 'bg-indigo-50 text-indigo-700 font-semibold dark:bg-indigo-900/30 dark:text-indigo-300' 
+            : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'}`}
         >
           {i}
         </button>
@@ -195,11 +195,11 @@ export default function PremiumDatePicker({
           setIsOpen(!isOpen)
         }}
         className={`w-full flex items-center justify-between outline-none transition-all ${buttonClassName} ${
-          isOpen ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300'
-        } ${!value ? 'text-gray-500' : 'text-gray-900'}`}
+          isOpen ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300 dark:border-gray-600'
+        } ${!value ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'}`}
       >
         <div className="flex items-center space-x-2 overflow-hidden w-full">
-          <CalendarIcon className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+          <CalendarIcon className="w-4 h-4 text-indigo-500 dark:text-indigo-400 flex-shrink-0" />
           <span className="truncate">{displayText}</span>
         </div>
       </button>
@@ -207,7 +207,7 @@ export default function PremiumDatePicker({
       {isOpen && typeof document !== 'undefined' && createPortal((
         <div
           ref={calendarRef}
-          className="fixed z-[60] bg-white border border-gray-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] p-5 min-w-[320px]"
+          className="fixed z-[60] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] p-5 min-w-[320px]"
           style={{ top: calendarPosition.top, left: calendarPosition.left }}
         >
           {/* Header */}
@@ -215,22 +215,22 @@ export default function PremiumDatePicker({
             <button 
               type="button" 
               onClick={handlePrevMonth}
-              className="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
+              className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2 font-bold text-gray-900 text-sm tracking-wide">
+            <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-sm tracking-wide">
               <div className="relative">
                 <select
                   value={currentMonth}
                   onChange={(e) => setCurrentMonth(Number(e.target.value))}
-                  className="appearance-none bg-transparent hover:bg-gray-100 pl-2 pr-6 py-1.5 rounded-lg cursor-pointer outline-none font-bold text-gray-900 transition-colors"
+                  className="appearance-none bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 pl-2 pr-6 py-1.5 rounded-lg cursor-pointer outline-none font-bold text-gray-900 dark:text-white transition-colors"
                 >
                   {MONTHS.map((m, idx) => (
                     <option key={m} value={idx}>{m}</option>
                   ))}
                 </select>
-                <ChevronDown className="w-4 h-4 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" />
+                <ChevronDown className="w-4 h-4 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 dark:text-gray-400" />
               </div>
               
               <div className="w-[100px]">
@@ -239,14 +239,14 @@ export default function PremiumDatePicker({
                   value={String(currentYear)}
                   onChange={(val) => setCurrentYear(Number(val))}
                   searchPlaceholder="Search year..."
-                  buttonClassName="bg-transparent hover:bg-gray-100 px-2 py-1.5 rounded-lg font-bold text-gray-900 transition-colors border-none shadow-none min-h-0 !ring-0"
+                  buttonClassName="bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1.5 rounded-lg font-bold text-gray-900 dark:text-white transition-colors border-none shadow-none min-h-0 !ring-0"
                 />
               </div>
             </div>
             <button 
               type="button" 
               onClick={handleNextMonth}
-              className="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
+              className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -255,7 +255,7 @@ export default function PremiumDatePicker({
           {/* Body */}
           <div className="grid grid-cols-7 gap-1 mb-2">
             {DAYS_OF_WEEK.map(day => (
-              <div key={day} className="w-8 h-8 flex items-center justify-center text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+              <div key={day} className="w-8 h-8 flex items-center justify-center text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                 {day}
               </div>
             ))}
@@ -265,7 +265,7 @@ export default function PremiumDatePicker({
           </div>
           
           {/* Quick Actions */}
-          <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between">
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between">
              <button 
                 type="button"
                 onClick={() => {
@@ -278,7 +278,7 @@ export default function PremiumDatePicker({
                    setCurrentMonth(today.getMonth());
                    setIsOpen(false);
                 }}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
              >
                 Today
              </button>
@@ -288,7 +288,7 @@ export default function PremiumDatePicker({
                    onChange('');
                    setIsOpen(false);
                 }}
-                className="text-xs font-semibold text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-xs font-semibold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
              >
                 Clear
              </button>

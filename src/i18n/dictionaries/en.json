@@ -88,5 +88,13 @@
     "totalSellPrice": "Total Sell Price",
     "totalCashDividend": "Total Cash Dividend",
     "totalBonusStock": "Total Bonus Stock"
+  },
+  "confirm": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteTransactionTitle": "Delete Transaction",
+    "deleteTransactionMessage": "Are you sure you want to delete this trade log? This action cannot be undone.",
+    "deleteDividendTitle": "Delete Dividend",
+    "deleteDividendMessage": "Are you sure you want to delete this dividend record? This action cannot be undone."
   }
 }

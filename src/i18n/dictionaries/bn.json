@@ -88,5 +88,13 @@
     "totalSellPrice": "মোট বিক্রয় মূল্য",
     "totalCashDividend": "মোট নগদ ডিভিডেন্ট",
     "totalBonusStock": "মোট বোনাস স্টক"
+  },
+  "confirm": {
+    "cancel": "বাতিল",
+    "delete": "মুছুন",
+    "deleteTransactionTitle": "ট্রেড লগ মুছুন",
+    "deleteTransactionMessage": "আপনি কি নিশ্চিত এই ট্রেড লগটি মুছে ফেলতে চান? এই কাজটি ফেরত যাবে না।",
+    "deleteDividendTitle": "ডিভিডেন্ড মুছুন",
+    "deleteDividendMessage": "আপনি কি নিশ্চিত এই ডিভিডেন্ড রেকর্ডটি মুছে ফেলতে চান? এই কাজটি ফেরত যাবে না।"
   }
 }
