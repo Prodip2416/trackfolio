@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
+import SearchableDropdown from '@/components/shared/SearchableDropdown'
 
 interface PremiumDatePickerProps {
   value: string // YYYY-MM-DD
@@ -125,7 +126,6 @@ export default function PremiumDatePicker({
 
   const handleDateClick = (day: number) => {
     const newDate = new Date(currentYear, currentMonth, day)
-    // Format to YYYY-MM-DD local time
     const year = newDate.getFullYear()
     const month = String(newDate.getMonth() + 1).padStart(2, '0')
     const dayStr = String(newDate.getDate()).padStart(2, '0')
@@ -138,12 +138,10 @@ export default function PremiumDatePicker({
     const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay()
     
     const days = []
-    // Empty slots for previous month
     for (let i = 0; i < firstDayIndex; i++) {
       days.push(<div key={`empty-${i}`} className="w-8 h-8"></div>)
     }
     
-    // Actual days
     for (let i = 1; i <= daysInMonth; i++) {
       const isSelected = value && 
         currentYear === parseInt(value.substring(0, 4)) && 
@@ -182,6 +180,10 @@ export default function PremiumDatePicker({
     }
   }
 
+  // Generate year options (2025 to 2075)
+  const yearOptions = Array.from({ length: 2075 - 2025 + 1 }, (_, i) => 2025 + i)
+  const yearDropdownOptions = yearOptions.map(y => ({ label: String(y), value: String(y) }))
+
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
@@ -205,11 +207,11 @@ export default function PremiumDatePicker({
       {isOpen && typeof document !== 'undefined' && createPortal((
         <div
           ref={calendarRef}
-          className="fixed z-[60] bg-white border border-gray-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] p-5 min-w-[300px]"
+          className="fixed z-[60] bg-white border border-gray-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] p-5 min-w-[320px]"
           style={{ top: calendarPosition.top, left: calendarPosition.left }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-5">
             <button 
               type="button" 
               onClick={handlePrevMonth}
@@ -217,8 +219,29 @@ export default function PremiumDatePicker({
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <div className="font-bold text-gray-900 text-sm tracking-wide">
-              {MONTHS[currentMonth]} {currentYear}
+            <div className="flex items-center gap-2 font-bold text-gray-900 text-sm tracking-wide">
+              <div className="relative">
+                <select
+                  value={currentMonth}
+                  onChange={(e) => setCurrentMonth(Number(e.target.value))}
+                  className="appearance-none bg-transparent hover:bg-gray-100 pl-2 pr-6 py-1.5 rounded-lg cursor-pointer outline-none font-bold text-gray-900 transition-colors"
+                >
+                  {MONTHS.map((m, idx) => (
+                    <option key={m} value={idx}>{m}</option>
+                  ))}
+                </select>
+                <ChevronDown className="w-4 h-4 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" />
+              </div>
+              
+              <div className="w-[100px]">
+                <SearchableDropdown
+                  options={yearDropdownOptions}
+                  value={String(currentYear)}
+                  onChange={(val) => setCurrentYear(Number(val))}
+                  searchPlaceholder="Search year..."
+                  buttonClassName="bg-transparent hover:bg-gray-100 px-2 py-1.5 rounded-lg font-bold text-gray-900 transition-colors border-none shadow-none min-h-0 !ring-0"
+                />
+              </div>
             </div>
             <button 
               type="button" 
@@ -228,8 +251,8 @@ export default function PremiumDatePicker({
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-          
-          {/* Days Header */}
+
+          {/* Body */}
           <div className="grid grid-cols-7 gap-1 mb-2">
             {DAYS_OF_WEEK.map(day => (
               <div key={day} className="w-8 h-8 flex items-center justify-center text-[11px] font-bold text-gray-400 uppercase tracking-wider">
@@ -237,8 +260,6 @@ export default function PremiumDatePicker({
               </div>
             ))}
           </div>
-          
-          {/* Days Grid */}
           <div className="grid grid-cols-7 gap-1">
             {generateDays()}
           </div>
@@ -277,3 +298,4 @@ export default function PremiumDatePicker({
     </div>
   )
 }
+

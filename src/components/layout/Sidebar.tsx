@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect, useTransition, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2 } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
@@ -17,6 +18,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -281,7 +283,10 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                 
                 <div className="h-px bg-gray-100 dark:bg-slate-700 my-1 mx-2" />
                 
-                <form action={logout}>
+                <form 
+                  action={logout}
+                  onSubmit={() => setIsLoggingOut(true)}
+                >
                   <button
                     type="submit"
                     className="w-full text-left px-3 py-2 flex items-center text-xs font-bold text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
@@ -294,6 +299,16 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
             </div>
           )}
         </div>
+      )}
+      {/* Logout Loading Overlay */}
+      {isLoggingOut && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
+          <div className="flex flex-col items-center bg-white dark:bg-slate-800 px-6 py-4 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-slate-700">
+            <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin mb-2" />
+            <span className="text-sm font-bold text-gray-700 dark:text-gray-200">Logging out...</span>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   )
