@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, Trash2, Pencil, X, Loader2, Bell, TrendingUp, TrendingDown, CheckCircle2, XCircle, Minus } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Plus, Trash2, Pencil, X, Loader2, Bell, TrendingUp, TrendingDown, CheckCircle2, XCircle, Minus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { savePriceAlert, deletePriceAlert } from '../actions'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import SearchableDropdown from '@/components/shared/SearchableDropdown'
+import ConfirmModal from '@/components/shared/ConfirmModal'
 
 type PriceAlert = {
   id: string
@@ -44,6 +46,13 @@ export default function PriceAlertsClient({
   const [editingAlert, setEditingAlert] = useState<PriceAlert | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deleteItem, setDeleteItem] = useState<{id: string, symbol: string} | null>(null)
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  const totalPages = Math.max(1, Math.ceil(alerts.length / itemsPerPage))
+  const currentAlerts = alerts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   // Form state
   const [symbol, setSymbol] = useState('')
@@ -51,6 +60,15 @@ export default function PriceAlertsClient({
   const [buyMax, setBuyMax] = useState('')
   const [sellMin, setSellMin] = useState('')
   const [sellMax, setSellMax] = useState('')
+
+  // Sync state with props when router.refresh() is called
+  useEffect(() => {
+    setAlerts(initialAlerts)
+    const newTotalPages = Math.max(1, Math.ceil(initialAlerts.length / itemsPerPage))
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages)
+    }
+  }, [initialAlerts, currentPage, itemsPerPage])
 
   const openAddModal = () => {
     setEditingAlert(null)
@@ -95,10 +113,14 @@ export default function PriceAlertsClient({
     }
   }
 
-  const handleDelete = async (id: string, symbol: string) => {
+  const handleDelete = async () => {
+    if (!deleteItem) return
+    const { id, symbol } = deleteItem
+
     setDeletingId(id)
     const result = await deletePriceAlert(id)
     setDeletingId(null)
+    setDeleteItem(null)
 
     if (result?.error) {
       toast.error(result.error)
@@ -220,7 +242,7 @@ export default function PriceAlertsClient({
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
-                  {alerts.map((alert) => (
+                  {currentAlerts.map((alert) => (
                     <tr key={alert.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800/80 transition-colors group">
                       <td className="px-4 py-2 whitespace-nowrap">
                         <div className="flex items-center">
@@ -264,7 +286,7 @@ export default function PriceAlertsClient({
                             <Pencil className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(alert.id, alert.symbol)}
+                            onClick={() => setDeleteItem({ id: alert.id, symbol: alert.symbol })}
                             disabled={deletingId === alert.id}
                             className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors disabled:opacity-50 cursor-pointer"
                             title="Delete Alert"
@@ -282,6 +304,34 @@ export default function PriceAlertsClient({
                 </tbody>
               </table>
             </div>
+            
+            {/* Pagination Controls */}
+            {alerts.length > itemsPerPage && (
+              <div className="px-6 py-3 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  Showing <span className="font-medium text-gray-900 dark:text-white">{((currentPage - 1) * itemsPerPage) + 1}</span> to <span className="font-medium text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, alerts.length)}</span> of <span className="font-medium text-gray-900 dark:text-white">{alerts.length}</span> entries
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className="p-1 rounded-md border border-gray-200 dark:border-slate-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                    {currentPage} / {totalPages}
+                  </div>
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="p-1 rounded-md border border-gray-200 dark:border-slate-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -321,19 +371,17 @@ export default function PriceAlertsClient({
                       </div>
                     </div>
                   ) : (
-                    <select
+                    <SearchableDropdown
+                      options={watchlistSymbols.map(s => ({
+                        label: `${s.symbol} - ${s.company_name}`,
+                        value: s.symbol
+                      }))}
                       value={symbol}
-                      onChange={(e) => setSymbol(e.target.value)}
-                      required
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white text-gray-900"
-                    >
-                      <option value="">Select a stock...</option>
-                      {watchlistSymbols.map((s) => (
-                        <option key={s.symbol} value={s.symbol}>
-                          {s.symbol} - {s.company_name}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setSymbol(val)}
+                      placeholder="Select a stock..."
+                      searchPlaceholder="Search stock..."
+                      buttonClassName="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white text-gray-900"
+                    />
                   )}
                 </div>
 
@@ -434,6 +482,17 @@ export default function PriceAlertsClient({
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={!!deleteItem}
+        title={dict?.confirm?.deleteAlertTitle || 'Delete Price Alert'}
+        message={dict?.confirm?.deleteAlertMessage || 'Are you sure you want to delete this price alert? This action cannot be undone.'}
+        isLoading={deletingId !== null}
+        onConfirm={handleDelete}
+        onClose={() => setDeleteItem(null)}
+        dict={dict}
+      />
     </div>
   )
 }
