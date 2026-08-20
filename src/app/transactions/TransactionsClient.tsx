@@ -19,7 +19,8 @@ type Transaction = {
   }
 }
 
-export default function TransactionsClient({ initialTransactions }: { initialTransactions: Transaction[] }) {
+export default function TransactionsClient({ initialTransactions, dict }: { initialTransactions: Transaction[], dict?: any }) {
+  const t = dict?.confirm || {}
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editTransaction, setEditTransaction] = useState<any>(null)
   const [deleteTransactionId, setDeleteTransactionId] = useState<string | null>(null)
@@ -186,13 +187,15 @@ export default function TransactionsClient({ initialTransactions }: { initialTra
 
       <ConfirmModal
         isOpen={!!deleteTransactionId}
-        title="Delete Transaction"
-        message="Are you sure you want to delete this trade log? This action cannot be undone."
-        confirmText="Delete"
+        title={t.deleteTransactionTitle || 'Delete Transaction'}
+        message={t.deleteTransactionMessage || 'Are you sure you want to delete this trade log? This action cannot be undone.'}
+        confirmText={t.delete || 'Delete'}
+        cancelText={t.cancel || 'Cancel'}
         isDestructive={true}
         isLoading={isDeleting}
         onConfirm={confirmDelete}
         onClose={() => setDeleteTransactionId(null)}
+        dict={dict}
       />
     </div>
   )

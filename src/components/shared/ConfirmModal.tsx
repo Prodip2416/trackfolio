@@ -6,12 +6,13 @@ export default function ConfirmModal({
   isOpen,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText,
+  cancelText,
   isDestructive = true,
   isLoading = false,
   onConfirm,
-  onClose
+  onClose,
+  dict
 }: {
   isOpen: boolean
   title: string
@@ -22,7 +23,11 @@ export default function ConfirmModal({
   isLoading?: boolean
   onConfirm: () => void
   onClose: () => void
+  dict?: any
 }) {
+  const t = dict?.confirm || {}
+  const finalConfirmText = confirmText || t.delete || 'Delete'
+  const finalCancelText = cancelText || t.cancel || 'Cancel'
   if (!isOpen) return null
 
   return (
@@ -66,7 +71,7 @@ export default function ConfirmModal({
             className="inline-flex w-full justify-center rounded-xl bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 sm:w-auto cursor-pointer"
             onClick={onClose}
           >
-            {cancelText}
+            {finalCancelText}
           </button>
           <button
             type="button"
@@ -78,7 +83,7 @@ export default function ConfirmModal({
             }`}
             onClick={onConfirm}
           >
-            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : confirmText}
+            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : finalConfirmText}
           </button>
         </div>
       </div>

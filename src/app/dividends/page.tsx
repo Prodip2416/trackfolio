@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import DividendsClient from './DividendsClient'
 import prisma from '@/lib/prisma'
+import { getDictionary } from '@/i18n/getDictionary'
 
 export const metadata = {
   title: 'Dividend Log - TrackFolio',
@@ -16,6 +17,8 @@ export default async function DividendsPage() {
   if (userError || !user) {
     redirect('/login')
   }
+
+  const dict = await getDictionary()
 
     // Fetch user's latest 10 entries across all time.
     const rawDividends = await prisma.dividends.findMany({
@@ -47,7 +50,7 @@ export default async function DividendsPage() {
 
   return (
     <AppLayout user={user} title="Dividend Log">
-      <DividendsClient initialDividends={dividends as any} />
+      <DividendsClient initialDividends={dividends as any} dict={dict} />
     </AppLayout>
   )
 }

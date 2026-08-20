@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2 } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
@@ -48,24 +48,42 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const [isReportsOpen, setIsReportsOpen] = useState(false)
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false)
 
+  const [isWatchlistOpen, setIsWatchlistOpen] = useState(false)
+
   useEffect(() => {
     if (pathname.startsWith('/analytics')) {
       setIsAnalyticsOpen(true)
       setIsReportsOpen(false)
       setIsPortfolioOpen(false)
+      setIsWatchlistOpen(false)
     } else if (pathname.startsWith('/reports')) {
       setIsReportsOpen(true)
       setIsAnalyticsOpen(false)
       setIsPortfolioOpen(false)
+      setIsWatchlistOpen(false)
     } else if (pathname.startsWith('/portfolio')) {
       setIsPortfolioOpen(true)
       setIsAnalyticsOpen(false)
       setIsReportsOpen(false)
+      setIsWatchlistOpen(false)
+    } else if (pathname.startsWith('/watchlist')) {
+      setIsWatchlistOpen(true)
+      setIsAnalyticsOpen(false)
+      setIsReportsOpen(false)
+      setIsPortfolioOpen(false)
     }
   }, [pathname])
 
   const navItems = [
     { name: dict.sidebar.dashboard, href: '/', icon: LayoutDashboard },
+    { 
+      name: dict.sidebar.watchlist || 'Watchlist', 
+      icon: Star,
+      subItems: [
+        { name: dict.sidebar.myWatchlist || 'My Watchlist', href: '/watchlist' },
+        { name: dict.sidebar.priceAlerts || 'Price Alerts', href: '/watchlist/alerts' },
+      ]
+    },
     { 
       name: dict.sidebar.analytics, 
       icon: PieChart,
@@ -115,10 +133,12 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
             const isActive = pathname.startsWith(
               item.name === dict.sidebar.reports ? '/reports' : 
               item.name === dict.sidebar.portfolio ? '/portfolio' : 
+              item.name === (dict.sidebar.watchlist || 'Watchlist') ? '/watchlist' :
               '/analytics'
             )
             const isOpen = item.name === dict.sidebar.reports ? isReportsOpen : 
                            item.name === dict.sidebar.portfolio ? isPortfolioOpen :
+                           item.name === (dict.sidebar.watchlist || 'Watchlist') ? isWatchlistOpen :
                            isAnalyticsOpen
             const toggleOpen = () => {
               if (item.name === dict.sidebar.reports) {
@@ -126,18 +146,28 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                 if (!isReportsOpen) {
                   setIsPortfolioOpen(false)
                   setIsAnalyticsOpen(false)
+                  setIsWatchlistOpen(false)
                 }
               } else if (item.name === dict.sidebar.portfolio) {
                 setIsPortfolioOpen(!isPortfolioOpen)
                 if (!isPortfolioOpen) {
                   setIsReportsOpen(false)
                   setIsAnalyticsOpen(false)
+                  setIsWatchlistOpen(false)
+                }
+              } else if (item.name === (dict.sidebar.watchlist || 'Watchlist')) {
+                setIsWatchlistOpen(!isWatchlistOpen)
+                if (!isWatchlistOpen) {
+                  setIsReportsOpen(false)
+                  setIsAnalyticsOpen(false)
+                  setIsPortfolioOpen(false)
                 }
               } else {
                 setIsAnalyticsOpen(!isAnalyticsOpen)
                 if (!isAnalyticsOpen) {
                   setIsReportsOpen(false)
                   setIsPortfolioOpen(false)
+                  setIsWatchlistOpen(false)
                 }
               }
             }

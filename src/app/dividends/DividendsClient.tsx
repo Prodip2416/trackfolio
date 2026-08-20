@@ -21,7 +21,8 @@ type Dividend = {
   }
 }
 
-export default function DividendsClient({ initialDividends }: { initialDividends: Dividend[] }) {
+export default function DividendsClient({ initialDividends, dict }: { initialDividends: Dividend[], dict?: any }) {
+  const t = dict?.confirm || {}
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editDividend, setEditDividend] = useState<any>(null)
   const [deleteDividendId, setDeleteDividendId] = useState<string | null>(null)
@@ -55,7 +56,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
       <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-slate-800 rounded-xl overflow-hidden flex-1 flex flex-col min-h-0 transition-colors">
           {initialDividends.length === 0 ? (
             <div className="text-center py-16 px-4">
-              <div className="mx-auto w-16 h-16 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mb-4">
+              <div className="mx-auto w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 rounded-full flex items-center justify-center mb-4">
                 <Plus className="w-8 h-8" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">No dividends logged yet</h3>
@@ -73,7 +74,7 @@ export default function DividendsClient({ initialDividends }: { initialDividends
           ) : (
             <div className="flex-1 flex flex-col min-h-0">
               <div className="px-6 py-3 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50 shrink-0 transition-colors">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Latest 10 Dividends</h3>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">Latest 10 Dividends</h3>
               </div>
               <div className="flex-1 overflow-auto custom-scrollbar">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-800 relative transition-colors">
@@ -176,13 +177,15 @@ export default function DividendsClient({ initialDividends }: { initialDividends
 
       <ConfirmModal
         isOpen={!!deleteDividendId}
-        title="Delete Dividend"
-        message="Are you sure you want to delete this dividend record? This action cannot be undone."
-        confirmText="Delete"
+        title={t.deleteDividendTitle || 'Delete Dividend'}
+        message={t.deleteDividendMessage || 'Are you sure you want to delete this dividend record? This action cannot be undone.'}
+        confirmText={t.delete || 'Delete'}
+        cancelText={t.cancel || 'Cancel'}
         isDestructive={true}
         isLoading={isDeleting}
         onConfirm={confirmDelete}
         onClose={() => setDeleteDividendId(null)}
+        dict={dict}
       />
     </div>
   )

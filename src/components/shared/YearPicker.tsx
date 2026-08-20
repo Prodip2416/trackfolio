@@ -130,11 +130,11 @@ export default function YearPicker({
           }
         }}
         className={`w-full flex items-center justify-between outline-none transition-all ${buttonClassName} ${
-          isOpen ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300'
-        } ${!hasValue ? 'text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}
+          isOpen ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300 dark:border-gray-600'
+        } ${!hasValue ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}
       >
         <span className="truncate">{displayText}</span>
-        <ChevronRight className={`w-4 h-4 ml-2 text-gray-400 -rotate-90 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+        <ChevronRight className={`w-4 h-4 ml-2 text-gray-400 dark:text-gray-500 -rotate-90 transition-transform ${isOpen ? 'rotate-90' : ''}`} />
       </button>
 
       {isOpen && typeof document !== 'undefined' && createPortal((
