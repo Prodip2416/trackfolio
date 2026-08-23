@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import LedgerClient from './LedgerClient'
+import LedgerClient from '@/components/portfolio/ledger/LedgerClient'
 import { getDictionary } from '@/i18n/getDictionary'
 import { getOwnedStocks, getAssetLedger } from './actions'
 

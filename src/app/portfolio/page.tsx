@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import PortfolioClient from './PortfolioClient'
+import PortfolioClient from '@/components/portfolio/PortfolioClient'
 import { getDictionary } from '@/i18n/getDictionary'
 
 export const metadata = {

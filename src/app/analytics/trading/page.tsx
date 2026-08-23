@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import TradingClient from './TradingClient'
+import TradingClient from '@/components/analytics/trading/TradingClient'
 
 export const metadata = {
   title: 'Trading Behavior - TrackFolio',

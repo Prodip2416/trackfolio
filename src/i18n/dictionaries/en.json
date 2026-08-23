@@ -28,7 +28,9 @@
     "taxCapitalGain": "Tax & Capital Gain",
     "buyReport": "Buy Report",
     "sellReport": "Sell Report",
-    "dividendReport": "Dividend Report"
+    "dividendReport": "Dividend Report",
+    "watchlist": "Watchlist",
+    "priceAlerts": "Price Alerts"
   },
   "dashboard": {
     "totalInvested": "Total Invested",

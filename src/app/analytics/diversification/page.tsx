@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import DiversificationClient from './DiversificationClient'
+import DiversificationClient from '@/components/analytics/diversification/DiversificationClient'
 
 export const metadata = {
   title: 'Diversification Analytics - TrackFolio',

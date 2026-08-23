@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import HistoryClient from './HistoryClient'
+import HistoryClient from '@/components/history/HistoryClient'
 
 export const metadata = {
   title: 'History - TrackFolio',

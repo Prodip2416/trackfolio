@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import WatchlistClient from './WatchlistClient'
+import WatchlistClient from '@/components/watchlist/WatchlistClient'
 import { getWatchlist } from './actions'
 import { getDictionary } from '@/i18n/getDictionary'
 
