@@ -28,7 +28,9 @@
     "taxCapitalGain": "ট্যাক্স ও ক্যাপিটাল গেইন",
     "buyReport": "বাই রিপোর্ট",
     "sellReport": "সেল রিপোর্ট",
-    "dividendReport": "ডিভিডেন্ড রিপোর্ট"
+    "dividendReport": "ডিভিডেন্ড রিপোর্ট",
+    "watchlist": "ওয়াচলিস্ট",
+    "priceAlerts": "প্রাইস অ্যালার্ট"
   },
   "dashboard": {
     "totalInvested": "মোট বিনিয়োগ",

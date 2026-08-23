@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import TaxReportClient from './TaxReportClient'
+import TaxReportClient from '@/components/reports/tax/TaxReportClient'
 
 export const metadata = {
   title: 'Tax & Capital Gain Report - TrackFolio',

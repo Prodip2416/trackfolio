@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import TimingClient from './TimingClient'
+import TimingClient from '@/components/analytics/timing/TimingClient'
 
 export const metadata = {
   title: 'Market Timing - TrackFolio',

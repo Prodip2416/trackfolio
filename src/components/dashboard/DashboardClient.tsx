@@ -1,14 +1,13 @@
 'use client'
 
 import { useMemo, useTransition, useState } from 'react'
-import {
-  PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, AreaChart, Area
-} from 'recharts'
-import { ArrowUpRight, ArrowDownRight, Wallet, PieChart as PieChartIcon, TrendingUp, Activity, Banknote, RefreshCw, ChevronDown, Search, TrendingDown } from 'lucide-react'
 import { syncDashboardData } from '@/app/dashboard/actions'
 import toast from 'react-hot-toast'
 import { useTheme } from 'next-themes'
+import DashboardSummaryCards from './DashboardSummaryCards'
+import DashboardPieCharts from './DashboardPieCharts'
+import DashboardBarCharts from './DashboardBarCharts'
+import RecentTradesTable from './RecentTradesTable'
 
 type Transaction = {
   id: string
@@ -51,67 +50,6 @@ type StockHolding = {
 
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316', '#84cc16', '#3b82f6', '#d946ef', '#f43f5e']
 
-const YearSelect = ({ value, onChange, years }: { value: number, onChange: (val: number) => void, years: number[] }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [search, setSearch] = useState('')
-
-  const filteredYears = years.filter(y => y.toString().includes(search))
-
-  return (
-    <div className="relative">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-28 px-3 py-1.5 text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-      >
-        <span>{value}</span>
-        <ChevronDown className="w-3.5 h-3.5 ml-2 text-gray-500" />
-      </button>
-      
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}></div>
-          <div className="absolute right-0 z-50 w-36 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl overflow-hidden">
-            <div className="p-2 border-b border-gray-100 dark:border-gray-700">
-              <div className="relative">
-                <Search className="absolute left-2 top-1.5 w-3.5 h-3.5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-7 pr-2 py-1 text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-gray-900 dark:text-white"
-                  autoFocus
-                />
-              </div>
-            </div>
-            <div className="max-h-48 overflow-y-auto">
-              {filteredYears.length > 0 ? (
-                filteredYears.map(year => (
-                  <button
-                    key={year}
-                    onClick={() => {
-                      onChange(year)
-                      setIsOpen(false)
-                      setSearch('')
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs transition-colors cursor-pointer ${year === value ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-bold' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
-                  >
-                    {year}
-                  </button>
-                ))
-              ) : (
-                <div className="px-3 py-2 text-xs text-gray-500 text-center">No years</div>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
-
-
-
 export default function DashboardClient({ 
   transactions, 
   dividends,
@@ -136,7 +74,6 @@ export default function DashboardClient({
     for(let y = 2025; y <= 2075; y++) {
       years.push(y)
     }
-    // Include any years from dividends if they are missing
     dividends.forEach(d => {
       const y = new Date(d.date).getFullYear()
       if(!years.includes(y)) years.push(y)
@@ -197,7 +134,6 @@ export default function DashboardClient({
       return acc
     }, 0)
     
-    // Unrealized P/L = Current Value - Invested Value
     const totalProfitLoss = currentPortfolioValue > 0 ? (currentPortfolioValue - totalInvested) : 0
 
     return { 
@@ -233,8 +169,6 @@ export default function DashboardClient({
   // 3. Trade Activity (Bar Chart - Monthly Breakdown)
   const activityData = useMemo(() => {
     const monthlyStats = new Map<string, any>()
-    
-    // Initialize 12 months for the selected year
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     months.forEach(m => {
       monthlyStats.set(`${m} ${selectedActivityYear.toString().slice(-2)}`, { 
@@ -281,7 +215,6 @@ export default function DashboardClient({
       }
     })
 
-    // Sort buyDetails and sellDetails by amount descending
     return Array.from(monthlyStats.values()).map(data => {
       data.buyDetails.sort((a: any, b: any) => b.amount - a.amount)
       data.sellDetails.sort((a: any, b: any) => b.amount - a.amount)
@@ -293,8 +226,6 @@ export default function DashboardClient({
   // 4. Dividend History (Bar Chart - Selected Year)
   const dividendHistoryData = useMemo(() => {
     const monthlyStats = new Map<string, { amount: number, details: { symbol: string, amount: number }[] }>()
-    
-    // Initialize 12 months for the selected year
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     months.forEach(m => {
       monthlyStats.set(`${m} ${selectedDividendYear.toString().slice(-2)}`, { amount: 0, details: [] })
@@ -369,110 +300,7 @@ export default function DashboardClient({
     return sellHistoryData.reduce((acc, curr) => acc + curr.amount, 0)
   }, [sellHistoryData])
 
-
-  // Tooltips
-  const CustomBarTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload
-      return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
-          <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
-          <p className="text-xs font-bold text-indigo-600 mb-2">
-            Total: ৳{data.buyAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </p>
-          {data.buyDetails && data.buyDetails.length > 0 && (
-            <div className="space-y-1.5">
-              {data.buyDetails.map((d: any, i: number) => (
-                <div key={i} className="flex justify-between items-center text-[11px]">
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">
-                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
-                  </span>
-                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">
-                    ৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )
-    }
-    return null
-  }
-
-  const CustomPieTooltip = ({ active, payload, type }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload
-      const percent = ((data.value / totalPortfolioValue) * 100).toFixed(1)
-      return (
-        <div className="bg-white dark:bg-gray-800 p-2.5 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg">
-          <p className="font-bold text-gray-900 dark:text-white text-xs">{data.name}</p>
-          {type === 'portfolio' && (
-            <p className="text-[10px] text-gray-600 dark:text-gray-300 mt-1">{dict.dashboard.shares}: {data.qty.toLocaleString()}</p>
-          )}
-          <p className="text-[10px] text-gray-600 dark:text-gray-300 mt-0.5">{dict.dashboard.invested}: ৳{data.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
-          <div className="mt-1.5 text-[10px] font-bold px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-md inline-block">
-            {percent}%
-          </div>
-        </div>
-      )
-    }
-    return null
-  }
-
-  const CustomDividendTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload
-      return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
-          <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
-          <p className="text-xs font-bold text-emerald-600 mb-2">
-            Total: ৳{data.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </p>
-          {data.details && data.details.length > 0 && (
-            <div className="space-y-1.5">
-              {data.details.map((d: any, i: number) => (
-                <div key={i} className="flex justify-between items-center text-[11px]">
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">{d.symbol}</span>
-                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )
-    }
-    return null
-  }
-
-  const CustomSellTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload
-      return (
-        <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
-          <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
-          <p className="text-xs font-bold text-rose-600 mb-2">
-            Total: ৳{data.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </p>
-          {data.details && data.details.length > 0 && (
-            <div className="space-y-1.5">
-              {data.details.map((d: any, i: number) => (
-                <div key={i} className="flex justify-between items-center text-[11px]">
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">
-                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
-                  </span>
-                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )
-    }
-    return null
-  }
-
-  // 5. Recent Trades
+  // 6. Recent Trades
   const recentTrades = useMemo(() => {
     return [...transactions]
       .sort((a, b) => new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime())
@@ -483,525 +311,37 @@ export default function DashboardClient({
   return (
     <div className="w-full space-y-3 px-4 sm:px-0">
       
-      {/* 1. KPI Cards Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {/* Total Invested */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-gray-900 p-4 rounded-xl border border-indigo-100/50 dark:border-indigo-800/30 shadow-md shadow-indigo-100/20 dark:shadow-none flex flex-col justify-between">
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[10px] font-semibold text-indigo-600/70 dark:text-indigo-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalInvested}</p>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                ৳{kpis.totalInvested.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </h2>
-            </div>
-            <div className="p-2 bg-indigo-100/50 dark:bg-indigo-900/50 rounded-lg backdrop-blur-sm">
-              <Wallet className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-indigo-400/10 dark:bg-indigo-600/10 rounded-full blur-2xl"></div>
-        </div>
-        
-        {/* Total Sell Amount */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-rose-50 to-white dark:from-rose-900/20 dark:to-gray-900 p-4 rounded-xl border border-rose-100/50 dark:border-rose-800/30 shadow-md shadow-rose-100/20 dark:shadow-none flex flex-col justify-between">
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[10px] font-semibold text-rose-600/70 dark:text-rose-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalSellAmount}</p>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                ৳{kpis.totalSellAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </h2>
-            </div>
-            <div className="p-2 bg-rose-100/50 dark:bg-rose-900/50 rounded-lg backdrop-blur-sm">
-              <TrendingDown className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-rose-400/10 dark:bg-rose-600/10 rounded-full blur-2xl"></div>
-        </div>
-        
-        {/* Total Dividend */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-900/20 dark:to-gray-900 p-4 rounded-xl border border-emerald-100/50 dark:border-emerald-800/30 shadow-md shadow-emerald-100/20 dark:shadow-none flex flex-col justify-between">
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[10px] font-semibold text-emerald-600/70 dark:text-emerald-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalDividend}</p>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                ৳{kpis.totalDividend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </h2>
-            </div>
-            <div className="p-2 bg-emerald-100/50 dark:bg-emerald-900/50 rounded-lg backdrop-blur-sm">
-              <Banknote className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-emerald-400/10 dark:bg-emerald-600/10 rounded-full blur-2xl"></div>
-        </div>
-        
-        {/* Total Shares */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 to-white dark:from-amber-900/20 dark:to-gray-900 p-4 rounded-xl border border-amber-100/50 dark:border-amber-800/30 shadow-md shadow-amber-100/20 dark:shadow-none flex flex-col justify-between">
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className="text-[10px] font-semibold text-amber-600/70 dark:text-amber-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalShares}</p>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                {kpis.totalShares.toLocaleString()}
-              </h2>
-            </div>
-            <div className="p-2 bg-amber-100/50 dark:bg-amber-900/50 rounded-lg backdrop-blur-sm">
-              <PieChartIcon className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-            </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-amber-400/10 dark:bg-amber-600/10 rounded-full blur-2xl"></div>
-        </div>
-        
-        {/* Unrealized Profit/Loss */}
-        <div className={`relative overflow-hidden bg-gradient-to-br p-4 rounded-xl border shadow-md flex flex-col justify-between ${kpis.totalProfitLoss > 0 ? 'from-green-50 to-white dark:from-green-900/20 dark:to-gray-900 border-green-100/50 dark:border-green-800/30 shadow-green-100/20 dark:shadow-none' : kpis.totalProfitLoss < 0 ? 'from-rose-50 to-white dark:from-rose-900/20 dark:to-gray-900 border-rose-100/50 dark:border-rose-800/30 shadow-rose-100/20 dark:shadow-none' : 'from-gray-50 to-white dark:from-gray-900/20 dark:to-gray-900 border-gray-100/50 dark:border-gray-800/30 shadow-gray-100/20 dark:shadow-none'}`}>
-          <div className="flex justify-between items-start relative z-10">
-            <div>
-              <p className={`text-[10px] font-semibold uppercase tracking-wider mb-0.5 ${kpis.totalProfitLoss > 0 ? 'text-green-600/70 dark:text-green-400' : kpis.totalProfitLoss < 0 ? 'text-rose-600/70 dark:text-rose-400' : 'text-gray-500'}`}>{dict.dashboard.unrealizedPL}</p>
-              <h2 className={`text-xl font-bold ${kpis.totalProfitLoss > 0 ? 'text-green-600 dark:text-green-400' : kpis.totalProfitLoss < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
-                {kpis.totalProfitLoss > 0 ? '+' : ''}৳{kpis.totalProfitLoss.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </h2>
-            </div>
-            <div className={`p-2 rounded-lg backdrop-blur-sm ${kpis.totalProfitLoss > 0 ? 'bg-green-100/50 dark:bg-green-900/50' : kpis.totalProfitLoss < 0 ? 'bg-rose-100/50 dark:bg-rose-900/50' : 'bg-gray-100/50 dark:bg-gray-800/50'}`}>
-              <TrendingUp className={`w-4 h-4 ${kpis.totalProfitLoss > 0 ? 'text-green-600 dark:text-green-400' : kpis.totalProfitLoss < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-400'}`} />
-            </div>
-          </div>
-          <div className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-2xl ${kpis.totalProfitLoss > 0 ? 'bg-green-400/10 dark:bg-green-600/10' : kpis.totalProfitLoss < 0 ? 'bg-rose-400/10 dark:bg-rose-600/10' : 'bg-gray-400/10 dark:bg-gray-600/10'}`}></div>
-        </div>
-      </div>
+      <DashboardSummaryCards kpis={kpis} dict={dict} />
+      
+      <DashboardPieCharts 
+        portfolioData={portfolioData} 
+        sectorData={sectorData} 
+        totalPortfolioValue={totalPortfolioValue} 
+        dict={dict} 
+        COLORS={COLORS} 
+      />
 
-      {/* 2. Charts Row 1: Pie Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        
-        {/* Left: Portfolio Allocation */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center">{dict.dashboard.portfolioAllocation}</h3>
-          
-          {portfolioData.length > 0 ? (
-            <div className="flex-grow flex items-center justify-between min-h-[220px]">
-              {/* Chart Side */}
-              <div className="w-[55%] h-[220px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={portfolioData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={85}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {portfolioData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="dark:hidden">
-                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#6b7280" fontWeight="600">{dict.dashboard.totalValue}</tspan>
-                      <tspan x="50%" dy="1.5em" fontSize="13" fill="#111827" fontWeight="900">
-                        ৳{(totalPortfolioValue / 1000).toFixed(0)}k
-                      </tspan>
-                    </text>
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="hidden dark:block">
-                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#9ca3af" fontWeight="600">{dict.dashboard.totalValue}</tspan>
-                      <tspan x="50%" dy="1.5em" fontSize="13" fill="#f3f4f6" fontWeight="900">
-                        ৳{(totalPortfolioValue / 1000).toFixed(0)}k
-                      </tspan>
-                    </text>
-                    <RechartsTooltip content={<CustomPieTooltip type="portfolio" />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              
-              {/* Info Side */}
-              <div className="w-[45%] flex flex-col justify-center space-y-4 pl-4 border-l border-gray-100 dark:border-gray-800">
-                <div>
-                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">Total Assets</p>
-                  <p className="text-xl font-black text-gray-900 dark:text-white">{portfolioData.length}</p>
-                </div>
-                
-                {portfolioData.length > 0 && (
-                  <div>
-                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1.5">{dict.dashboard.topHolding}</p>
-                    <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: COLORS[0] }}></span>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">{portfolioData[0].name}</span>
-                        <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
-                          {((portfolioData[0].value / totalPortfolioValue) * 100).toFixed(1)}% <span className="text-gray-400 font-normal">{dict.dashboard.alloc}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
-              {dict.dashboard.noHoldings}
-            </div>
-          )}
-        </div>
+      <DashboardBarCharts 
+        activityData={activityData}
+        dividendHistoryData={dividendHistoryData}
+        sellHistoryData={sellHistoryData}
+        selectedActivityYear={selectedActivityYear}
+        selectedDividendYear={selectedDividendYear}
+        selectedSellYear={selectedSellYear}
+        activityYears={activityYears}
+        dividendYears={dividendYears}
+        sellYears={sellYears}
+        setSelectedActivityYear={setSelectedActivityYear}
+        setSelectedDividendYear={setSelectedDividendYear}
+        setSelectedSellYear={setSelectedSellYear}
+        selectedYearTotalDividend={selectedYearTotalDividend}
+        selectedYearTotalSell={selectedYearTotalSell}
+        dict={dict}
+        theme={theme}
+      />
 
-        {/* Middle: Holdings Breakdown */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white text-center">{dict.dashboard.holdingsBreakdown}</h3>
-          {portfolioData.length > 0 ? (
-            <div className="flex-1 flex flex-col min-h-[220px] max-h-[220px] overflow-y-auto custom-scrollbar pr-2 mt-1 relative">
-              <div className="flex flex-col w-full text-left">
-                {/* Header Row */}
-                <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider pb-1 pt-1.5 border-b border-gray-100 dark:border-gray-800 mb-0.5 sticky top-0 bg-white dark:bg-gray-900 z-10">
-                  <div className="w-[30%]">{dict.dashboard.symbol}</div>
-                  <div className="w-[20%] text-right">{dict.dashboard.shares}</div>
-                  <div className="w-[30%] text-right">{dict.dashboard.invested}</div>
-                  <div className="w-[20%] text-right">{dict.dashboard.alloc}</div>
-                </div>
-                
-                {/* Data Rows */}
-                <div className="space-y-0">
-                  {portfolioData.map((item, index) => {
-                    const percent = totalPortfolioValue > 0 ? ((item.value / totalPortfolioValue) * 100).toFixed(1) : '0.0'
-                    return (
-                      <div key={index} className="flex items-center justify-between py-1 border-b border-gray-50 dark:border-gray-800/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors rounded-lg px-1 -mx-1">
-                        <div className="flex items-center gap-1.5 w-[30%]">
-                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                          <span className="text-xs font-bold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</span>
-                        </div>
-                        <div className="w-[20%] text-right text-[11px] font-medium text-gray-600 dark:text-gray-400 truncate">
-                          {item.qty.toLocaleString()}
-                        </div>
-                        <div className="w-[30%] text-right text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
-                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString()}
-                        </div>
-                        <div className="w-[20%] text-right">
-                          <span className="text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded">
-                            {percent}%
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex-grow flex items-center justify-center min-h-[220px] text-gray-400 text-sm">
-              {dict.dashboard.noHoldings}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 3. Sector Allocation Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        
-        {/* Left: Sector Allocation Chart */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 text-center">{dict.dashboard.sectorAllocation}</h3>
-          
-          {sectorData.length > 0 ? (
-            <div className="flex-grow flex items-center justify-between min-h-[220px]">
-              {/* Chart Side */}
-              <div className="w-[55%] h-[220px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={sectorData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={85}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {sectorData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[(index + 3) % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="dark:hidden">
-                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#6b7280" fontWeight="600">{dict.dashboard.sectors}</tspan>
-                      <tspan x="50%" dy="1.5em" fontSize="14" fill="#111827" fontWeight="900">
-                        {sectorData.length}
-                      </tspan>
-                    </text>
-                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="hidden dark:block">
-                      <tspan x="50%" dy="-0.5em" fontSize="11" fill="#9ca3af" fontWeight="600">{dict.dashboard.sectors}</tspan>
-                      <tspan x="50%" dy="1.5em" fontSize="14" fill="#f3f4f6" fontWeight="900">
-                        {sectorData.length}
-                      </tspan>
-                    </text>
-                    <RechartsTooltip content={<CustomPieTooltip type="sector" />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Info Side */}
-              <div className="w-[45%] flex flex-col justify-center space-y-4 pl-4 border-l border-gray-100 dark:border-gray-800">
-                <div>
-                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">{dict.dashboard.totalSectors}</p>
-                  <p className="text-xl font-black text-gray-900 dark:text-white">{sectorData.length}</p>
-                </div>
-                
-                {sectorData.length > 0 && (
-                  <div>
-                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1.5">{dict.dashboard.dominantSector}</p>
-                    <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 p-2 rounded-lg border border-gray-100 dark:border-gray-800">
-                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: COLORS[3 % COLORS.length] }}></span>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">{sectorData[0].name}</span>
-                        <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
-                          {((sectorData[0].value / totalPortfolioValue) * 100).toFixed(1)}% <span className="text-gray-400 font-normal">{dict.dashboard.alloc}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
-              {dict.dashboard.noSectorData}
-            </div>
-          )}
-        </div>
-
-        {/* Right: Sector Breakdown */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white text-center">{dict.dashboard.sectorBreakdown}</h3>
-          {sectorData.length > 0 ? (
-            <div className="flex-1 flex flex-col min-h-[220px] max-h-[220px] overflow-y-auto custom-scrollbar pr-2 mt-1 relative">
-              <div className="flex flex-col w-full text-left">
-                {/* Header Row */}
-                <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 uppercase tracking-wider pb-1 pt-1.5 border-b border-gray-100 dark:border-gray-800 mb-0.5 sticky top-0 bg-white dark:bg-gray-900 z-10">
-                  <div className="w-[50%]">{dict.dashboard.sector}</div>
-                  <div className="w-[25%] text-right">{dict.dashboard.invested}</div>
-                  <div className="w-[25%] text-right">{dict.dashboard.alloc}</div>
-                </div>
-                
-                {/* Data Rows */}
-                <div className="space-y-0">
-                  {sectorData.map((item, index) => {
-                    const percent = totalPortfolioValue > 0 ? ((item.value / totalPortfolioValue) * 100).toFixed(1) : '0.0'
-                    return (
-                      <div key={index} className="flex items-center justify-between py-1 border-b border-gray-50 dark:border-gray-800/50 last:border-0 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors rounded-lg px-1 -mx-1">
-                        <div className="flex items-center gap-1.5 w-[50%]">
-                          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[(index + 3) % COLORS.length] }}></span>
-                          <span className="text-xs font-bold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</span>
-                        </div>
-                        <div className="w-[25%] text-right text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
-                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString()}
-                        </div>
-                        <div className="w-[25%] text-right">
-                          <span className="text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded">
-                            {percent}%
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
-              {dict.dashboard.noSectorData}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 4. Monthly Trade Activity Bar Chart */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col w-full">
-        <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-            <div>
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.tradeActivity}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.monthlyBreakdown}</p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <YearSelect value={selectedActivityYear} onChange={setSelectedActivityYear} years={activityYears} />
-            </div>
-          </div>
-          
-          {activityData.length > 0 ? (
-            <div className="flex-grow min-h-[200px]">
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={activityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis 
-                    dataKey="date" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: '#6b7280', fontSize: 10 }} 
-                    dy={10}
-                  />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: '#6b7280', fontSize: 10 }}
-                    tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
-                  />
-                  <RechartsTooltip content={<CustomBarTooltip />} cursor={{ fill: theme === 'dark' ? '#1e293b' : '#f3f4f6' }} />
-                  <Bar dataKey="buyAmount" fill="#4f46e5" radius={[4, 4, 0, 0]} maxBarSize={40} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="flex-grow flex items-center justify-center min-h-[200px] text-gray-400 text-sm">
-              {dict.dashboard.noTrades}
-            </div>
-          )}
-        </div>
-
-      {/* 5. Dividend History Row */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-        <div className="mb-4 flex justify-between items-center">
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.dividendIncome}</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.monthlyBreakdown}</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <YearSelect 
-              value={selectedDividendYear}
-              onChange={(y) => setSelectedDividendYear(y)}
-              years={dividendYears}
-            />
-            <div className="text-right hidden sm:block bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
-              <p className="text-[13px] font-extrabold text-emerald-600 dark:text-emerald-400">
-                ৳{selectedYearTotalDividend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex-grow min-h-[250px]">
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={dividendHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="date" 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#6b7280', fontSize: 10 }} 
-                dy={10}
-              />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#6b7280', fontSize: 10 }}
-                tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
-              />
-              <RechartsTooltip content={<CustomDividendTooltip />} cursor={{ fill: theme === 'dark' ? '#1e293b' : '#f3f4f6' }} />
-              <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* 6. Sell Income Row */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-        <div className="mb-4 flex justify-between items-center">
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.sellIncome}</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict.dashboard.monthlyBreakdown}</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <YearSelect 
-              value={selectedSellYear}
-              onChange={(y) => setSelectedSellYear(y)}
-              years={sellYears}
-            />
-            <div className="text-right hidden sm:block bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-lg border border-rose-100 dark:border-rose-800/30">
-              <p className="text-[13px] font-extrabold text-rose-600 dark:text-rose-400">
-                ৳{selectedYearTotalSell.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex-grow min-h-[250px]">
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={sellHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="date" 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#6b7280', fontSize: 10 }} 
-                dy={10}
-              />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#6b7280', fontSize: 10 }}
-                tickFormatter={(val) => `৳${(val/1000).toFixed(0)}k`}
-              />
-              <RechartsTooltip content={<CustomSellTooltip />} cursor={{ fill: theme === 'dark' ? '#1e293b' : '#f3f4f6' }} />
-              <Bar dataKey="amount" fill="#e11d48" radius={[4, 4, 0, 0]} maxBarSize={40} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* 7. Recent Trades Row */}
-      <div className="bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden w-full">
-        <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-white">{dict.dashboard.recentTrades}</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-800">
-            <thead className="bg-white dark:bg-gray-800/30">
-              <tr>
-                <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{dict.dashboard.symbol}</th>
-                <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{dict.dashboard.date}</th>
-                <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{dict.dashboard.type}</th>
-                <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{dict.dashboard.quantity}</th>
-                <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{dict.dashboard.price}</th>
-                <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{dict.dashboard.current}</th>
-                <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">{dict.dashboard.total}</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-50 dark:divide-gray-800">
-              {recentTrades.length > 0 ? (
-                recentTrades.map((txn) => {
-                  const total = (txn.quantity * txn.price_per_unit) + (txn.type === 'BUY' ? txn.brokerage_fee : -txn.brokerage_fee)
-                  return (
-                    <tr key={txn.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="text-[13px] font-bold text-gray-900 dark:text-white">{txn.stocks.symbol}</div>
-                        <div className="text-[10px] text-gray-500 truncate max-w-[200px]">{txn.stocks.company_name}</div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-[12px] font-medium text-gray-500">
-                        {new Date(txn.transaction_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${
-                          txn.type === 'BUY' ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400' : 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400'
-                        }`}>
-                          {txn.type}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-[12px] text-gray-900 dark:text-white text-right font-semibold">
-                        {txn.quantity.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-[12px] text-gray-900 dark:text-white text-right">
-                        {txn.price_per_unit.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-[12px] text-indigo-600 dark:text-indigo-400 font-semibold text-right">
-                        {txn.stocks.current_price ? txn.stocks.current_price.toFixed(2) : '-'}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-[12px] font-bold text-gray-900 dark:text-white text-right hidden sm:table-cell">
-                        {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </td>
-                    </tr>
-                  )
-                })
-              ) : (
-                <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-[13px] text-gray-500">
-                    No trades found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <RecentTradesTable recentTrades={recentTrades} dict={dict} />
+      
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import DividendsClient from './DividendsClient'
+import DividendsClient from '@/components/dividends/DividendsClient'
 import prisma from '@/lib/prisma'
 import { getDictionary } from '@/i18n/getDictionary'
 

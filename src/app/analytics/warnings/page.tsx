@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import WarningsClient from './WarningsClient'
+import WarningsClient from '@/components/analytics/warnings/WarningsClient'
 
 export const metadata = {
   title: 'Risk Warnings - TrackFolio',

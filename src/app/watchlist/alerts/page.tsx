@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
-import PriceAlertsClient from './PriceAlertsClient'
+import PriceAlertsClient from '@/components/watchlist/alerts/PriceAlertsClient'
 import { getPriceAlerts, getWatchlistSymbols } from '../actions'
 import { getDictionary } from '@/i18n/getDictionary'
 
