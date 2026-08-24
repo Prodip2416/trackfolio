@@ -12,11 +12,13 @@ type ReportType = 'BUY' | 'SELL' | 'DIVIDEND'
 export default function GenericReportClient({
   reportType,
   uniqueStocks,
-  uniqueYears
+  uniqueYears,
+  dict
 }: {
   reportType: ReportType
   uniqueStocks: string[]
   uniqueYears: string[]
+  dict?: any
 }) {
   const [filterStock, setFilterStock] = useState('ALL')
   const [filterYear, setFilterYear] = useState(new Date().getFullYear().toString())
@@ -24,7 +26,7 @@ export default function GenericReportClient({
   const [isLoading, setIsLoading] = useState(true)
 
   const yearOptions = useMemo(() => {
-    const options = [{ label: 'All Years', value: 'ALL' }]
+    const options = [{ label: dict?.reports?.allYears || 'All Years', value: 'ALL' }]
     for (let i = 2025; i <= 2075; i++) {
       options.push({ label: i.toString(), value: i.toString() })
     }
@@ -32,7 +34,7 @@ export default function GenericReportClient({
   }, [])
 
   const stockOptions = useMemo(() => {
-    const options = [{ label: 'All Stocks', value: 'ALL' }]
+    const options = [{ label: dict?.reports?.allStocks || 'All Stocks', value: 'ALL' }]
     uniqueStocks.forEach(sym => {
       options.push({ label: sym, value: sym })
     })
@@ -139,12 +141,22 @@ export default function GenericReportClient({
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white transition-colors">{reportType.charAt(0) + reportType.slice(1).toLowerCase()} Report</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors">Detailed log of all {reportType.toLowerCase()}s with export options.</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white transition-colors">
+              {reportType === 'BUY' && (dict?.reports?.buyReport || 'Buy Report')}
+              {reportType === 'SELL' && (dict?.reports?.sellReport || 'Sell Report')}
+              {reportType === 'DIVIDEND' && (dict?.reports?.dividendReport || 'Dividend Report')}
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors">
+              {reportType === 'BUY' && (dict?.reports?.buyDesc || 'Detailed log of all buys with export options.')}
+              {reportType === 'SELL' && (dict?.reports?.sellDesc || 'Detailed log of all sells with export options.')}
+              {reportType === 'DIVIDEND' && (dict?.reports?.dividendDesc || 'Detailed log of all dividends with export options.')}
+            </p>
           </div>
 
           <div className="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm flex flex-col transition-colors">
-             <span className="text-[10px] font-bold tracking-wider uppercase text-gray-500 dark:text-gray-400 transition-colors">Filtered Total</span>
+             <span className="text-[10px] font-bold tracking-wider uppercase text-gray-500 dark:text-gray-400 transition-colors">
+               {dict?.reports?.filteredTotal || 'Filtered Total'}
+             </span>
              <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400 transition-colors">
                ৳{currentTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
              </span>
@@ -163,9 +175,9 @@ export default function GenericReportClient({
                   options={stockOptions}
                   value={filterStock}
                   onChange={setFilterStock}
-                  placeholder="All Stocks"
-                  searchPlaceholder="Search stock..."
-                  buttonClassName="px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
+                  placeholder={dict?.reports?.allStocks || 'All Stocks'}
+                  searchPlaceholder={dict?.reports?.searchStock || 'Search stock...'}
+                  buttonClassName="px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
                 />
               </div>
 
@@ -174,9 +186,9 @@ export default function GenericReportClient({
                   options={yearOptions}
                   value={filterYear}
                   onChange={setFilterYear}
-                  placeholder="All Years"
-                  searchPlaceholder="Search year..."
-                  buttonClassName="px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
+                  placeholder={dict?.reports?.allYears || 'All Years'}
+                  searchPlaceholder={dict?.reports?.searchYear || 'Search year...'}
+                  buttonClassName="px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
                 />
               </div>
 
@@ -188,7 +200,7 @@ export default function GenericReportClient({
                   }}
                   className="px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
                 >
-                  Clear
+                  {dict?.reports?.clear || 'Clear'}
                 </button>
               )}
             </div>
@@ -200,7 +212,7 @@ export default function GenericReportClient({
                 className="flex items-center px-3 py-1.5 text-xs font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors shadow-sm cursor-pointer disabled:cursor-not-allowed"
               >
                 <Download className="w-3.5 h-3.5 mr-1.5" />
-                CSV
+                {dict?.reports?.csv || 'CSV'}
               </button>
               <button
                 onClick={handleExportExcel}
@@ -208,7 +220,7 @@ export default function GenericReportClient({
                 className="flex items-center px-3 py-1.5 text-xs font-bold text-white bg-green-600 dark:bg-green-700 border border-transparent rounded-lg hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 transition-colors shadow-sm cursor-pointer disabled:cursor-not-allowed"
               >
                 <Download className="w-3.5 h-3.5 mr-1.5" />
-                Excel
+                {dict?.reports?.excel || 'Excel'}
               </button>
             </div>
           </div>
@@ -227,20 +239,20 @@ export default function GenericReportClient({
               <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800 transition-colors relative">
                 <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-20 backdrop-blur-md transition-colors shadow-sm">
                   <tr>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Stock</th>
-                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Date</th>
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.stock || 'Stock'}</th>
+                    <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.date || 'Date'}</th>
                     {reportType === 'DIVIDEND' ? (
                       <>
-                        <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Type</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Cash (৳)</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Bonus Shares</th>
+                        <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.type || 'Type'}</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.cash || 'Cash (৳)'}</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.bonusShares || 'Bonus Shares'}</th>
                       </>
                     ) : (
                       <>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Quantity</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Price (৳)</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider hidden sm:table-cell">Fee (৳)</th>
-                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Total (৳)</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.quantity || 'Quantity'}</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.price || 'Price (৳)'}</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider hidden sm:table-cell">{dict?.table?.fee || 'Fee (৳)'}</th>
+                        <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.total || 'Total (৳)'}</th>
                       </>
                     )}
                   </tr>
@@ -303,7 +315,7 @@ export default function GenericReportClient({
                   ) : (
                     <tr>
                       <td colSpan={reportType === 'DIVIDEND' ? 5 : 6} className="px-6 py-12 text-center text-gray-500">
-                        {isLoading ? '' : `No records match your current filters.`}
+                        {isLoading ? '' : (dict?.reports?.noRecords || 'No records match your current filters.')}
                       </td>
                     </tr>
                   )}
@@ -313,7 +325,7 @@ export default function GenericReportClient({
 
             <div className="bg-gray-50/50 dark:bg-slate-900/50 px-6 py-3 border-t border-gray-100 dark:border-slate-800 rounded-b-2xl flex items-center justify-end transition-colors shrink-0">
               <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
-                Total Records: <span className="text-gray-900 dark:text-white ml-1">{data.length}</span>
+                {dict?.reports?.totalRecords || 'Total Records:'} <span className="text-gray-900 dark:text-white ml-1">{data.length}</span>
               </span>
             </div>
           </div>

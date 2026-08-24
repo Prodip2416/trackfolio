@@ -85,16 +85,16 @@ export default function PriceAlertsClient({
   }
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-3">
+    <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-2">
       {/* Header */}
       <div className="flex justify-between items-center shrink-0">
         <div>
           <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
             <Bell className="w-5 h-5 mr-2 text-indigo-500" />
-            Price Alerts
+            {dict?.priceAlerts?.priceAlerts || 'Price Alerts'}
           </h1>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Set buy/sell price ranges. Get notified when live price enters your range.
+            {dict?.priceAlerts?.description || 'Set buy/sell price ranges. Get notified when live price enters your range.'}
           </p>
         </div>
         <button
@@ -103,14 +103,14 @@ export default function PriceAlertsClient({
           className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus className="w-5 h-5 mr-2" />
-          New Alert
+          {dict?.priceAlerts?.newAlert || 'New Alert'}
         </button>
       </div>
 
       {watchlistSymbols.length === 0 && (
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded-xl p-4 text-sm text-amber-800 dark:text-amber-400">
-          <p className="font-semibold">No stocks in your watchlist yet.</p>
-          <p className="mt-1 text-xs">Add stocks to your watchlist first, then set price alerts for them.</p>
+          <p className="font-semibold">{dict?.priceAlerts?.noStocks || 'No stocks in your watchlist yet.'}</p>
+          <p className="mt-1 text-xs">{dict?.priceAlerts?.addStocksFirst || 'Add stocks to your watchlist first, then set price alerts for them.'}</p>
         </div>
       )}
 
@@ -123,6 +123,7 @@ export default function PriceAlertsClient({
           openEditModal={openEditModal}
           setDeleteItem={setDeleteItem}
           deletingId={deletingId}
+          dict={dict}
         />
       </div>
 
@@ -132,6 +133,8 @@ export default function PriceAlertsClient({
         onClose={() => setIsModalOpen(false)}
         editingAlert={editingAlert}
         watchlistSymbols={watchlistSymbols}
+        alerts={alerts}
+        dict={dict}
       />
 
       {/* Delete Confirmation Modal */}

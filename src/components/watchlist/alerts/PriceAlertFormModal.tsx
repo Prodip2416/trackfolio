@@ -35,13 +35,17 @@ interface PriceAlertFormModalProps {
   onClose: () => void
   editingAlert: PriceAlert | null
   watchlistSymbols: WatchlistSymbol[]
+  alerts?: PriceAlert[]
+  dict?: any
 }
 
 export default function PriceAlertFormModal({ 
   isOpen, 
   onClose, 
   editingAlert, 
-  watchlistSymbols 
+  watchlistSymbols,
+  alerts,
+  dict
 }: PriceAlertFormModalProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -69,9 +73,65 @@ export default function PriceAlertFormModal({
     }
   }, [isOpen, editingAlert])
 
+  const handleSymbolChange = (newSymbol: string) => {
+    setSymbol(newSymbol)
+    const existing = alerts?.find(a => a.symbol === newSymbol)
+    if (existing && !editingAlert) {
+      setBuyMin(existing.buy_min_price?.toString() || '')
+      setBuyMax(existing.buy_max_price?.toString() || '')
+      setSellMin(existing.sell_min_price?.toString() || '')
+      setSellMax(existing.sell_max_price?.toString() || '')
+      toast.success(dict?.alertForm?.loadedExisting || 'Loaded existing alert details.')
+    } else if (!editingAlert) {
+      setBuyMin('')
+      setBuyMax('')
+      setSellMin('')
+      setSellMax('')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!symbol) {
+      toast.error('Please select a stock.')
+      return
+    }
+
     setIsSubmitting(true)
+
+    const bMin = buyMin ? parseFloat(buyMin) : null
+    const bMax = buyMax ? parseFloat(buyMax) : null
+    const sMin = sellMin ? parseFloat(sellMin) : null
+    const sMax = sellMax ? parseFloat(sellMax) : null
+
+    // Negative value check
+    if ((bMin !== null && bMin < 0) || 
+        (bMax !== null && bMax < 0) || 
+        (sMin !== null && sMin < 0) || 
+        (sMax !== null && sMax < 0)) {
+      toast.error(dict?.alertForm?.valNegative || 'Price values cannot be negative.')
+      setIsSubmitting(false)
+      return
+    }
+
+    if (bMin !== null && bMax !== null && bMax <= bMin) {
+      toast.error(dict?.alertForm?.valBuyMax || 'Buy max price must be greater than min price.')
+      setIsSubmitting(false)
+      return
+    }
+
+    if (sMin !== null && sMax !== null && sMax <= sMin) {
+      toast.error(dict?.alertForm?.valSellMax || 'Sell max price must be greater than min price.')
+      setIsSubmitting(false)
+      return
+    }
+
+    if (bMax !== null && sMin !== null && sMin <= bMax) {
+      toast.error(dict?.alertForm?.valSellMinBuyMax || 'Sell min price must be greater than Buy max price.')
+      setIsSubmitting(false)
+      return
+    }
 
     const formData = new FormData()
     formData.append('symbol', symbol)
@@ -86,7 +146,10 @@ export default function PriceAlertFormModal({
     if (result?.error) {
       toast.error(result.error)
     } else {
-      toast.success(editingAlert ? 'Price alert updated!' : 'Price alert created!')
+      toast.success(editingAlert 
+        ? (dict?.alertForm?.alertUpdated || 'Price alert updated!') 
+        : (dict?.alertForm?.alertCreated || 'Price alert created!')
+      )
       onClose()
       router.refresh()
     }
@@ -106,10 +169,10 @@ export default function PriceAlertFormModal({
         
         <div className="px-6 pt-6 pb-2 flex-shrink-0">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            {editingAlert ? 'Edit Price Alert' : 'New Price Alert'}
+            {editingAlert ? (dict?.alertForm?.editAlert || 'Edit Price Alert') : (dict?.alertForm?.newAlert || 'New Price Alert')}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm">
-            Set buy and sell price ranges for this stock.
+            {dict?.alertForm?.description || 'Set buy and sell price ranges for this stock.'}
           </p>
         </div>
 
@@ -118,7 +181,7 @@ export default function PriceAlertFormModal({
             {/* Stock Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Select Stock
+                {dict?.alertForm?.selectStock || 'Select Stock'}
               </label>
               {editingAlert ? (
                 <div className="flex items-center justify-between p-3 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 rounded-xl">
@@ -134,7 +197,7 @@ export default function PriceAlertFormModal({
                     value: s.symbol
                   }))}
                   value={symbol}
-                  onChange={(val) => setSymbol(val)}
+                  onChange={handleSymbolChange}
                   placeholder="Select a stock..."
                   searchPlaceholder="Search stock..."
                   buttonClassName="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white text-gray-900"
@@ -147,12 +210,12 @@ export default function PriceAlertFormModal({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <span className="inline-flex items-center">
                   <TrendingDown className="w-4 h-4 mr-1 text-green-600 dark:text-green-400" />
-                  Buy Price Range
+                  {dict?.alertForm?.buyPriceRange || 'Buy Price Range'}
                 </span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Min Price (৳)</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{dict?.alertForm?.minPrice || 'Min Price (৳)'}</label>
                   <input
                     type="number"
                     step="0.01"
@@ -164,7 +227,7 @@ export default function PriceAlertFormModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Max Price (৳)</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{dict?.alertForm?.maxPrice || 'Max Price (৳)'}</label>
                   <input
                     type="number"
                     step="0.01"
@@ -177,7 +240,7 @@ export default function PriceAlertFormModal({
                 </div>
               </div>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
-                Alert when price is between min and max (e.g., 20-25 tk)
+                {dict?.alertForm?.buyHint || 'Alert when price is between min and max'} (e.g., 20-25 tk)
               </p>
             </div>
 
@@ -186,12 +249,12 @@ export default function PriceAlertFormModal({
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <span className="inline-flex items-center">
                   <TrendingUp className="w-4 h-4 mr-1 text-red-600 dark:text-red-400" />
-                  Sell Price Range
+                  {dict?.alertForm?.sellPriceRange || 'Sell Price Range'}
                 </span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Min Price (৳)</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{dict?.alertForm?.minPrice || 'Min Price (৳)'}</label>
                   <input
                     type="number"
                     step="0.01"
@@ -203,7 +266,7 @@ export default function PriceAlertFormModal({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Max Price (৳)</label>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{dict?.alertForm?.maxPrice || 'Max Price (৳)'}</label>
                   <input
                     type="number"
                     step="0.01"
@@ -216,7 +279,7 @@ export default function PriceAlertFormModal({
                 </div>
               </div>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
-                Alert when price is between min and max (e.g., 300-320 tk)
+                {dict?.alertForm?.sellHint || 'Alert when price is between min and max'} (e.g., 300-320 tk)
               </p>
             </div>
 
@@ -228,10 +291,10 @@ export default function PriceAlertFormModal({
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Saving...</span>
+                  <span>{dict?.alertForm?.saving || 'Saving...'}</span>
                 </>
               ) : (
-                <span>{editingAlert ? 'Update Alert' : 'Save Alert'}</span>
+                <span>{editingAlert ? (dict?.alertForm?.updateAlert || 'Update Alert') : (dict?.alertForm?.saveAlert || 'Save Alert')}</span>
               )}
             </button>
           </form>

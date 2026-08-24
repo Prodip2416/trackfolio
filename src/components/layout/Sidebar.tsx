@@ -9,6 +9,9 @@ import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
 import { useTheme } from 'next-themes'
+import { Pacifico } from 'next/font/google'
+
+const pacifico = Pacifico({ subsets: ['latin'], weight: ['400'] })
 
 export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const pathname = usePathname() || ''
@@ -123,7 +126,9 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
     <div className="w-64 bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-150 border-r border-gray-200/50 dark:border-slate-800 h-screen sticky top-0 flex flex-col shadow-sm print:hidden transition-colors duration-200">
       <div className="h-16 flex items-center px-6 border-b border-gray-200/50 dark:border-slate-800 transition-colors duration-200">
         <Link href="/" className="block hover:opacity-80 transition-opacity">
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight transition-colors duration-200">Track<span className="text-indigo-600 dark:text-indigo-500">Folio</span></h1>
+          <h1 className={`text-3xl tracking-wide ${pacifico.className} text-gray-900 dark:text-white font-normal transition-colors duration-200`}>
+            Track<span className="text-indigo-500">Folio</span>
+          </h1>
         </Link>
       </div>
       
@@ -335,7 +340,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
           <div className="flex flex-col items-center bg-white dark:bg-slate-800 px-6 py-4 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 dark:border-slate-700">
             <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin mb-2" />
-            <span className="text-sm font-bold text-gray-700 dark:text-gray-200">Logging out...</span>
+            <span className="text-sm font-bold text-gray-700 dark:text-gray-200">{dict?.sidebar?.loggingOut || 'Logging out...'}</span>
           </div>
         </div>,
         document.body

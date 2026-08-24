@@ -31,7 +31,7 @@ export default function HistoryFilters({
   return (
     <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl flex flex-row flex-wrap justify-between items-center gap-3 relative z-30 transition-colors shrink-0">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="hidden sm:flex items-center justify-center w-8 h-8 bg-white border border-gray-200 rounded-lg shadow-sm text-gray-400">
+        <div className="hidden sm:flex items-center justify-center w-8 h-8 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-gray-400 dark:text-gray-500 transition-colors">
           <Filter className="w-3.5 h-3.5" />
         </div>
         
@@ -42,7 +42,7 @@ export default function HistoryFilters({
             onChange={setFilterStock}
             placeholder="All Stocks"
             searchPlaceholder="Search stock..."
-            buttonClassName="px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
+            buttonClassName="px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
           />
         </div>
 
@@ -53,7 +53,7 @@ export default function HistoryFilters({
             onChange={setFilterYear}
             placeholder="All Years"
             searchPlaceholder="Search year..."
-            buttonClassName="px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
+            buttonClassName="px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
           />
         </div>
 
@@ -64,7 +64,7 @@ export default function HistoryFilters({
             onChange={setFilterMonth}
             placeholder="All Months"
             searchPlaceholder="Search month..."
-            buttonClassName="px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
+            buttonClassName="px-3 py-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm text-xs font-medium min-h-[34px]"
           />
         </div>
 
