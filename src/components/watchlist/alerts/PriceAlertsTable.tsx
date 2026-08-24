@@ -33,6 +33,7 @@ interface PriceAlertsTableProps {
   openEditModal: (alert: PriceAlert) => void
   setDeleteItem: (item: {id: string, symbol: string}) => void
   deletingId: string | null
+  dict?: any
 }
 
 export default function PriceAlertsTable({
@@ -41,7 +42,8 @@ export default function PriceAlertsTable({
   openAddModal,
   openEditModal,
   setDeleteItem,
-  deletingId
+  deletingId,
+  dict
 }: PriceAlertsTableProps) {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -119,67 +121,67 @@ export default function PriceAlertsTable({
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      <div className="px-6 py-3 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50 shrink-0 transition-colors">
+      <div className="px-6 py-2 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50 shrink-0 transition-colors">
         <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-          {alerts.length} {alerts.length === 1 ? 'Alert' : 'Alerts'} Active
+          {alerts.length} {alerts.length === 1 ? (dict?.priceAlerts?.alertActive || 'Alert Active') : (dict?.priceAlerts?.alertsActive || 'Alerts Active')}
         </h3>
       </div>
       <div className="flex-1 overflow-auto custom-scrollbar">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-800 relative transition-colors">
           <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-20 shadow-sm transition-colors backdrop-blur-md">
             <tr>
-              <th scope="col" className="px-4 py-2.5 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Stock</th>
-              <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Live Price</th>
-              <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Buy Range</th>
-              <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Buy Status</th>
-              <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Sell Range</th>
-              <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Sell Status</th>
-              <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Actions</th>
+              <th scope="col" className="px-4 py-2 text-left text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.stock || 'Stock'}</th>
+              <th scope="col" className="px-4 py-2 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.livePrice || 'Live Price'}</th>
+              <th scope="col" className="px-4 py-2 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.buyRange || 'Buy Range'}</th>
+              <th scope="col" className="px-4 py-2 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.status || 'Buy Status'}</th>
+              <th scope="col" className="px-4 py-2 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.sellRange || 'Sell Range'}</th>
+              <th scope="col" className="px-4 py-2 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.status || 'Sell Status'}</th>
+              <th scope="col" className="px-4 py-2 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict?.table?.actions || 'Actions'}</th>
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
             {currentAlerts.map((alert) => (
               <tr key={alert.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800/80 transition-colors group">
-                <td className="px-4 py-2 whitespace-nowrap">
+                <td className="px-4 py-1.5 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900/40 dark:to-slate-800 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-bold shadow-sm border border-indigo-100/50 dark:border-indigo-800 mr-3 text-xs">
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900/40 dark:to-slate-800 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-bold shadow-sm border border-indigo-100/50 dark:border-indigo-800 mr-3 text-[11px]">
                       {alert.symbol.charAt(0)}
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-gray-900 dark:text-white">{alert.symbol}</div>
-                      <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[150px]">{alert.company_name}</div>
+                      <div className="text-xs font-bold text-gray-900 dark:text-white leading-tight">{alert.symbol}</div>
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate max-w-[150px] leading-tight mt-0.5">{alert.company_name}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-right">
+                <td className="px-4 py-1.5 whitespace-nowrap text-right">
                   <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
                     {formatPrice(alert.current_price)}
                   </span>
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-center">
+                <td className="px-4 py-1.5 whitespace-nowrap text-center">
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                     {getRangeText(alert.buy_min_price, alert.buy_max_price)}
                   </span>
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-center">
+                <td className="px-4 py-1.5 whitespace-nowrap text-center">
                   {getStatusBadge(alert.buy_status, 'buy')}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-center">
+                <td className="px-4 py-1.5 whitespace-nowrap text-center">
                   <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                     {getRangeText(alert.sell_min_price, alert.sell_max_price)}
                   </span>
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-center">
+                <td className="px-4 py-1.5 whitespace-nowrap text-center">
                   {getStatusBadge(alert.sell_status, 'sell')}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
+                <td className="px-4 py-1.5 whitespace-nowrap text-right text-xs font-medium">
                   <div className="flex items-center justify-end space-x-3">
                     <button
                       onClick={() => openEditModal(alert)}
                       className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors cursor-pointer"
                       title="Edit Alert"
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => setDeleteItem({ id: alert.id, symbol: alert.symbol })}
@@ -188,9 +190,9 @@ export default function PriceAlertsTable({
                       title="Delete Alert"
                     >
                       {deletingId === alert.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       ) : (
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       )}
                     </button>
                   </div>
@@ -203,27 +205,65 @@ export default function PriceAlertsTable({
       
       {/* Pagination Controls */}
       {alerts.length > itemsPerPage && (
-        <div className="px-6 py-3 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Showing <span className="font-medium text-gray-900 dark:text-white">{((currentPage - 1) * itemsPerPage) + 1}</span> to <span className="font-medium text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, alerts.length)}</span> of <span className="font-medium text-gray-900 dark:text-white">{alerts.length}</span> entries
+        <div className="bg-gray-50/50 dark:bg-slate-900/50 px-6 py-4 border-t border-gray-100 dark:border-slate-800 rounded-b-2xl flex items-center justify-between transition-colors shrink-0">
+          <div className="hidden sm:block">
+            <p className="text-[13px] text-gray-500 dark:text-gray-400">
+              Showing page <span className="font-semibold text-gray-900 dark:text-white">{currentPage}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
+            </p>
           </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          <div className="flex-1 flex justify-between sm:justify-end gap-2">
+            <button 
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="p-1 rounded-md border border-gray-200 dark:border-slate-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Previous
             </button>
-            <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
-              {currentPage} / {totalPages}
+
+            {/* Page Numbers */}
+            <div className="hidden sm:flex items-center gap-1 mx-2">
+              {(() => {
+                const pages = [];
+                if (totalPages <= 5) {
+                  for (let i = 1; i <= totalPages; i++) pages.push(i);
+                } else {
+                  if (currentPage <= 3) {
+                    pages.push(1, 2, 3, 4, '...', totalPages);
+                  } else if (currentPage >= totalPages - 2) {
+                    pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                  } else {
+                    pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+                  }
+                }
+                return pages.map((page, index) => {
+                  if (page === '...') {
+                    return <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
+                  }
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page as number)}
+                      className={`relative inline-flex items-center justify-center min-w-[32px] h-8 px-1 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                        page === currentPage
+                          ? 'bg-indigo-600 text-white shadow-sm border border-indigo-600'
+                          : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-100 dark:hover:bg-slate-700 disabled:opacity-50'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                });
+              })()}
             </div>
-            <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+
+            <button 
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="p-1 rounded-md border border-gray-200 dark:border-slate-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              <ChevronRight className="w-4 h-4" />
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
             </button>
           </div>
         </div>

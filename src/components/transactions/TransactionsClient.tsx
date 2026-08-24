@@ -38,15 +38,15 @@ export default function TransactionsClient({ initialTransactions, dict }: { init
     <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-3">
       <div className="flex justify-between items-center shrink-0">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Trade Log</h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage and track your latest trades.</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">{dict?.transactions?.tradeLog || 'Trade Log'}</h1>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict?.transactions?.description || 'Manage and track your latest trades.'}</p>
         </div>
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
           >
             <Plus className="w-5 h-5 mr-2" />
-            New Trade
+            {dict?.transactions?.newTrade || 'New Trade'}
           </button>
         </div>
 
@@ -57,22 +57,22 @@ export default function TransactionsClient({ initialTransactions, dict }: { init
               <div className="mx-auto w-16 h-16 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center mb-4">
                 <Plus className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">No transactions yet</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">{dict?.transactions?.noTransactions || 'No transactions yet'}</h3>
               <p className="text-gray-500 dark:text-gray-400 mt-1 mb-6 max-w-sm mx-auto">
-                Log your first buy or sell order to start building your portfolio.
+                {dict?.transactions?.noTransactionsDesc || 'Log your first buy or sell order to start building your portfolio.'}
               </p>
               <button
                 onClick={() => setIsAddModalOpen(true)}
                 className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 <Plus className="w-5 h-5 mr-2" />
-                Add Your First Trade
+                {dict?.transactions?.addFirstTrade || 'Add Your First Trade'}
               </button>
             </div>
           ) : (
             <div className="flex-1 flex flex-col min-h-0">
               <div className="px-6 py-3 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50 shrink-0 transition-colors">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Latest 10 Trades</h3>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{dict?.transactions?.latest10 || 'Latest 10 Trades'}</h3>
               </div>
               <div className="flex-1 overflow-auto custom-scrollbar">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-800 relative transition-colors">

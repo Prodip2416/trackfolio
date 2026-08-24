@@ -30,8 +30,6 @@ export default function AddStockModal({ isOpen, onClose, watchlist }: AddStockMo
   const [results, setResults] = useState<DSECompany[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
   // Debounced search
   useEffect(() => {
     if (!isOpen) return
@@ -54,17 +52,7 @@ export default function AddStockModal({ isOpen, onClose, watchlist }: AddStockMo
     return () => clearTimeout(timer)
   }, [query, isOpen])
 
-  // Handle outside click to close results
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setResults([])
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
+  // Removed outside click handler that was clearing results prematurely
   const handleAdd = async (symbol: string) => {
     setIsAdding(true)
     const result = await addToWatchlist(symbol)
@@ -102,7 +90,7 @@ export default function AddStockModal({ isOpen, onClose, watchlist }: AddStockMo
         </div>
 
         <div className="p-4 flex-shrink-0 bg-gray-50/50 dark:bg-gray-900/50">
-          <div className="relative" ref={dropdownRef}>
+          <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"

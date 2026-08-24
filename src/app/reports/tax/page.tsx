@@ -3,6 +3,8 @@ import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AppLayout from '@/components/layout/AppLayout'
 import TaxReportClient from '@/components/reports/tax/TaxReportClient'
+import { getDictionary } from '@/i18n/getDictionary'
+import { cookies } from 'next/headers'
 
 export const metadata = {
   title: 'Tax & Capital Gain Report - TrackFolio',
@@ -147,12 +149,15 @@ export default async function TaxReportPage() {
     availableYears.push(getFinancialYear(new Date()))
   }
 
+  const dict = await getDictionary()
+
   return (
-    <AppLayout user={user} title="Tax & Capital Gain Report">
+    <AppLayout user={user} title={dict?.reports?.taxTitle || "Tax & Capital Gain Report"}>
       <TaxReportClient 
         availableYears={availableYears}
         dividendsByFY={dividendsByFY}
         capitalGainsByFY={capitalGainsByFY}
+        dict={dict}
       />
     </AppLayout>
   )
