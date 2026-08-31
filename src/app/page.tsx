@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import DashboardClient from '@/components/dashboard/DashboardClient'
 import { getDictionary } from '@/i18n/getDictionary'
 
@@ -125,7 +124,7 @@ export default async function DashboardPage() {
   }))
 
   return (
-    <AppLayout user={user} title={dict.sidebar.dashboard}>
+    
       <DashboardClient
         transactions={formattedTransactions as any}
         dividends={formattedDividends as any}
@@ -133,6 +132,6 @@ export default async function DashboardPage() {
         lastSyncTime={lastUpdatedCompany?.updated_at?.toISOString() || null}
         dict={dict}
       />
-    </AppLayout>
+    
   )
 }

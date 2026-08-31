@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import TradingClient from '@/components/analytics/trading/TradingClient'
 
 export const metadata = {
@@ -83,7 +82,7 @@ export default async function TradingAnalyticsPage() {
   ] : []
 
   return (
-    <AppLayout user={user} title="Trading Behavior">
+    
       <TradingClient 
         volumeData={volumeData}
         ratioData={ratioData}
@@ -91,6 +90,6 @@ export default async function TradingAnalyticsPage() {
         lossRatio={lossRatio}
         totalTrades={totalTrades}
       />
-    </AppLayout>
+    
   )
 }

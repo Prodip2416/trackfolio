@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import { getDictionary } from '@/i18n/getDictionary'
 import { cookies } from 'next/headers'
 import GenericReportClient from '@/components/reports/GenericReportClient'
@@ -41,13 +40,13 @@ export default async function BuyReportPage() {
   const dict = await getDictionary()
 
   return (
-    <AppLayout user={user} title={dict?.reports?.buyReport || "Buy Report"}>
+    
       <GenericReportClient 
         reportType="BUY"
         uniqueStocks={uniqueStocks} 
         uniqueYears={uniqueYears} 
         dict={dict}
       />
-    </AppLayout>
+    
   )
 }

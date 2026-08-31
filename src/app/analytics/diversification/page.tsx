@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import DiversificationClient from '@/components/analytics/diversification/DiversificationClient'
 
 export const metadata = {
@@ -72,13 +71,13 @@ export default async function DiversificationAnalyticsPage() {
     .slice(0, 5) // Top 5
 
   return (
-    <AppLayout user={user} title="Diversification Analytics">
+    
       <DiversificationClient 
         sectorData={sectorData} 
         categoryData={categoryData} 
         topStocksData={topStocksData}
         totalInvestment={totalPortfolioInvestment}
       />
-    </AppLayout>
+    
   )
 }

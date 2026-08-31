@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import PerformanceClient from '@/components/analytics/performance/PerformanceClient'
 
 export const metadata = {
@@ -86,8 +85,8 @@ export default async function PerformanceAnalyticsPage() {
   }))
 
   return (
-    <AppLayout user={user} title="Performance Analytics">
+    
       <PerformanceClient data={performanceData} historyData={investmentHistory} />
-    </AppLayout>
+    
   )
 }

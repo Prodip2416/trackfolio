@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import LedgerClient from '@/components/portfolio/ledger/LedgerClient'
 import { getDictionary } from '@/i18n/getDictionary'
 import { getOwnedStocks, getAssetLedger } from './actions'
@@ -40,7 +39,7 @@ export default async function LedgerPage({
   const initialData = ledgerRes.data || []
 
   return (
-    <AppLayout user={user} title={dict.sidebar.assetLedger || 'Asset Ledger'}>
+    
       <LedgerClient 
         stocks={stocks}
         initialData={initialData}
@@ -49,6 +48,6 @@ export default async function LedgerPage({
         initialType={type}
         dict={dict}
       />
-    </AppLayout>
+    
   )
 }
