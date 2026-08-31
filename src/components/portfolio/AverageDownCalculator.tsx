@@ -54,6 +54,10 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
     const budget = parseFloat(inputValue)
     if (isNaN(budget) || budget <= 0) return null
 
+    if (currentPrice <= 0) {
+      return { error: 'Live price is currently 0, cannot calculate.' }
+    }
+
     // Qty = floor(Budget / Market Price)
     const newQty = Math.floor(budget / currentPrice)
     if (newQty === 0) {

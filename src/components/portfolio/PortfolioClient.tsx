@@ -1,9 +1,12 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Briefcase, TrendingUp, ChevronLeft, ChevronRight, Calculator } from 'lucide-react'
+import { Briefcase, TrendingUp, ChevronLeft, ChevronRight, Calculator, Wallet, DollarSign, Activity, Eye, X, History, ArrowRightLeft, Coins, FileText } from 'lucide-react'
 import Link from 'next/link'
+import { motion, Variants } from 'framer-motion'
+import AnimatedCounter from '@/components/ui/AnimatedCounter'
 import AverageDownCalculator from './AverageDownCalculator'
+import { getStockHistory } from '@/app/portfolio/actions'
 
 type StockHolding = {
   id: string
@@ -18,11 +21,22 @@ type StockHolding = {
   updated_at: string
 }
 
+type TransactionHistoryItem = {
+  id: string
+  type: string
+  date: string
+  quantity: number
+  price: number
+  fee: number
+  total: number
+}
+
 export default function PortfolioClient({ 
   stocks,
   currentPage,
   totalPages,
   globalTotalInvestment,
+  globalCurrentValue,
   globalActiveStocksCount,
   dict
 }: { 
@@ -30,27 +44,114 @@ export default function PortfolioClient({
   currentPage: number
   totalPages: number
   globalTotalInvestment: number
+  globalCurrentValue: number
   globalActiveStocksCount: number
-  dict: any
+  dict: Record<string, any>
 }) {
   const [selectedStockForCalc, setSelectedStockForCalc] = useState<StockHolding | null>(null)
 
-  const sortedStocks = useMemo(() => {
-    return [...stocks].sort((a, b) => {
-      const plA = (a.total_quantity * a.latest_price) - a.total_investment
-      const plB = (b.total_quantity * b.latest_price) - b.total_investment
-      return plB - plA // Descending: Highest Profit to Highest Loss
-    })
-  }, [stocks])
+  // Drawer state
+  const [selectedStockDetails, setSelectedStockDetails] = useState<StockHolding | null>(null)
+  const [stockHistory, setStockHistory] = useState<TransactionHistoryItem[]>([])
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false)
+
+  const openDetailsDrawer = async (stock: StockHolding) => {
+    setSelectedStockDetails(stock)
+    setIsLoadingHistory(true)
+    setStockHistory([])
+    try {
+      const history = await getStockHistory(stock.id)
+      setStockHistory(history)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsLoadingHistory(false)
+    }
+  }
+
+  // Data is now pre-sorted by total_investment from the server-side pagination query
+  const sortedStocks = stocks;
+
+  const globalTotalPL = globalCurrentValue - globalTotalInvestment;
+  const globalTotalPLPercent = globalTotalInvestment > 0 ? (globalTotalPL / globalTotalInvestment) * 100 : 0;
+
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  }
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  }
 
   return (
-    <div className="w-full">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="w-full"
+    >
       <div className="px-4 sm:px-0">
         
-
+        {/* Portfolio Summary Cards */}
+        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center space-x-4 cursor-pointer">
+            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl">
+              <Wallet className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Investment</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <AnimatedCounter value={globalTotalInvestment} prefix="৳" decimals={2} />
+              </h3>
+            </div>
+          </motion.div>
+          <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center space-x-4 cursor-pointer">
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl">
+              <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Current Value</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <AnimatedCounter value={globalCurrentValue} prefix="৳" decimals={2} />
+              </h3>
+            </div>
+          </motion.div>
+          <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center space-x-4 cursor-pointer">
+            <div className={`p-3 rounded-xl ${globalTotalPL >= 0 ? 'bg-green-50 dark:bg-green-900/30' : 'bg-rose-50 dark:bg-rose-900/30'}`}>
+              <TrendingUp className={`w-6 h-6 ${globalTotalPL >= 0 ? 'text-green-600 dark:text-green-400' : 'text-rose-600 dark:text-rose-400'}`} />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total P/L</p>
+              <div className="flex items-baseline space-x-2">
+                <h3 className={`text-xl font-bold ${globalTotalPL >= 0 ? 'text-green-600 dark:text-green-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                  <AnimatedCounter value={globalTotalPL} prefix={globalTotalPL >= 0 ? '+৳' : '৳'} decimals={2} />
+                </h3>
+                <span className={`text-sm font-medium ${globalTotalPL >= 0 ? 'text-green-600/70 dark:text-green-400/70' : 'text-rose-600/70 dark:text-rose-400/70'}`}>
+                  ({globalTotalPL >= 0 ? '+' : ''}{globalTotalPLPercent.toFixed(2)}%)
+                </span>
+              </div>
+            </div>
+          </motion.div>
+          <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center space-x-4 cursor-pointer">
+            <div className="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl">
+              <Activity className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Stocks</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <AnimatedCounter value={globalActiveStocksCount} />
+              </h3>
+            </div>
+          </motion.div>
+        </motion.div>
 
         {/* Premium Data Table */}
-        <div className="bg-white dark:bg-slate-900 shadow-xl shadow-gray-200/50 dark:shadow-none rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors">
+        <motion.div variants={itemVariants} className="bg-white dark:bg-slate-900 shadow-xl shadow-gray-200/50 dark:shadow-none rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-800 transition-colors">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-800">
               <thead className="bg-gray-100/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
@@ -61,10 +162,11 @@ export default function PortfolioClient({
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.avgCost}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.marketPrice}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Portfolio Price</th>
+                  <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Alloc %</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.totalInvested}</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Unrealized P/L</th>
                   <th scope="col" className="px-4 py-2.5 text-right text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.dashboard.date}</th>
-                  <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">{dict.portfolio.avgDown}</th>
+                  <th scope="col" className="px-4 py-2.5 text-center text-[11px] font-extrabold text-black dark:text-white uppercase tracking-wider">Action</th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800">
@@ -108,6 +210,11 @@ export default function PortfolioClient({
                           {stock.portfolio_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
+                      <td className="px-4 py-2 whitespace-nowrap text-right">
+                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-50/80 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-gray-100 dark:border-slate-700">
+                          {globalTotalInvestment > 0 ? ((stock.total_investment / globalTotalInvestment) * 100).toFixed(2) : '0.00'}%
+                        </span>
+                      </td>
                       <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-bold text-gray-900 dark:text-white">
                         {stock.total_investment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
@@ -135,15 +242,24 @@ export default function PortfolioClient({
                         })}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-center">
-                        {stock.portfolio_price < stock.total_investment && (
+                        <div className="flex items-center justify-center space-x-2">
                           <button
-                            onClick={() => setSelectedStockForCalc(stock)}
-                            className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 dark:hover:bg-indigo-600 hover:text-white transition-colors cursor-pointer"
-                            title="Average Down Calculator"
+                            onClick={() => openDetailsDrawer(stock)}
+                            className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white transition-colors cursor-pointer"
+                            title="View Details"
                           >
-                            <Calculator className="w-3.5 h-3.5" />
+                            <Eye className="w-3.5 h-3.5" />
                           </button>
-                        )}
+                          {stock.portfolio_price < stock.total_investment && (
+                            <button
+                              onClick={() => setSelectedStockForCalc(stock)}
+                              className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-colors cursor-pointer"
+                              title="Average Down Calculator"
+                            >
+                              <Calculator className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -220,7 +336,7 @@ export default function PortfolioClient({
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {selectedStockForCalc && (
           <AverageDownCalculator
@@ -229,7 +345,105 @@ export default function PortfolioClient({
           />
         )}
 
+        {/* Details Drawer */}
+        {selectedStockDetails && (
+          <>
+            <div 
+              className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 transition-opacity"
+              onClick={() => setSelectedStockDetails(null)}
+            />
+            <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col transform transition-transform duration-300">
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/30">
+                <div className="flex items-center">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900/40 dark:to-slate-800 flex items-center justify-center text-indigo-700 dark:text-indigo-400 font-bold shadow-sm border border-indigo-100/50 dark:border-indigo-800 mr-3 text-lg">
+                    {selectedStockDetails.symbol.charAt(0)}
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">{selectedStockDetails.symbol}</h2>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{selectedStockDetails.company_name}</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedStockDetails(null)}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+                <h3 className="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center">
+                  <History className="w-4 h-4 mr-2 text-indigo-500" />
+                  Transaction History
+                </h3>
+                
+                {isLoadingHistory ? (
+                  <div className="space-y-4">
+                    {[1,2,3,4].map(i => (
+                      <div key={i} className="bg-gray-50 dark:bg-slate-800/50 rounded-xl p-4 animate-pulse">
+                        <div className="h-4 w-24 bg-gray-200 dark:bg-slate-700 rounded mb-2"></div>
+                        <div className="h-3 w-32 bg-gray-200 dark:bg-slate-700 rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : stockHistory.length > 0 ? (
+                  <div className="space-y-3">
+                    {stockHistory.map((item, idx) => (
+                      <div key={idx} className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-sm rounded-xl p-4 flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className={`p-2 rounded-lg mr-3 ${
+                            item.type === 'BUY' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' :
+                            item.type === 'SELL' ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400' :
+                            'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                          }`}>
+                            {item.type === 'DIVIDEND' ? <Coins className="w-4 h-4" /> : <ArrowRightLeft className="w-4 h-4" />}
+                          </div>
+                          <div>
+                            <p className={`text-xs font-bold ${
+                              item.type === 'BUY' ? 'text-indigo-600 dark:text-indigo-400' :
+                              item.type === 'SELL' ? 'text-rose-600 dark:text-rose-400' :
+                              'text-emerald-600 dark:text-emerald-400'
+                            }`}>
+                              {item.type} {item.type !== 'DIVIDEND' && <span className="text-gray-500 dark:text-gray-400 font-medium">({item.quantity} units)</span>}
+                            </p>
+                            <p className="text-[10px] text-gray-500 mt-0.5">
+                              {new Date(item.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-gray-900 dark:text-white">
+                            ৳{item.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
+                          {item.type !== 'DIVIDEND' && (
+                            <p className="text-[10px] text-gray-500 mt-0.5">
+                              @ ৳{item.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </p>
+                          )}
+                          {item.type === 'DIVIDEND' && item.quantity > 0 && (
+                            <p className="text-[10px] text-emerald-600 mt-0.5 font-medium">
+                              +{item.quantity} Bonus Shares
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700">
+                    <FileText className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+                    <p className="text-sm font-medium text-gray-500">No transaction history found</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
       </div>
-    </div>
+    </motion.div>
   )
 }

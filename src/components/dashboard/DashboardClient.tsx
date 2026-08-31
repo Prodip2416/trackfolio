@@ -8,6 +8,7 @@ import DashboardSummaryCards from './DashboardSummaryCards'
 import DashboardPieCharts from './DashboardPieCharts'
 import DashboardBarCharts from './DashboardBarCharts'
 import RecentTradesTable from './RecentTradesTable'
+import { motion, Variants } from 'framer-motion'
 
 type Transaction = {
   id: string
@@ -134,13 +135,48 @@ export default function DashboardClient({
       return acc
     }, 0)
     
-    const totalProfitLoss = currentPortfolioValue > 0 ? (currentPortfolioValue - totalInvested) : 0
+    const totalProfitLoss = currentPortfolioValue - totalInvested
+
+    let totalRealizedPL = 0;
+    const stockMap = new Map<string, { totalBuyCost: number; totalBuyQty: number; realizedPL: number }>();
+    
+    // Sort transactions by date first (oldest to newest) to accurately calculate average buy price at time of sale
+    const sortedTxns = [...transactions].sort((a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime());
+    
+    sortedTxns.forEach(txn => {
+      const symbol = txn.stocks?.symbol || 'Unknown';
+      if (!stockMap.has(symbol)) {
+        stockMap.set(symbol, { totalBuyCost: 0, totalBuyQty: 0, realizedPL: 0 });
+      }
+      
+      const stock = stockMap.get(symbol)!;
+      
+      if (txn.type === 'BUY') {
+        const cost = (txn.quantity * txn.price_per_unit) + txn.brokerage_fee;
+        stock.totalBuyCost += cost;
+        stock.totalBuyQty += txn.quantity;
+      } else if (txn.type === 'SELL') {
+        const netSell = (txn.quantity * txn.price_per_unit) - txn.brokerage_fee;
+        const avgBuyPrice = stock.totalBuyQty > 0 ? (stock.totalBuyCost / stock.totalBuyQty) : 0;
+        const costBasisOfSold = avgBuyPrice * txn.quantity;
+        
+        stock.realizedPL += (netSell - costBasisOfSold);
+        
+        stock.totalBuyQty -= txn.quantity;
+        stock.totalBuyCost -= costBasisOfSold;
+      }
+    });
+
+    stockMap.forEach(stock => {
+      totalRealizedPL += stock.realizedPL;
+    });
 
     return { 
       totalInvested: Math.max(0, totalInvested), 
       totalDividend, 
       totalShares: Math.max(0, totalShares), 
       totalProfitLoss,
+      realizedPL: totalRealizedPL,
       currentPortfolioValue,
       totalSellAmount: Math.max(0, totalSellAmount)
     }
@@ -308,40 +344,66 @@ export default function DashboardClient({
   }, [transactions])
 
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  }
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  }
+
   return (
-    <div className="w-full space-y-3 px-4 sm:px-0">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="w-full space-y-3 px-4 sm:px-0"
+    >
       
-      <DashboardSummaryCards kpis={kpis} dict={dict} />
+      <motion.div variants={itemVariants}>
+        <DashboardSummaryCards kpis={kpis} dict={dict} />
+      </motion.div>
       
-      <DashboardPieCharts 
-        portfolioData={portfolioData} 
-        sectorData={sectorData} 
-        totalPortfolioValue={totalPortfolioValue} 
-        dict={dict} 
-        COLORS={COLORS} 
-      />
+      <motion.div variants={itemVariants}>
+        <DashboardPieCharts 
+          portfolioData={portfolioData} 
+          sectorData={sectorData} 
+          totalPortfolioValue={totalPortfolioValue} 
+          dict={dict} 
+          COLORS={COLORS} 
+        />
+      </motion.div>
 
-      <DashboardBarCharts 
-        activityData={activityData}
-        dividendHistoryData={dividendHistoryData}
-        sellHistoryData={sellHistoryData}
-        selectedActivityYear={selectedActivityYear}
-        selectedDividendYear={selectedDividendYear}
-        selectedSellYear={selectedSellYear}
-        activityYears={activityYears}
-        dividendYears={dividendYears}
-        sellYears={sellYears}
-        setSelectedActivityYear={setSelectedActivityYear}
-        setSelectedDividendYear={setSelectedDividendYear}
-        setSelectedSellYear={setSelectedSellYear}
-        selectedYearTotalDividend={selectedYearTotalDividend}
-        selectedYearTotalSell={selectedYearTotalSell}
-        dict={dict}
-        theme={theme}
-      />
+      <motion.div variants={itemVariants}>
+        <DashboardBarCharts 
+          activityData={activityData}
+          dividendHistoryData={dividendHistoryData}
+          sellHistoryData={sellHistoryData}
+          selectedActivityYear={selectedActivityYear}
+          selectedDividendYear={selectedDividendYear}
+          selectedSellYear={selectedSellYear}
+          activityYears={activityYears}
+          dividendYears={dividendYears}
+          sellYears={sellYears}
+          setSelectedActivityYear={setSelectedActivityYear}
+          setSelectedDividendYear={setSelectedDividendYear}
+          setSelectedSellYear={setSelectedSellYear}
+          selectedYearTotalDividend={selectedYearTotalDividend}
+          selectedYearTotalSell={selectedYearTotalSell}
+          dict={dict}
+          theme={theme}
+        />
+      </motion.div>
 
-      <RecentTradesTable recentTrades={recentTrades} dict={dict} />
+      <motion.div variants={itemVariants}>
+        <RecentTradesTable recentTrades={recentTrades} dict={dict} />
+      </motion.div>
       
-    </div>
+    </motion.div>
   )
 }

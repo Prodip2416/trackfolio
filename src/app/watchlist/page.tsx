@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import WatchlistClient from '@/components/watchlist/WatchlistClient'
 import { getWatchlist } from './actions'
 import { getDictionary } from '@/i18n/getDictionary'
@@ -22,8 +21,8 @@ export default async function WatchlistPage() {
   const watchlist = watchlistRes.data || []
 
   return (
-    <AppLayout user={user} title={dict.sidebar.watchlist || 'Watchlist'}>
+    
       <WatchlistClient initialWatchlist={watchlist} dict={dict} />
-    </AppLayout>
+    
   )
 }

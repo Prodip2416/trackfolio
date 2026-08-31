@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import PriceAlertsClient from '@/components/watchlist/alerts/PriceAlertsClient'
 import { getPriceAlerts, getWatchlistSymbols } from '../actions'
 import { getDictionary } from '@/i18n/getDictionary'
@@ -27,8 +26,8 @@ export default async function PriceAlertsPage() {
   const symbols = symbolsRes.data || []
 
   return (
-    <AppLayout user={user} title={dict.sidebar.priceAlerts || 'Price Alerts'}>
+    
       <PriceAlertsClient initialAlerts={alerts} watchlistSymbols={symbols} dict={dict} />
-    </AppLayout>
+    
   )
 }

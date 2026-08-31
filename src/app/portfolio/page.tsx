@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import PortfolioClient from '@/components/portfolio/PortfolioClient'
 import { getDictionary } from '@/i18n/getDictionary'
 
@@ -30,23 +29,33 @@ export default async function PortfolioPage({
 
   const dict = await getDictionary()
 
-  // 1. Get global aggregates for the top card (Total Investment & Count)
-  const globalAggregates = await prisma.stocks.aggregate({
+  // 1. Get global aggregates for the top card (Total Investment & Count & Current Value)
+  const allActiveStocks = await prisma.stocks.findMany({
     where: { 
       user_id: user.id,
       total_quantity: { gt: 0 }
     },
-    _sum: {
-      total_investment: true
-    },
-    _count: {
-      id: true
+    select: {
+      id: true,
+      total_quantity: true,
+      total_investment: true,
+      dse_company: { select: { current_price: true } }
     }
   })
 
-  const globalTotalInvestment = globalAggregates._sum.total_investment ? Number(globalAggregates._sum.total_investment) : 0
-  const globalActiveStocksCount = globalAggregates._count.id
+  let globalTotalInvestment = 0
+  let globalCurrentValue = 0
 
+  allActiveStocks.forEach(stock => {
+    const qty = Number(stock.total_quantity || 0)
+    const investment = Number(stock.total_investment || 0)
+    const currentPrice = Number(stock.dse_company?.current_price || 0)
+    
+    globalTotalInvestment += investment
+    globalCurrentValue += (qty * currentPrice)
+  })
+
+  const globalActiveStocksCount = allActiveStocks.length
   const totalPages = Math.ceil(globalActiveStocksCount / limit)
 
   // 2. Fetch paginated stocks for the table
@@ -66,7 +75,7 @@ export default async function PortfolioPage({
       updated_at: true,
     },
     orderBy: {
-      symbol: 'asc'
+      total_investment: 'desc'
     },
     skip,
     take: limit
@@ -89,15 +98,16 @@ export default async function PortfolioPage({
   })
 
   return (
-    <AppLayout user={user} title={dict.sidebar.portfolio}>
+    
       <PortfolioClient 
         stocks={formattedStocks} 
         currentPage={currentPage}
         totalPages={totalPages}
         globalTotalInvestment={globalTotalInvestment}
+        globalCurrentValue={globalCurrentValue}
         globalActiveStocksCount={globalActiveStocksCount}
         dict={dict}
       />
-    </AppLayout>
+    
   )
 }

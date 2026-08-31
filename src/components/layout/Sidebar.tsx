@@ -4,12 +4,13 @@ import { useState, useEffect, useTransition, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
 import { useTheme } from 'next-themes'
 import { Pacifico } from 'next/font/google'
+import { useMobileMenu } from './MobileMenuProvider'
 
 const pacifico = Pacifico({ subsets: ['latin'], weight: ['400'] })
 
@@ -23,6 +24,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
+  const { isOpen, setIsOpen } = useMobileMenu()
 
   useEffect(() => {
     setMounted(true)
@@ -50,35 +52,28 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false)
   const [isReportsOpen, setIsReportsOpen] = useState(false)
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false)
-
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false)
+  const [lastPathname, setLastPathname] = useState(pathname)
 
-  useEffect(() => {
-    if (pathname.startsWith('/analytics')) {
-      setIsAnalyticsOpen(true)
-      setIsReportsOpen(false)
-      setIsPortfolioOpen(false)
-      setIsWatchlistOpen(false)
-    } else if (pathname.startsWith('/reports')) {
-      setIsReportsOpen(true)
-      setIsAnalyticsOpen(false)
-      setIsPortfolioOpen(false)
-      setIsWatchlistOpen(false)
-    } else if (pathname.startsWith('/portfolio')) {
-      setIsPortfolioOpen(true)
-      setIsAnalyticsOpen(false)
-      setIsReportsOpen(false)
-      setIsWatchlistOpen(false)
-    } else if (pathname.startsWith('/watchlist')) {
-      setIsWatchlistOpen(true)
-      setIsAnalyticsOpen(false)
-      setIsReportsOpen(false)
-      setIsPortfolioOpen(false)
-    }
-  }, [pathname])
+  // Sync open state with pathname without causing a cascading render in an effect
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname)
+    setIsAnalyticsOpen(pathname.startsWith('/analytics'))
+    setIsReportsOpen(pathname.startsWith('/reports'))
+    setIsPortfolioOpen(pathname.startsWith('/portfolio'))
+    setIsWatchlistOpen(pathname.startsWith('/watchlist'))
+  }
 
   const navItems = [
     { name: dict.sidebar.dashboard, href: '/', icon: LayoutDashboard },
+    { 
+      name: dict.sidebar.portfolio, 
+      icon: Briefcase,
+      subItems: [
+        { name: dict.sidebar.overview, href: '/portfolio' },
+        { name: dict.sidebar.assetLedger, href: '/portfolio/ledger' },
+      ]
+    },
     { 
       name: dict.sidebar.watchlist || 'Watchlist', 
       icon: Star,
@@ -99,14 +94,6 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
         { name: dict.sidebar.riskWarnings, href: '/analytics/warnings' },
       ]
     },
-    { 
-      name: dict.sidebar.portfolio, 
-      icon: Briefcase,
-      subItems: [
-        { name: dict.sidebar.overview, href: '/portfolio' },
-        { name: dict.sidebar.assetLedger, href: '/portfolio/ledger' },
-      ]
-    },
     { name: dict.sidebar.tradeLog, href: '/transactions', icon: ArrowRightLeft },
     { name: dict.sidebar.dividendLog, href: '/dividends', icon: Coins },
     { name: dict.sidebar.history, href: '/history', icon: History },
@@ -123,14 +110,31 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   ]
 
   return (
-    <div className="w-64 bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-150 border-r border-gray-200/50 dark:border-slate-800 h-screen sticky top-0 flex flex-col shadow-sm print:hidden transition-colors duration-200">
-      <div className="h-16 flex items-center px-6 border-b border-gray-200/50 dark:border-slate-800 transition-colors duration-200">
-        <Link href="/" className="block hover:opacity-80 transition-opacity">
-          <h1 className={`text-3xl tracking-wide ${pacifico.className} text-gray-900 dark:text-white font-normal transition-colors duration-200`}>
-            Track<span className="text-indigo-500">Folio</span>
-          </h1>
-        </Link>
-      </div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-gray-900/50 dark:bg-slate-900/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Container */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-3xl backdrop-saturate-150 border-r border-gray-200/50 dark:border-slate-800 flex flex-col shadow-2xl lg:shadow-sm print:hidden transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200/50 dark:border-slate-800 transition-colors duration-200">
+          <Link href="/" className="block hover:opacity-80 transition-opacity" onClick={() => setIsOpen(false)}>
+            <h1 className={`text-3xl tracking-wide ${pacifico.className} text-gray-900 dark:text-white font-normal transition-colors duration-200`}>
+              Track<span className="text-indigo-500">Folio</span>
+            </h1>
+          </Link>
+          {/* Close button for mobile */}
+          <button 
+            className="lg:hidden p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            onClick={() => setIsOpen(false)}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       
       <div className="flex-1 py-6 px-4 space-y-1 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => {
@@ -206,6 +210,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                         <Link
                           key={sub.name}
                           href={sub.href}
+                          onClick={() => setIsOpen(false)}
                           className={`block px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
                             isSubActive
                               ? 'bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400'
@@ -228,6 +233,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
             <Link
               key={item.name}
               href={item.href!}
+              onClick={() => setIsOpen(false)}
               className={`flex items-center px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group ${
                 isActive
                   ? 'bg-gradient-to-r from-indigo-50/50 dark:from-indigo-900/20 to-transparent text-indigo-700 dark:text-indigo-400 shadow-[inset_3px_0_0_0_#4f46e5] dark:shadow-[inset_3px_0_0_0_#818cf8]'
@@ -346,5 +352,6 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
         document.body
       )}
     </div>
+    </>
   )
 }

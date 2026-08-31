@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import HistoryClient from '@/components/history/HistoryClient'
 
 export const metadata = {
@@ -53,8 +52,8 @@ export default async function HistoryPage() {
   const uniqueYears = Array.from(yearSet).sort().reverse()
 
   return (
-    <AppLayout user={user} title="History">
+    
       <HistoryClient uniqueStocks={uniqueStocks} uniqueYears={uniqueYears} />
-    </AppLayout>
+    
   )
 }

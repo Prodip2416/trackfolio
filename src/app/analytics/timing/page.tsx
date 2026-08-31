@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import TimingClient from '@/components/analytics/timing/TimingClient'
 
 export const metadata = {
@@ -134,13 +133,13 @@ export default async function TimingAnalyticsPage() {
   const avgHoldingDays = holdingPeriods.length > 0 ? Math.round(totalDays / holdingPeriods.length) : 0
 
   return (
-    <AppLayout user={user} title="Market Timing">
+    
       <TimingClient 
         heatmapData={heatmapData}
         holdingData={holdingData}
         avgHoldingDays={avgHoldingDays}
         totalSellTrades={holdingPeriods.length}
       />
-    </AppLayout>
+    
   )
 }

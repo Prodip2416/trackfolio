@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import DividendsClient from '@/components/analytics/dividends/DividendsClient'
 
 export const metadata = {
@@ -74,7 +73,7 @@ export default async function DividendAnalyticsPage() {
   const overallYield = totalInvestment > 0 ? (totalCashDividend / totalInvestment) * 100 : 0
 
   return (
-    <AppLayout user={user} title="Dividend Insights">
+    
       <DividendsClient 
         yearlyData={yearlyData} 
         topStocksData={topStocksData} 
@@ -82,6 +81,6 @@ export default async function DividendAnalyticsPage() {
         totalInvestment={totalInvestment}
         overallYield={overallYield}
       />
-    </AppLayout>
+    
   )
 }

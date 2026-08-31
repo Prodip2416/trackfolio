@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import AppLayout from '@/components/layout/AppLayout'
 import { AlertTriangle } from 'lucide-react'
 
 export const metadata = {
@@ -16,7 +15,7 @@ export default async function RiskAnalyticsPage() {
   }
 
   return (
-    <AppLayout user={user} title="Risk & Fees">
+    
       <div className="w-full">
         <div className="px-4 py-4 sm:px-0">
           <div className="bg-white shadow-sm border border-gray-200 rounded-2xl p-8 min-h-[400px] flex flex-col items-center justify-center text-center">
@@ -30,6 +29,6 @@ export default async function RiskAnalyticsPage() {
           </div>
         </div>
       </div>
-    </AppLayout>
+    
   )
 }

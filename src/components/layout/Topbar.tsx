@@ -1,15 +1,17 @@
 'use client'
 
 import { User } from '@supabase/supabase-js'
-import { ChevronRight, RefreshCw, LayoutDashboard, PieChart, Briefcase, FileText, ArrowRightLeft, Coins, History } from 'lucide-react'
+import { ChevronRight, RefreshCw, LayoutDashboard, PieChart, Briefcase, FileText, ArrowRightLeft, Coins, History, Menu } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import { useMobileMenu } from './MobileMenuProvider'
 
-export default function Topbar({ title, lastSyncTime, dict }: { user: User, title: string, lastSyncTime?: string | null, dict: any }) {
+export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTime?: string | null, dict: any }) {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
   const pathname = usePathname() || '/'
+  const { setIsOpen } = useMobileMenu()
   
   const handleSync = async () => {
     if (isPending) return
@@ -75,22 +77,32 @@ export default function Topbar({ title, lastSyncTime, dict }: { user: User, titl
   const breadcrumbs = getBreadcrumbs()
 
   return (
-    <div className="h-16 bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-150 border-b border-gray-200/50 dark:border-slate-800 flex items-center justify-between px-6 sticky top-0 z-50 shadow-sm print:hidden transition-colors duration-200">
+    <div className="h-16 bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-150 border-b border-gray-200/50 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-40 shadow-sm print:hidden transition-colors duration-200">
       
-      {/* Breadcrumb */}
-      <div className="flex items-center text-sm font-medium w-1/2 overflow-x-auto whitespace-nowrap hide-scrollbar">
-        {breadcrumbs.map((item, index) => {
-          const isLast = index === breadcrumbs.length - 1
-          return (
-            <div key={index} className="flex items-center">
-              {index > 0 && <ChevronRight className="w-4 h-4 mx-1.5 text-gray-300 dark:text-gray-600 flex-shrink-0" />}
-              <span className={`flex items-center ${isLast ? 'text-gray-800 dark:text-gray-200 font-bold' : 'text-gray-400 dark:text-gray-500'}`}>
-                {item.icon && <item.icon className="w-4 h-4 mr-1.5" />}
-                {item.name}
-              </span>
-            </div>
-          )
-        })}
+      {/* Left Section: Mobile Menu + Breadcrumb */}
+      <div className="flex items-center w-[60%] sm:w-1/2 overflow-hidden">
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="mr-3 lg:hidden p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+          aria-label="Open sidebar"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        
+        <div className="flex items-center text-sm font-medium overflow-x-auto whitespace-nowrap hide-scrollbar">
+          {breadcrumbs.map((item, index) => {
+            const isLast = index === breadcrumbs.length - 1
+            return (
+              <div key={index} className="flex items-center">
+                {index > 0 && <ChevronRight className="w-4 h-4 mx-1.5 text-gray-300 dark:text-gray-600 flex-shrink-0" />}
+                <span className={`flex items-center ${isLast ? 'text-gray-800 dark:text-gray-200 font-bold' : 'text-gray-400 dark:text-gray-500'}`}>
+                  {item.icon && <item.icon className="w-4 h-4 mr-1.5 hidden sm:inline-block" />}
+                  {item.name}
+                </span>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {/* Sync Button (Right) */}

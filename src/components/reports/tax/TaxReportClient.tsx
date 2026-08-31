@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { FileText, Printer, Briefcase, TrendingUp, TrendingDown, Coins, Calculator } from 'lucide-react'
 
 type DividendItem = {
@@ -28,6 +28,11 @@ type Props = {
 
 export default function TaxReportClient({ availableYears, dividendsByFY, capitalGainsByFY, dict }: Props) {
   const [selectedFY, setSelectedFY] = useState<string>(availableYears[0])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Get data for selected Financial Year
   const dividends = useMemo(() => dividendsByFY[selectedFY] || [], [dividendsByFY, selectedFY])
@@ -110,7 +115,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
         <div className="hidden print:block mb-8 border-b-2 border-gray-900 pb-4">
           <h1 className="text-3xl font-black text-gray-900">TrackFolio - {dict?.reports?.taxReport || 'Tax Report'}</h1>
           <p className="text-lg text-gray-700 font-semibold mt-2">{dict?.reports?.financialYear || 'Financial Year:'} {selectedFY}</p>
-          <p className="text-sm text-gray-500 mt-1">{dict?.reports?.generatedOn || 'Generated on:'} {new Date().toLocaleDateString('en-GB')}</p>
+          <p className="text-sm text-gray-500 mt-1">{dict?.reports?.generatedOn || 'Generated on:'} {mounted ? new Date().toLocaleDateString('en-GB') : ''}</p>
         </div>
 
         {/* 1. KPI Cards */}
