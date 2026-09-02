@@ -25,7 +25,7 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
         <div className="flex justify-between items-start relative z-10">
           <div>
             <p className="text-[10px] font-semibold text-indigo-600/70 dark:text-indigo-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalInvested}</p>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
               <AnimatedCounter value={kpis.totalInvested} prefix="৳" decimals={2} />
             </h2>
           </div>
@@ -41,7 +41,7 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
         <div className="flex justify-between items-start relative z-10">
           <div>
             <p className="text-[10px] font-semibold text-rose-600/70 dark:text-rose-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalSellAmount}</p>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
               <AnimatedCounter value={kpis.totalSellAmount} prefix="৳" decimals={2} />
             </h2>
           </div>
@@ -57,7 +57,7 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
         <div className="flex justify-between items-start relative z-10">
           <div>
             <p className="text-[10px] font-semibold text-emerald-600/70 dark:text-emerald-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalDividend}</p>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
               <AnimatedCounter value={kpis.totalDividend} prefix="৳" decimals={2} />
             </h2>
           </div>
@@ -73,7 +73,7 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
         <div className="flex justify-between items-start relative z-10">
           <div>
             <p className="text-[10px] font-semibold text-amber-600/70 dark:text-amber-400 uppercase tracking-wider mb-0.5">{dict.dashboard.totalShares}</p>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
               <AnimatedCounter value={kpis.totalShares} decimals={0} />
             </h2>
           </div>
@@ -89,7 +89,7 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
         <div className="flex justify-between items-start relative z-10">
           <div>
             <p className={`text-[10px] font-semibold uppercase tracking-wider mb-0.5 ${kpis.totalProfitLoss > 0 ? 'text-green-600/70 dark:text-green-400' : kpis.totalProfitLoss < 0 ? 'text-rose-600/70 dark:text-rose-400' : 'text-gray-500'}`}>{dict.dashboard.unrealizedPL}</p>
-            <h2 className={`text-xl font-bold ${kpis.totalProfitLoss > 0 ? 'text-green-600 dark:text-green-400' : kpis.totalProfitLoss < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
+            <h2 className={`text-base sm:text-lg font-bold ${kpis.totalProfitLoss > 0 ? 'text-green-600 dark:text-green-400' : kpis.totalProfitLoss < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
               <AnimatedCounter value={kpis.totalProfitLoss} prefix={kpis.totalProfitLoss > 0 ? '+৳' : '৳'} decimals={2} />
             </h2>
           </div>
@@ -105,7 +105,7 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
         <div className="flex justify-between items-start relative z-10">
           <div>
             <p className={`text-[10px] font-semibold uppercase tracking-wider mb-0.5 ${kpis.realizedPL >= 0 ? 'text-cyan-600/70 dark:text-cyan-400' : 'text-rose-600/70 dark:text-rose-400'}`}>Realized P/L</p>
-            <h2 className={`text-xl font-bold ${kpis.realizedPL >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
+            <h2 className={`text-base sm:text-lg font-bold ${kpis.realizedPL >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
               <AnimatedCounter value={kpis.realizedPL} prefix={kpis.realizedPL > 0 ? '+৳' : '৳'} decimals={2} />
             </h2>
           </div>
