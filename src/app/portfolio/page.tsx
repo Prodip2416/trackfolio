@@ -45,6 +45,7 @@ export default async function PortfolioPage({
 
   let globalTotalInvestment = 0
   let globalCurrentValue = 0
+  let globalTotalShares = 0
 
   allActiveStocks.forEach(stock => {
     const qty = Number(stock.total_quantity || 0)
@@ -53,6 +54,7 @@ export default async function PortfolioPage({
     
     globalTotalInvestment += investment
     globalCurrentValue += (qty * currentPrice)
+    globalTotalShares += qty
   })
 
   const globalActiveStocksCount = allActiveStocks.length
@@ -105,6 +107,7 @@ export default async function PortfolioPage({
         totalPages={totalPages}
         globalTotalInvestment={globalTotalInvestment}
         globalCurrentValue={globalCurrentValue}
+        globalTotalShares={globalTotalShares}
         globalActiveStocksCount={globalActiveStocksCount}
         dict={dict}
       />

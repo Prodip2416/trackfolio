@@ -29,16 +29,30 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
     const target = parseFloat(inputValue)
     if (isNaN(target) || target <= 0) return null
 
-    // Target must be strictly between Market Price and Current Average
-    if (target <= currentPrice) {
-      return { error: `Target average must be greater than current market price (৳${currentPrice.toFixed(2)}).` }
+    if (currentPrice === currentAvg) {
+      return { error: 'Live price equals average cost. Target average cannot be changed.' }
     }
-    if (target >= currentAvg) {
-      return { error: `Target average must be less than current average (৳${currentAvg.toFixed(2)}).` }
+
+    const isAveragingUp = currentPrice > currentAvg
+
+    if (isAveragingUp) {
+      if (target >= currentPrice) {
+        return { error: `Target average must be less than live price (৳${currentPrice.toFixed(2)}).` }
+      }
+      if (target <= currentAvg) {
+        return { error: `Target average must be greater than current average (৳${currentAvg.toFixed(2)}).` }
+      }
+    } else {
+      if (target <= currentPrice) {
+        return { error: `Target average must be greater than live price (৳${currentPrice.toFixed(2)}).` }
+      }
+      if (target >= currentAvg) {
+        return { error: `Target average must be less than current average (৳${currentAvg.toFixed(2)}).` }
+      }
     }
 
     // Formula: Q2 = Q1 * (T - P1) / (P2 - T)
-    const requiredQty = Math.ceil((currentQty * (currentAvg - target)) / (target - currentPrice))
+    const requiredQty = Math.ceil(Math.abs((currentQty * (currentAvg - target)) / (target - currentPrice)))
     const requiredInvestment = requiredQty * currentPrice
 
     return {
@@ -97,7 +111,9 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
               <Calculator className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-gray-900 dark:text-white transition-colors">Average Down Calculator</h2>
+              <h2 className="text-sm font-bold text-gray-900 dark:text-white transition-colors">
+                {currentPrice > currentAvg ? 'Average Up Calculator' : 'Average Down Calculator'}
+              </h2>
               <p className="text-xs text-gray-500 dark:text-gray-400 font-medium transition-colors">{stock.symbol}</p>
             </div>
           </div>
@@ -148,14 +164,14 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
               }`}
             >
               <Wallet className="w-3.5 h-3.5 mr-1.5" />
-              Budget Based
+              Target Investment
             </button>
           </div>
 
           {/* Inputs */}
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 transition-colors">
-              {tab === 'target' ? 'Enter your target average price (৳):' : 'Enter your investment budget (৳):'}
+              {tab === 'budget' ? 'Enter your investment budget (৳):' : 'Enter your target average (৳):'}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -165,7 +181,7 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                 type="number"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={tab === 'target' ? (currentPrice + 1).toFixed(2) : '50000'}
+                placeholder={tab === 'budget' ? '50000' : 'e.g. ' + (currentAvg * (currentPrice > currentAvg ? 1.05 : 0.95)).toFixed(2)}
                 className="w-full bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white text-sm font-bold rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block pl-8 pr-4 py-3 shadow-sm transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600"
               />
             </div>
@@ -188,7 +204,9 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                           <span>{targetResult.requiredQty.toLocaleString()}</span>
                           <span className="text-sm text-indigo-400 dark:text-indigo-500">shares</span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 font-bold mb-4 transition-colors">at current price ৳{currentPrice.toFixed(2)}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-500 font-bold mb-4 transition-colors">
+                          at current live price ৳{currentPrice.toFixed(2)}
+                        </p>
                         
                         <div className="pt-4 border-t border-indigo-100 dark:border-indigo-800/50 flex justify-between items-center text-left transition-colors">
                           <div>
@@ -214,12 +232,14 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                       </div>
                     ) : (
                       <div className="bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-900/20 dark:to-slate-800 border border-emerald-100/50 dark:border-emerald-800/30 p-5 rounded-2xl shadow-sm text-center transition-colors">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-3 transition-colors">With this budget, you can buy:</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-3 transition-colors">With this investment, you can buy:</p>
                         <div className="flex items-center justify-center space-x-2 text-2xl font-black text-emerald-600 dark:text-emerald-400 mb-1 transition-colors">
                           <span>{budgetResult.newQty.toLocaleString()}</span>
                           <span className="text-sm text-emerald-400 dark:text-emerald-600">shares</span>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 font-bold mb-4 transition-colors">costing ৳{budgetResult.actualInvestment.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-500 font-bold mb-4 transition-colors">
+                          costing ৳{budgetResult.actualInvestment.toLocaleString(undefined, { maximumFractionDigits: 0 })} at current live price ৳{currentPrice.toFixed(2)}
+                        </p>
                         
                         <div className="pt-4 border-t border-emerald-100 dark:border-emerald-800/50 flex justify-between items-center text-left transition-colors">
                           <div>

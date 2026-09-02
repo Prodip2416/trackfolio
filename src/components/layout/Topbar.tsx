@@ -3,39 +3,41 @@
 import { User } from '@supabase/supabase-js'
 import { ChevronRight, RefreshCw, LayoutDashboard, PieChart, Briefcase, FileText, ArrowRightLeft, Coins, History, Menu } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
 import { useMobileMenu } from './MobileMenuProvider'
 
 export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTime?: string | null, dict: any }) {
-  const [isPending, setIsPending] = useState(false)
+  const [isTransitionPending, startTransition] = useTransition()
+  const [isFetching, setIsFetching] = useState(false)
+  const isPending = isTransitionPending || isFetching
+  
   const router = useRouter()
   const pathname = usePathname() || '/'
   const { setIsOpen } = useMobileMenu()
   
   const handleSync = async () => {
     if (isPending) return
-    setIsPending(true)
+    setIsFetching(true)
     
-    const syncPromise = fetch('/api/sync', { method: 'POST' }).then(async (res) => {
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Failed to sync prices')
-      }
-      router.refresh()
-      return res.json()
-    }).finally(() => {
-      setIsPending(false)
-    })
-
-    toast.promise(
-      syncPromise,
-      {
-        loading: `${dict.common.syncing}`,
-        success: 'Prices synced successfully!',
-        error: (err) => err.message
-      }
-    )
+    fetch('/api/sync', { method: 'POST' })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json()
+          throw new Error(data.error || 'Failed to sync prices')
+        }
+        
+        // Use transition to keep the loading state active while Next.js refreshes the page
+        startTransition(() => {
+          router.refresh()
+        })
+      })
+      .catch((err) => {
+        toast.error(err.message || 'Failed to sync prices')
+      })
+      .finally(() => {
+        setIsFetching(false)
+      })
   }
 
   const getBreadcrumbs = () => {
