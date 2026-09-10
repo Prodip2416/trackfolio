@@ -85,7 +85,7 @@ export async function addSmartTransaction(prevState: any, formData: FormData) {
     })
 
     // 1. Check if the stock already exists in the user's portfolio (`stocks` table)
-    let existingStock = await prisma.stocks.findFirst({
+    const existingStock = await prisma.stocks.findFirst({
       where: { user_id: user.id, symbol }
     })
 
