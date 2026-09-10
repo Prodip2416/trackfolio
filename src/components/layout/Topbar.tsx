@@ -3,7 +3,7 @@
 import { User } from '@supabase/supabase-js'
 import { ChevronRight, RefreshCw, LayoutDashboard, PieChart, Briefcase, FileText, ArrowRightLeft, Coins, History, Menu } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useMobileMenu } from './MobileMenuProvider'
 
@@ -15,6 +15,11 @@ export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTim
   const router = useRouter()
   const pathname = usePathname() || '/'
   const { setIsOpen } = useMobileMenu()
+  
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   
   const handleSync = async () => {
     if (isPending) return
@@ -113,10 +118,10 @@ export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTim
           <div className="text-right hidden sm:block">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">{dict.common.lastSynced}</p>
             <p className="text-xs font-bold text-gray-700 dark:text-gray-300">
-              {new Date(lastSyncTime).toLocaleString('en-US', { 
+              {mounted ? new Date(lastSyncTime).toLocaleString('en-US', { 
                 day: '2-digit', month: 'short', year: 'numeric',
                 hour: '2-digit', minute: '2-digit', hour12: true 
-              })}
+              }) : ''}
             </p>
           </div>
         )}

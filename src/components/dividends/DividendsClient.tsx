@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, Pencil } from 'lucide-react'
+import { Plus, Trash2, Pencil, Calendar, CalendarDays, CalendarRange, Sun, Clock, Timer, Zap } from 'lucide-react'
 import DividendForm from '@/components/dividends/DividendForm'
 import { deleteDividend } from '@/app/dividends/actions'
 import ConfirmModal from '@/components/shared/ConfirmModal'
+import SearchableDropdown from '@/components/shared/SearchableDropdown'
 
 type Dividend = {
   id: string
@@ -36,30 +37,118 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
     setDeleteDividendId(null)
   }
 
+  const availableYears = Array.from(new Set(initialDividends.map(d => d.year))).sort((a, b) => b - a)
+  const currentYear = new Date().getFullYear().toString()
+  const [selectedYear, setSelectedYear] = useState<string>(availableYears.length > 0 ? availableYears[0].toString() : currentYear)
+  
+  const filteredDividends = selectedYear === 'All' 
+    ? initialDividends 
+    : initialDividends.filter(d => d.year.toString() === selectedYear)
+    
+  const totalCash = filteredDividends.reduce((sum, div) => sum + (div.cash_amount || 0), 0)
+  
+  const yearly = totalCash
+  const monthly = totalCash / 12
+  const weekly = totalCash / 52.1429
+  const daily = totalCash / 365.25
+  const hourly = daily / 24
+  const perMin = hourly / 60
+  const perSec = perMin / 60
+
   return (
-    <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-3">
+    <div className="max-w-7xl mx-auto flex flex-col h-[calc(100vh-120px)] space-y-4">
+      {/* Header Action Row */}
       <div className="flex justify-between items-center shrink-0">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">{dict?.dividends?.dividendLog || 'Dividend Log'}</h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dict?.dividends?.description || 'Manage and track your latest dividend income and bonus shares.'}</p>
+        <div className="flex items-center space-x-3">
+          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Filter Year:</span>
+          <div className="min-w-[140px]">
+            <SearchableDropdown
+              options={[
+                { label: 'All Time', value: 'All' },
+                ...availableYears.map(year => ({ label: year.toString(), value: year.toString() }))
+              ]}
+              value={selectedYear}
+              onChange={setSelectedYear}
+              placeholder="Select Year"
+              searchPlaceholder="Search year..."
+              buttonClassName="px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm text-sm font-medium text-gray-900 dark:text-white min-h-[38px] w-full text-left"
+            />
+          </div>
         </div>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            {dict?.dividends?.addDividend || 'Add Dividend'}
-          </button>
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          {dict?.dividends?.addDividend || 'Add'}
+        </button>
+      </div>
+
+      {/* Dividend Breakdown Card */}
+      <div className="shrink-0 mb-1">
+        <h2 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider">
+          {selectedYear === 'All' ? 'Passive Income Speed (All Time Base)' : `Passive Income Speed (${selectedYear})`}
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          {/* Yearly */}
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <Calendar className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Yearly</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{yearly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </div>
+          
+          {/* Monthly */}
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <CalendarDays className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Monthly</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{monthly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </div>
+
+          {/* Weekly */}
+          <div className="bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <CalendarRange className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Weekly</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{weekly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </div>
+
+          {/* Daily */}
+          <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <Sun className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Daily</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{daily.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </div>
+
+          {/* Hourly */}
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <Clock className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Hourly</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{hourly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+          </div>
+
+          {/* Per Min */}
+          <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <Timer className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Per Min</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{perMin.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4})}</p>
+          </div>
+
+          {/* Per Sec */}
+          <div className="bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
+            <Zap className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
+            <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Per Sec</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{perSec.toLocaleString(undefined, {minimumFractionDigits: 6, maximumFractionDigits: 6})}</p>
+          </div>
         </div>
+      </div>
 
       {/* Dividends Table */}
       <div className="bg-white dark:bg-slate-900 shadow-sm border border-gray-200 dark:border-slate-800 rounded-xl overflow-hidden flex-1 flex flex-col min-h-0 transition-colors">
-          {initialDividends.length === 0 ? (
+          {filteredDividends.length === 0 ? (
             <div className="text-center py-16 px-4">
               <div className="mx-auto w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 dark:text-indigo-400 rounded-full flex items-center justify-center mb-4">
                 <Plus className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">{dict?.dividends?.noDividends || 'No dividends logged yet'}</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">{dict?.dividends?.noDividends || 'No dividends found'}</h3>
               <p className="text-gray-500 dark:text-gray-400 mt-1 mb-6 max-w-sm mx-auto">
                 {dict?.dividends?.noDividendsDesc || 'Keep track of your cash and stock dividends.'}
               </p>
@@ -68,13 +157,13 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
                 className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 <Plus className="w-5 h-5 mr-2" />
-                {dict?.dividends?.logFirst || 'Log Your First Dividend'}
+                {dict?.dividends?.logFirst || 'Log Dividend'}
               </button>
             </div>
           ) : (
             <div className="flex-1 flex flex-col min-h-0">
               <div className="px-6 py-3 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800/50 shrink-0 transition-colors">
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">{dict?.dividends?.latest10 || 'Latest 10 Dividends'}</h3>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">{dict?.dividends?.latest10 || 'Dividend Records'}</h3>
               </div>
               <div className="flex-1 overflow-auto custom-scrollbar">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-800 relative transition-colors">
@@ -101,7 +190,7 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
-                  {initialDividends.map((div) => {
+                  {filteredDividends.map((div) => {
                     return (
                       <tr key={div.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800/80 transition-colors group">
                         <td className="px-4 py-2 whitespace-nowrap">

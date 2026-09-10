@@ -1,0 +1,24 @@
+# TrackFolio - AI Agent Instructions
+
+## 📌 Project Overview
+**TrackFolio** is a Stock Portfolio Management & Analytics Dashboard for tracking investments, dividends, trades, and price alerts (Dhaka Stock Exchange - DSE).
+
+## 🛠️ Tech Stack
+- **Framework**: Next.js 16.3 (App Router)
+- **Language**: TypeScript, React 19
+- **Database / ORM**: PostgreSQL via Supabase, Prisma ORM
+- **Styling**: Tailwind CSS v4
+- **Components/Icons**: Lucide React, Framer Motion, Recharts
+- **Forms & Validation**: React Hook Form, Zod
+
+## 📐 Architecture & Development Guidelines
+1. **Next.js**: Use App Router (`src/app/`). Default to Server Components. Use `"use client"` only when needed. Use **Server Actions** for data mutations.
+2. **Database**: Use Prisma ORM. Maintain strict type safety.
+3. **Styling**: Tailwind CSS v4. Must support Dark Mode (`dark:`) and responsive design.
+4. **i18n**: Support both English and Bengali.
+5. **Modularity**: Break down complex UI (Dashboard, Ledger, Alerts) into small, reusable components.
+
+## 🤖 AI Behavior Rules
+- Always output strict TypeScript.
+- Follow Next.js 15+ best practices.
+- Do not use old Next.js Pages router conventions (`getServerSideProps`, etc.).

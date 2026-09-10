@@ -30,6 +30,20 @@ export default function SearchableDropdown({
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  // Focus input when dropdown opens
+  useEffect(() => {
+    if (isOpen) {
+      // Small timeout ensures the DOM has fully rendered and no other elements steal focus
+      const timeoutId = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus()
+        }
+      }, 50)
+      return () => clearTimeout(timeoutId)
+    }
+  }, [isOpen])
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -64,7 +78,9 @@ export default function SearchableDropdown({
           <div className="p-2 border-b border-gray-100 dark:border-gray-700 relative">
             <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
+              ref={inputRef}
               type="text"
+              autoFocus
               className="w-full pl-8 pr-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border-none rounded-lg focus:ring-0 outline-none"
               placeholder={searchPlaceholder}
               value={searchQuery}

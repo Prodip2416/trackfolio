@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X, Zap } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
@@ -95,6 +95,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
       ]
     },
     { name: dict.sidebar.tradeLog, href: '/transactions', icon: ArrowRightLeft },
+    { name: 'Short Term', href: '/short-term', icon: Zap },
     { name: dict.sidebar.dividendLog, href: '/dividends', icon: Coins },
     { name: dict.sidebar.history, href: '/history', icon: History },
     {
