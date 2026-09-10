@@ -188,6 +188,16 @@ export type watchlist = $Result.DefaultSelection<Prisma.$watchlistPayload>
  * Price alert ranges for buy/sell
  */
 export type price_alerts = $Result.DefaultSelection<Prisma.$price_alertsPayload>
+/**
+ * Model short_term_trades
+ * 
+ */
+export type short_term_trades = $Result.DefaultSelection<Prisma.$short_term_tradesPayload>
+/**
+ * Model short_term_trade_legs
+ * 
+ */
+export type short_term_trade_legs = $Result.DefaultSelection<Prisma.$short_term_trade_legsPayload>
 
 /**
  * Enums
@@ -287,6 +297,14 @@ export const transaction_type: {
 
 export type transaction_type = (typeof transaction_type)[keyof typeof transaction_type]
 
+
+export const short_term_trade_status: {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
+export type short_term_trade_status = (typeof short_term_trade_status)[keyof typeof short_term_trade_status]
+
 }
 
 export type aal_level = $Enums.aal_level
@@ -332,6 +350,10 @@ export const dividend_type: typeof $Enums.dividend_type
 export type transaction_type = $Enums.transaction_type
 
 export const transaction_type: typeof $Enums.transaction_type
+
+export type short_term_trade_status = $Enums.short_term_trade_status
+
+export const short_term_trade_status: typeof $Enums.short_term_trade_status
 
 /**
  * ##  Prisma Client ʲˢ
@@ -753,6 +775,26 @@ export class PrismaClient<
     * ```
     */
   get price_alerts(): Prisma.price_alertsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.short_term_trades`: Exposes CRUD operations for the **short_term_trades** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Short_term_trades
+    * const short_term_trades = await prisma.short_term_trades.findMany()
+    * ```
+    */
+  get short_term_trades(): Prisma.short_term_tradesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.short_term_trade_legs`: Exposes CRUD operations for the **short_term_trade_legs** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Short_term_trade_legs
+    * const short_term_trade_legs = await prisma.short_term_trade_legs.findMany()
+    * ```
+    */
+  get short_term_trade_legs(): Prisma.short_term_trade_legsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -803,8 +845,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.9.1
-   * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+   * Prisma Client JS version: 7.10.0
+   * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
    */
   export type PrismaVersion = {
     client: string
@@ -1229,7 +1271,9 @@ export namespace Prisma {
     stocks: 'stocks',
     transactions: 'transactions',
     watchlist: 'watchlist',
-    price_alerts: 'price_alerts'
+    price_alerts: 'price_alerts',
+    short_term_trades: 'short_term_trades',
+    short_term_trade_legs: 'short_term_trade_legs'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1245,7 +1289,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "audit_log_entries" | "custom_oauth_providers" | "flow_state" | "identities" | "instances" | "mfa_amr_claims" | "mfa_challenges" | "mfa_factors" | "oauth_authorizations" | "oauth_client_states" | "oauth_clients" | "oauth_consents" | "one_time_tokens" | "refresh_tokens" | "saml_providers" | "saml_relay_states" | "schema_migrations" | "sessions" | "sso_domains" | "sso_providers" | "users" | "webauthn_challenges" | "webauthn_credentials" | "dividends" | "dse_companies" | "profiles" | "stocks" | "transactions" | "watchlist" | "price_alerts"
+      modelProps: "audit_log_entries" | "custom_oauth_providers" | "flow_state" | "identities" | "instances" | "mfa_amr_claims" | "mfa_challenges" | "mfa_factors" | "oauth_authorizations" | "oauth_client_states" | "oauth_clients" | "oauth_consents" | "one_time_tokens" | "refresh_tokens" | "saml_providers" | "saml_relay_states" | "schema_migrations" | "sessions" | "sso_domains" | "sso_providers" | "users" | "webauthn_challenges" | "webauthn_credentials" | "dividends" | "dse_companies" | "profiles" | "stocks" | "transactions" | "watchlist" | "price_alerts" | "short_term_trades" | "short_term_trade_legs"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3469,6 +3513,154 @@ export namespace Prisma {
           }
         }
       }
+      short_term_trades: {
+        payload: Prisma.$short_term_tradesPayload<ExtArgs>
+        fields: Prisma.short_term_tradesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.short_term_tradesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.short_term_tradesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>
+          }
+          findFirst: {
+            args: Prisma.short_term_tradesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.short_term_tradesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>
+          }
+          findMany: {
+            args: Prisma.short_term_tradesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>[]
+          }
+          create: {
+            args: Prisma.short_term_tradesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>
+          }
+          createMany: {
+            args: Prisma.short_term_tradesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.short_term_tradesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>[]
+          }
+          delete: {
+            args: Prisma.short_term_tradesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>
+          }
+          update: {
+            args: Prisma.short_term_tradesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>
+          }
+          deleteMany: {
+            args: Prisma.short_term_tradesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.short_term_tradesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.short_term_tradesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>[]
+          }
+          upsert: {
+            args: Prisma.short_term_tradesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_tradesPayload>
+          }
+          aggregate: {
+            args: Prisma.Short_term_tradesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateShort_term_trades>
+          }
+          groupBy: {
+            args: Prisma.short_term_tradesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Short_term_tradesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.short_term_tradesCountArgs<ExtArgs>
+            result: $Utils.Optional<Short_term_tradesCountAggregateOutputType> | number
+          }
+        }
+      }
+      short_term_trade_legs: {
+        payload: Prisma.$short_term_trade_legsPayload<ExtArgs>
+        fields: Prisma.short_term_trade_legsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.short_term_trade_legsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.short_term_trade_legsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>
+          }
+          findFirst: {
+            args: Prisma.short_term_trade_legsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.short_term_trade_legsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>
+          }
+          findMany: {
+            args: Prisma.short_term_trade_legsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>[]
+          }
+          create: {
+            args: Prisma.short_term_trade_legsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>
+          }
+          createMany: {
+            args: Prisma.short_term_trade_legsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.short_term_trade_legsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>[]
+          }
+          delete: {
+            args: Prisma.short_term_trade_legsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>
+          }
+          update: {
+            args: Prisma.short_term_trade_legsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>
+          }
+          deleteMany: {
+            args: Prisma.short_term_trade_legsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.short_term_trade_legsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.short_term_trade_legsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>[]
+          }
+          upsert: {
+            args: Prisma.short_term_trade_legsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$short_term_trade_legsPayload>
+          }
+          aggregate: {
+            args: Prisma.Short_term_trade_legsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateShort_term_trade_legs>
+          }
+          groupBy: {
+            args: Prisma.short_term_trade_legsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Short_term_trade_legsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.short_term_trade_legsCountArgs<ExtArgs>
+            result: $Utils.Optional<Short_term_trade_legsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3622,6 +3814,8 @@ export namespace Prisma {
     transactions?: transactionsOmit
     watchlist?: watchlistOmit
     price_alerts?: price_alertsOmit
+    short_term_trades?: short_term_tradesOmit
+    short_term_trade_legs?: short_term_trade_legsOmit
   }
 
   /* Types for Logging */
@@ -3997,10 +4191,12 @@ export namespace Prisma {
 
   export type Dse_companiesCountOutputType = {
     stocks: number
+    shortTermTrades: number
   }
 
   export type Dse_companiesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stocks?: boolean | Dse_companiesCountOutputTypeCountStocksArgs
+    shortTermTrades?: boolean | Dse_companiesCountOutputTypeCountShortTermTradesArgs
   }
 
   // Custom InputTypes
@@ -4021,6 +4217,13 @@ export namespace Prisma {
     where?: stocksWhereInput
   }
 
+  /**
+   * Dse_companiesCountOutputType without action
+   */
+  export type Dse_companiesCountOutputTypeCountShortTermTradesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: short_term_tradesWhereInput
+  }
+
 
   /**
    * Count Type ProfilesCountOutputType
@@ -4032,6 +4235,7 @@ export namespace Prisma {
     transactions: number
     watchlist: number
     price_alerts: number
+    shortTermTrades: number
   }
 
   export type ProfilesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4040,6 +4244,7 @@ export namespace Prisma {
     transactions?: boolean | ProfilesCountOutputTypeCountTransactionsArgs
     watchlist?: boolean | ProfilesCountOutputTypeCountWatchlistArgs
     price_alerts?: boolean | ProfilesCountOutputTypeCountPrice_alertsArgs
+    shortTermTrades?: boolean | ProfilesCountOutputTypeCountShortTermTradesArgs
   }
 
   // Custom InputTypes
@@ -4088,6 +4293,13 @@ export namespace Prisma {
     where?: price_alertsWhereInput
   }
 
+  /**
+   * ProfilesCountOutputType without action
+   */
+  export type ProfilesCountOutputTypeCountShortTermTradesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: short_term_tradesWhereInput
+  }
+
 
   /**
    * Count Type StocksCountOutputType
@@ -4126,6 +4338,37 @@ export namespace Prisma {
    */
   export type StocksCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: transactionsWhereInput
+  }
+
+
+  /**
+   * Count Type Short_term_tradesCountOutputType
+   */
+
+  export type Short_term_tradesCountOutputType = {
+    legs: number
+  }
+
+  export type Short_term_tradesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    legs?: boolean | Short_term_tradesCountOutputTypeCountLegsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Short_term_tradesCountOutputType without action
+   */
+  export type Short_term_tradesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Short_term_tradesCountOutputType
+     */
+    select?: Short_term_tradesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Short_term_tradesCountOutputType without action
+   */
+  export type Short_term_tradesCountOutputTypeCountLegsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: short_term_trade_legsWhereInput
   }
 
 
@@ -32038,6 +32281,7 @@ export namespace Prisma {
     updated_at?: boolean
     created_at?: boolean
     stocks?: boolean | dse_companies$stocksArgs<ExtArgs>
+    shortTermTrades?: boolean | dse_companies$shortTermTradesArgs<ExtArgs>
     _count?: boolean | Dse_companiesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dse_companies"]>
 
@@ -32086,6 +32330,7 @@ export namespace Prisma {
   export type dse_companiesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "symbol" | "company_name" | "category" | "sector" | "address" | "phone" | "email" | "current_price" | "updated_at" | "created_at", ExtArgs["result"]["dse_companies"]>
   export type dse_companiesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stocks?: boolean | dse_companies$stocksArgs<ExtArgs>
+    shortTermTrades?: boolean | dse_companies$shortTermTradesArgs<ExtArgs>
     _count?: boolean | Dse_companiesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type dse_companiesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -32095,6 +32340,7 @@ export namespace Prisma {
     name: "dse_companies"
     objects: {
       stocks: Prisma.$stocksPayload<ExtArgs>[]
+      shortTermTrades: Prisma.$short_term_tradesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -32503,6 +32749,7 @@ export namespace Prisma {
   export interface Prisma__dse_companiesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     stocks<T extends dse_companies$stocksArgs<ExtArgs> = {}>(args?: Subset<T, dse_companies$stocksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$stocksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    shortTermTrades<T extends dse_companies$shortTermTradesArgs<ExtArgs> = {}>(args?: Subset<T, dse_companies$shortTermTradesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -32960,6 +33207,30 @@ export namespace Prisma {
   }
 
   /**
+   * dse_companies.shortTermTrades
+   */
+  export type dse_companies$shortTermTradesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    where?: short_term_tradesWhereInput
+    orderBy?: short_term_tradesOrderByWithRelationInput | short_term_tradesOrderByWithRelationInput[]
+    cursor?: short_term_tradesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Short_term_tradesScalarFieldEnum | Short_term_tradesScalarFieldEnum[]
+  }
+
+  /**
    * dse_companies without action
    */
   export type dse_companiesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -33172,6 +33443,7 @@ export namespace Prisma {
     transactions?: boolean | profiles$transactionsArgs<ExtArgs>
     watchlist?: boolean | profiles$watchlistArgs<ExtArgs>
     price_alerts?: boolean | profiles$price_alertsArgs<ExtArgs>
+    shortTermTrades?: boolean | profiles$shortTermTradesArgs<ExtArgs>
     _count?: boolean | ProfilesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profiles"]>
 
@@ -33218,6 +33490,7 @@ export namespace Prisma {
     transactions?: boolean | profiles$transactionsArgs<ExtArgs>
     watchlist?: boolean | profiles$watchlistArgs<ExtArgs>
     price_alerts?: boolean | profiles$price_alertsArgs<ExtArgs>
+    shortTermTrades?: boolean | profiles$shortTermTradesArgs<ExtArgs>
     _count?: boolean | ProfilesCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type profilesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -33236,6 +33509,7 @@ export namespace Prisma {
       transactions: Prisma.$transactionsPayload<ExtArgs>[]
       watchlist: Prisma.$watchlistPayload<ExtArgs>[]
       price_alerts: Prisma.$price_alertsPayload<ExtArgs>[]
+      shortTermTrades: Prisma.$short_term_tradesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -33646,6 +33920,7 @@ export namespace Prisma {
     transactions<T extends profiles$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, profiles$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$transactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     watchlist<T extends profiles$watchlistArgs<ExtArgs> = {}>(args?: Subset<T, profiles$watchlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$watchlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     price_alerts<T extends profiles$price_alertsArgs<ExtArgs> = {}>(args?: Subset<T, profiles$price_alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$price_alertsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    shortTermTrades<T extends profiles$shortTermTradesArgs<ExtArgs> = {}>(args?: Subset<T, profiles$shortTermTradesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -34201,6 +34476,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Price_alertsScalarFieldEnum | Price_alertsScalarFieldEnum[]
+  }
+
+  /**
+   * profiles.shortTermTrades
+   */
+  export type profiles$shortTermTradesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    where?: short_term_tradesWhereInput
+    orderBy?: short_term_tradesOrderByWithRelationInput | short_term_tradesOrderByWithRelationInput[]
+    cursor?: short_term_tradesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Short_term_tradesScalarFieldEnum | Short_term_tradesScalarFieldEnum[]
   }
 
   /**
@@ -38964,6 +39263,2398 @@ export namespace Prisma {
 
 
   /**
+   * Model short_term_trades
+   */
+
+  export type AggregateShort_term_trades = {
+    _count: Short_term_tradesCountAggregateOutputType | null
+    _avg: Short_term_tradesAvgAggregateOutputType | null
+    _sum: Short_term_tradesSumAggregateOutputType | null
+    _min: Short_term_tradesMinAggregateOutputType | null
+    _max: Short_term_tradesMaxAggregateOutputType | null
+  }
+
+  export type Short_term_tradesAvgAggregateOutputType = {
+    total_buy_qty: Decimal | null
+    total_sell_qty: Decimal | null
+    average_buy_price: Decimal | null
+    average_sell_price: Decimal | null
+    realized_profit: Decimal | null
+  }
+
+  export type Short_term_tradesSumAggregateOutputType = {
+    total_buy_qty: Decimal | null
+    total_sell_qty: Decimal | null
+    average_buy_price: Decimal | null
+    average_sell_price: Decimal | null
+    realized_profit: Decimal | null
+  }
+
+  export type Short_term_tradesMinAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    symbol: string | null
+    status: $Enums.short_term_trade_status | null
+    total_buy_qty: Decimal | null
+    total_sell_qty: Decimal | null
+    average_buy_price: Decimal | null
+    average_sell_price: Decimal | null
+    realized_profit: Decimal | null
+    opened_at: Date | null
+    closed_at: Date | null
+  }
+
+  export type Short_term_tradesMaxAggregateOutputType = {
+    id: string | null
+    user_id: string | null
+    symbol: string | null
+    status: $Enums.short_term_trade_status | null
+    total_buy_qty: Decimal | null
+    total_sell_qty: Decimal | null
+    average_buy_price: Decimal | null
+    average_sell_price: Decimal | null
+    realized_profit: Decimal | null
+    opened_at: Date | null
+    closed_at: Date | null
+  }
+
+  export type Short_term_tradesCountAggregateOutputType = {
+    id: number
+    user_id: number
+    symbol: number
+    status: number
+    total_buy_qty: number
+    total_sell_qty: number
+    average_buy_price: number
+    average_sell_price: number
+    realized_profit: number
+    opened_at: number
+    closed_at: number
+    _all: number
+  }
+
+
+  export type Short_term_tradesAvgAggregateInputType = {
+    total_buy_qty?: true
+    total_sell_qty?: true
+    average_buy_price?: true
+    average_sell_price?: true
+    realized_profit?: true
+  }
+
+  export type Short_term_tradesSumAggregateInputType = {
+    total_buy_qty?: true
+    total_sell_qty?: true
+    average_buy_price?: true
+    average_sell_price?: true
+    realized_profit?: true
+  }
+
+  export type Short_term_tradesMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    status?: true
+    total_buy_qty?: true
+    total_sell_qty?: true
+    average_buy_price?: true
+    average_sell_price?: true
+    realized_profit?: true
+    opened_at?: true
+    closed_at?: true
+  }
+
+  export type Short_term_tradesMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    status?: true
+    total_buy_qty?: true
+    total_sell_qty?: true
+    average_buy_price?: true
+    average_sell_price?: true
+    realized_profit?: true
+    opened_at?: true
+    closed_at?: true
+  }
+
+  export type Short_term_tradesCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    symbol?: true
+    status?: true
+    total_buy_qty?: true
+    total_sell_qty?: true
+    average_buy_price?: true
+    average_sell_price?: true
+    realized_profit?: true
+    opened_at?: true
+    closed_at?: true
+    _all?: true
+  }
+
+  export type Short_term_tradesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which short_term_trades to aggregate.
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trades to fetch.
+     */
+    orderBy?: short_term_tradesOrderByWithRelationInput | short_term_tradesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: short_term_tradesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trades from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trades.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned short_term_trades
+    **/
+    _count?: true | Short_term_tradesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Short_term_tradesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Short_term_tradesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Short_term_tradesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Short_term_tradesMaxAggregateInputType
+  }
+
+  export type GetShort_term_tradesAggregateType<T extends Short_term_tradesAggregateArgs> = {
+        [P in keyof T & keyof AggregateShort_term_trades]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateShort_term_trades[P]>
+      : GetScalarType<T[P], AggregateShort_term_trades[P]>
+  }
+
+
+
+
+  export type short_term_tradesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: short_term_tradesWhereInput
+    orderBy?: short_term_tradesOrderByWithAggregationInput | short_term_tradesOrderByWithAggregationInput[]
+    by: Short_term_tradesScalarFieldEnum[] | Short_term_tradesScalarFieldEnum
+    having?: short_term_tradesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Short_term_tradesCountAggregateInputType | true
+    _avg?: Short_term_tradesAvgAggregateInputType
+    _sum?: Short_term_tradesSumAggregateInputType
+    _min?: Short_term_tradesMinAggregateInputType
+    _max?: Short_term_tradesMaxAggregateInputType
+  }
+
+  export type Short_term_tradesGroupByOutputType = {
+    id: string
+    user_id: string | null
+    symbol: string
+    status: $Enums.short_term_trade_status
+    total_buy_qty: Decimal
+    total_sell_qty: Decimal
+    average_buy_price: Decimal
+    average_sell_price: Decimal
+    realized_profit: Decimal
+    opened_at: Date
+    closed_at: Date | null
+    _count: Short_term_tradesCountAggregateOutputType | null
+    _avg: Short_term_tradesAvgAggregateOutputType | null
+    _sum: Short_term_tradesSumAggregateOutputType | null
+    _min: Short_term_tradesMinAggregateOutputType | null
+    _max: Short_term_tradesMaxAggregateOutputType | null
+  }
+
+  type GetShort_term_tradesGroupByPayload<T extends short_term_tradesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Short_term_tradesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Short_term_tradesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Short_term_tradesGroupByOutputType[P]>
+            : GetScalarType<T[P], Short_term_tradesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type short_term_tradesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    status?: boolean
+    total_buy_qty?: boolean
+    total_sell_qty?: boolean
+    average_buy_price?: boolean
+    average_sell_price?: boolean
+    realized_profit?: boolean
+    opened_at?: boolean
+    closed_at?: boolean
+    legs?: boolean | short_term_trades$legsArgs<ExtArgs>
+    dse_company?: boolean | dse_companiesDefaultArgs<ExtArgs>
+    profiles?: boolean | short_term_trades$profilesArgs<ExtArgs>
+    _count?: boolean | Short_term_tradesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["short_term_trades"]>
+
+  export type short_term_tradesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    status?: boolean
+    total_buy_qty?: boolean
+    total_sell_qty?: boolean
+    average_buy_price?: boolean
+    average_sell_price?: boolean
+    realized_profit?: boolean
+    opened_at?: boolean
+    closed_at?: boolean
+    dse_company?: boolean | dse_companiesDefaultArgs<ExtArgs>
+    profiles?: boolean | short_term_trades$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["short_term_trades"]>
+
+  export type short_term_tradesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    status?: boolean
+    total_buy_qty?: boolean
+    total_sell_qty?: boolean
+    average_buy_price?: boolean
+    average_sell_price?: boolean
+    realized_profit?: boolean
+    opened_at?: boolean
+    closed_at?: boolean
+    dse_company?: boolean | dse_companiesDefaultArgs<ExtArgs>
+    profiles?: boolean | short_term_trades$profilesArgs<ExtArgs>
+  }, ExtArgs["result"]["short_term_trades"]>
+
+  export type short_term_tradesSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    symbol?: boolean
+    status?: boolean
+    total_buy_qty?: boolean
+    total_sell_qty?: boolean
+    average_buy_price?: boolean
+    average_sell_price?: boolean
+    realized_profit?: boolean
+    opened_at?: boolean
+    closed_at?: boolean
+  }
+
+  export type short_term_tradesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "symbol" | "status" | "total_buy_qty" | "total_sell_qty" | "average_buy_price" | "average_sell_price" | "realized_profit" | "opened_at" | "closed_at", ExtArgs["result"]["short_term_trades"]>
+  export type short_term_tradesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    legs?: boolean | short_term_trades$legsArgs<ExtArgs>
+    dse_company?: boolean | dse_companiesDefaultArgs<ExtArgs>
+    profiles?: boolean | short_term_trades$profilesArgs<ExtArgs>
+    _count?: boolean | Short_term_tradesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type short_term_tradesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    dse_company?: boolean | dse_companiesDefaultArgs<ExtArgs>
+    profiles?: boolean | short_term_trades$profilesArgs<ExtArgs>
+  }
+  export type short_term_tradesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    dse_company?: boolean | dse_companiesDefaultArgs<ExtArgs>
+    profiles?: boolean | short_term_trades$profilesArgs<ExtArgs>
+  }
+
+  export type $short_term_tradesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "short_term_trades"
+    objects: {
+      legs: Prisma.$short_term_trade_legsPayload<ExtArgs>[]
+      dse_company: Prisma.$dse_companiesPayload<ExtArgs>
+      profiles: Prisma.$profilesPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      user_id: string | null
+      symbol: string
+      status: $Enums.short_term_trade_status
+      total_buy_qty: Prisma.Decimal
+      total_sell_qty: Prisma.Decimal
+      average_buy_price: Prisma.Decimal
+      average_sell_price: Prisma.Decimal
+      realized_profit: Prisma.Decimal
+      opened_at: Date
+      closed_at: Date | null
+    }, ExtArgs["result"]["short_term_trades"]>
+    composites: {}
+  }
+
+  type short_term_tradesGetPayload<S extends boolean | null | undefined | short_term_tradesDefaultArgs> = $Result.GetResult<Prisma.$short_term_tradesPayload, S>
+
+  type short_term_tradesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<short_term_tradesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Short_term_tradesCountAggregateInputType | true
+    }
+
+  export interface short_term_tradesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['short_term_trades'], meta: { name: 'short_term_trades' } }
+    /**
+     * Find zero or one Short_term_trades that matches the filter.
+     * @param {short_term_tradesFindUniqueArgs} args - Arguments to find a Short_term_trades
+     * @example
+     * // Get one Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends short_term_tradesFindUniqueArgs>(args: SelectSubset<T, short_term_tradesFindUniqueArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Short_term_trades that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {short_term_tradesFindUniqueOrThrowArgs} args - Arguments to find a Short_term_trades
+     * @example
+     * // Get one Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends short_term_tradesFindUniqueOrThrowArgs>(args: SelectSubset<T, short_term_tradesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Short_term_trades that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_tradesFindFirstArgs} args - Arguments to find a Short_term_trades
+     * @example
+     * // Get one Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends short_term_tradesFindFirstArgs>(args?: SelectSubset<T, short_term_tradesFindFirstArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Short_term_trades that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_tradesFindFirstOrThrowArgs} args - Arguments to find a Short_term_trades
+     * @example
+     * // Get one Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends short_term_tradesFindFirstOrThrowArgs>(args?: SelectSubset<T, short_term_tradesFindFirstOrThrowArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Short_term_trades that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_tradesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.findMany()
+     * 
+     * // Get first 10 Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const short_term_tradesWithIdOnly = await prisma.short_term_trades.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends short_term_tradesFindManyArgs>(args?: SelectSubset<T, short_term_tradesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Short_term_trades.
+     * @param {short_term_tradesCreateArgs} args - Arguments to create a Short_term_trades.
+     * @example
+     * // Create one Short_term_trades
+     * const Short_term_trades = await prisma.short_term_trades.create({
+     *   data: {
+     *     // ... data to create a Short_term_trades
+     *   }
+     * })
+     * 
+     */
+    create<T extends short_term_tradesCreateArgs>(args: SelectSubset<T, short_term_tradesCreateArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Short_term_trades.
+     * @param {short_term_tradesCreateManyArgs} args - Arguments to create many Short_term_trades.
+     * @example
+     * // Create many Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends short_term_tradesCreateManyArgs>(args?: SelectSubset<T, short_term_tradesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Short_term_trades and returns the data saved in the database.
+     * @param {short_term_tradesCreateManyAndReturnArgs} args - Arguments to create many Short_term_trades.
+     * @example
+     * // Create many Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Short_term_trades and only return the `id`
+     * const short_term_tradesWithIdOnly = await prisma.short_term_trades.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends short_term_tradesCreateManyAndReturnArgs>(args?: SelectSubset<T, short_term_tradesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Short_term_trades.
+     * @param {short_term_tradesDeleteArgs} args - Arguments to delete one Short_term_trades.
+     * @example
+     * // Delete one Short_term_trades
+     * const Short_term_trades = await prisma.short_term_trades.delete({
+     *   where: {
+     *     // ... filter to delete one Short_term_trades
+     *   }
+     * })
+     * 
+     */
+    delete<T extends short_term_tradesDeleteArgs>(args: SelectSubset<T, short_term_tradesDeleteArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Short_term_trades.
+     * @param {short_term_tradesUpdateArgs} args - Arguments to update one Short_term_trades.
+     * @example
+     * // Update one Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends short_term_tradesUpdateArgs>(args: SelectSubset<T, short_term_tradesUpdateArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Short_term_trades.
+     * @param {short_term_tradesDeleteManyArgs} args - Arguments to filter Short_term_trades to delete.
+     * @example
+     * // Delete a few Short_term_trades
+     * const { count } = await prisma.short_term_trades.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends short_term_tradesDeleteManyArgs>(args?: SelectSubset<T, short_term_tradesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Short_term_trades.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_tradesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends short_term_tradesUpdateManyArgs>(args: SelectSubset<T, short_term_tradesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Short_term_trades and returns the data updated in the database.
+     * @param {short_term_tradesUpdateManyAndReturnArgs} args - Arguments to update many Short_term_trades.
+     * @example
+     * // Update many Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Short_term_trades and only return the `id`
+     * const short_term_tradesWithIdOnly = await prisma.short_term_trades.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends short_term_tradesUpdateManyAndReturnArgs>(args: SelectSubset<T, short_term_tradesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Short_term_trades.
+     * @param {short_term_tradesUpsertArgs} args - Arguments to update or create a Short_term_trades.
+     * @example
+     * // Update or create a Short_term_trades
+     * const short_term_trades = await prisma.short_term_trades.upsert({
+     *   create: {
+     *     // ... data to create a Short_term_trades
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Short_term_trades we want to update
+     *   }
+     * })
+     */
+    upsert<T extends short_term_tradesUpsertArgs>(args: SelectSubset<T, short_term_tradesUpsertArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Short_term_trades.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_tradesCountArgs} args - Arguments to filter Short_term_trades to count.
+     * @example
+     * // Count the number of Short_term_trades
+     * const count = await prisma.short_term_trades.count({
+     *   where: {
+     *     // ... the filter for the Short_term_trades we want to count
+     *   }
+     * })
+    **/
+    count<T extends short_term_tradesCountArgs>(
+      args?: Subset<T, short_term_tradesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Short_term_tradesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Short_term_trades.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Short_term_tradesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Short_term_tradesAggregateArgs>(args: Subset<T, Short_term_tradesAggregateArgs>): Prisma.PrismaPromise<GetShort_term_tradesAggregateType<T>>
+
+    /**
+     * Group by Short_term_trades.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_tradesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends short_term_tradesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: short_term_tradesGroupByArgs['orderBy'] }
+        : { orderBy?: short_term_tradesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, short_term_tradesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetShort_term_tradesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the short_term_trades model
+   */
+  readonly fields: short_term_tradesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for short_term_trades.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__short_term_tradesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    legs<T extends short_term_trades$legsArgs<ExtArgs> = {}>(args?: Subset<T, short_term_trades$legsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    dse_company<T extends dse_companiesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, dse_companiesDefaultArgs<ExtArgs>>): Prisma__dse_companiesClient<$Result.GetResult<Prisma.$dse_companiesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    profiles<T extends short_term_trades$profilesArgs<ExtArgs> = {}>(args?: Subset<T, short_term_trades$profilesArgs<ExtArgs>>): Prisma__profilesClient<$Result.GetResult<Prisma.$profilesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the short_term_trades model
+   */
+  interface short_term_tradesFieldRefs {
+    readonly id: FieldRef<"short_term_trades", 'String'>
+    readonly user_id: FieldRef<"short_term_trades", 'String'>
+    readonly symbol: FieldRef<"short_term_trades", 'String'>
+    readonly status: FieldRef<"short_term_trades", 'short_term_trade_status'>
+    readonly total_buy_qty: FieldRef<"short_term_trades", 'Decimal'>
+    readonly total_sell_qty: FieldRef<"short_term_trades", 'Decimal'>
+    readonly average_buy_price: FieldRef<"short_term_trades", 'Decimal'>
+    readonly average_sell_price: FieldRef<"short_term_trades", 'Decimal'>
+    readonly realized_profit: FieldRef<"short_term_trades", 'Decimal'>
+    readonly opened_at: FieldRef<"short_term_trades", 'DateTime'>
+    readonly closed_at: FieldRef<"short_term_trades", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * short_term_trades findUnique
+   */
+  export type short_term_tradesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trades to fetch.
+     */
+    where: short_term_tradesWhereUniqueInput
+  }
+
+  /**
+   * short_term_trades findUniqueOrThrow
+   */
+  export type short_term_tradesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trades to fetch.
+     */
+    where: short_term_tradesWhereUniqueInput
+  }
+
+  /**
+   * short_term_trades findFirst
+   */
+  export type short_term_tradesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trades to fetch.
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trades to fetch.
+     */
+    orderBy?: short_term_tradesOrderByWithRelationInput | short_term_tradesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for short_term_trades.
+     */
+    cursor?: short_term_tradesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trades from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trades.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of short_term_trades.
+     */
+    distinct?: Short_term_tradesScalarFieldEnum | Short_term_tradesScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trades findFirstOrThrow
+   */
+  export type short_term_tradesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trades to fetch.
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trades to fetch.
+     */
+    orderBy?: short_term_tradesOrderByWithRelationInput | short_term_tradesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for short_term_trades.
+     */
+    cursor?: short_term_tradesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trades from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trades.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of short_term_trades.
+     */
+    distinct?: Short_term_tradesScalarFieldEnum | Short_term_tradesScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trades findMany
+   */
+  export type short_term_tradesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trades to fetch.
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trades to fetch.
+     */
+    orderBy?: short_term_tradesOrderByWithRelationInput | short_term_tradesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing short_term_trades.
+     */
+    cursor?: short_term_tradesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trades from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trades.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of short_term_trades.
+     */
+    distinct?: Short_term_tradesScalarFieldEnum | Short_term_tradesScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trades create
+   */
+  export type short_term_tradesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a short_term_trades.
+     */
+    data: XOR<short_term_tradesCreateInput, short_term_tradesUncheckedCreateInput>
+  }
+
+  /**
+   * short_term_trades createMany
+   */
+  export type short_term_tradesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many short_term_trades.
+     */
+    data: short_term_tradesCreateManyInput | short_term_tradesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * short_term_trades createManyAndReturn
+   */
+  export type short_term_tradesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * The data used to create many short_term_trades.
+     */
+    data: short_term_tradesCreateManyInput | short_term_tradesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * short_term_trades update
+   */
+  export type short_term_tradesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a short_term_trades.
+     */
+    data: XOR<short_term_tradesUpdateInput, short_term_tradesUncheckedUpdateInput>
+    /**
+     * Choose, which short_term_trades to update.
+     */
+    where: short_term_tradesWhereUniqueInput
+  }
+
+  /**
+   * short_term_trades updateMany
+   */
+  export type short_term_tradesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update short_term_trades.
+     */
+    data: XOR<short_term_tradesUpdateManyMutationInput, short_term_tradesUncheckedUpdateManyInput>
+    /**
+     * Filter which short_term_trades to update
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * Limit how many short_term_trades to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * short_term_trades updateManyAndReturn
+   */
+  export type short_term_tradesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * The data used to update short_term_trades.
+     */
+    data: XOR<short_term_tradesUpdateManyMutationInput, short_term_tradesUncheckedUpdateManyInput>
+    /**
+     * Filter which short_term_trades to update
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * Limit how many short_term_trades to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * short_term_trades upsert
+   */
+  export type short_term_tradesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the short_term_trades to update in case it exists.
+     */
+    where: short_term_tradesWhereUniqueInput
+    /**
+     * In case the short_term_trades found by the `where` argument doesn't exist, create a new short_term_trades with this data.
+     */
+    create: XOR<short_term_tradesCreateInput, short_term_tradesUncheckedCreateInput>
+    /**
+     * In case the short_term_trades was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<short_term_tradesUpdateInput, short_term_tradesUncheckedUpdateInput>
+  }
+
+  /**
+   * short_term_trades delete
+   */
+  export type short_term_tradesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+    /**
+     * Filter which short_term_trades to delete.
+     */
+    where: short_term_tradesWhereUniqueInput
+  }
+
+  /**
+   * short_term_trades deleteMany
+   */
+  export type short_term_tradesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which short_term_trades to delete
+     */
+    where?: short_term_tradesWhereInput
+    /**
+     * Limit how many short_term_trades to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * short_term_trades.legs
+   */
+  export type short_term_trades$legsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    where?: short_term_trade_legsWhereInput
+    orderBy?: short_term_trade_legsOrderByWithRelationInput | short_term_trade_legsOrderByWithRelationInput[]
+    cursor?: short_term_trade_legsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Short_term_trade_legsScalarFieldEnum | Short_term_trade_legsScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trades.profiles
+   */
+  export type short_term_trades$profilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the profiles
+     */
+    select?: profilesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the profiles
+     */
+    omit?: profilesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: profilesInclude<ExtArgs> | null
+    where?: profilesWhereInput
+  }
+
+  /**
+   * short_term_trades without action
+   */
+  export type short_term_tradesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trades
+     */
+    select?: short_term_tradesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trades
+     */
+    omit?: short_term_tradesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_tradesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model short_term_trade_legs
+   */
+
+  export type AggregateShort_term_trade_legs = {
+    _count: Short_term_trade_legsCountAggregateOutputType | null
+    _avg: Short_term_trade_legsAvgAggregateOutputType | null
+    _sum: Short_term_trade_legsSumAggregateOutputType | null
+    _min: Short_term_trade_legsMinAggregateOutputType | null
+    _max: Short_term_trade_legsMaxAggregateOutputType | null
+  }
+
+  export type Short_term_trade_legsAvgAggregateOutputType = {
+    quantity: Decimal | null
+    price_per_unit: Decimal | null
+    brokerage_fee: Decimal | null
+  }
+
+  export type Short_term_trade_legsSumAggregateOutputType = {
+    quantity: Decimal | null
+    price_per_unit: Decimal | null
+    brokerage_fee: Decimal | null
+  }
+
+  export type Short_term_trade_legsMinAggregateOutputType = {
+    id: string | null
+    trade_id: string | null
+    type: $Enums.transaction_type | null
+    quantity: Decimal | null
+    price_per_unit: Decimal | null
+    brokerage_fee: Decimal | null
+    date: Date | null
+    created_at: Date | null
+  }
+
+  export type Short_term_trade_legsMaxAggregateOutputType = {
+    id: string | null
+    trade_id: string | null
+    type: $Enums.transaction_type | null
+    quantity: Decimal | null
+    price_per_unit: Decimal | null
+    brokerage_fee: Decimal | null
+    date: Date | null
+    created_at: Date | null
+  }
+
+  export type Short_term_trade_legsCountAggregateOutputType = {
+    id: number
+    trade_id: number
+    type: number
+    quantity: number
+    price_per_unit: number
+    brokerage_fee: number
+    date: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type Short_term_trade_legsAvgAggregateInputType = {
+    quantity?: true
+    price_per_unit?: true
+    brokerage_fee?: true
+  }
+
+  export type Short_term_trade_legsSumAggregateInputType = {
+    quantity?: true
+    price_per_unit?: true
+    brokerage_fee?: true
+  }
+
+  export type Short_term_trade_legsMinAggregateInputType = {
+    id?: true
+    trade_id?: true
+    type?: true
+    quantity?: true
+    price_per_unit?: true
+    brokerage_fee?: true
+    date?: true
+    created_at?: true
+  }
+
+  export type Short_term_trade_legsMaxAggregateInputType = {
+    id?: true
+    trade_id?: true
+    type?: true
+    quantity?: true
+    price_per_unit?: true
+    brokerage_fee?: true
+    date?: true
+    created_at?: true
+  }
+
+  export type Short_term_trade_legsCountAggregateInputType = {
+    id?: true
+    trade_id?: true
+    type?: true
+    quantity?: true
+    price_per_unit?: true
+    brokerage_fee?: true
+    date?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type Short_term_trade_legsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which short_term_trade_legs to aggregate.
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trade_legs to fetch.
+     */
+    orderBy?: short_term_trade_legsOrderByWithRelationInput | short_term_trade_legsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: short_term_trade_legsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trade_legs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trade_legs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned short_term_trade_legs
+    **/
+    _count?: true | Short_term_trade_legsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Short_term_trade_legsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Short_term_trade_legsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Short_term_trade_legsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Short_term_trade_legsMaxAggregateInputType
+  }
+
+  export type GetShort_term_trade_legsAggregateType<T extends Short_term_trade_legsAggregateArgs> = {
+        [P in keyof T & keyof AggregateShort_term_trade_legs]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateShort_term_trade_legs[P]>
+      : GetScalarType<T[P], AggregateShort_term_trade_legs[P]>
+  }
+
+
+
+
+  export type short_term_trade_legsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: short_term_trade_legsWhereInput
+    orderBy?: short_term_trade_legsOrderByWithAggregationInput | short_term_trade_legsOrderByWithAggregationInput[]
+    by: Short_term_trade_legsScalarFieldEnum[] | Short_term_trade_legsScalarFieldEnum
+    having?: short_term_trade_legsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Short_term_trade_legsCountAggregateInputType | true
+    _avg?: Short_term_trade_legsAvgAggregateInputType
+    _sum?: Short_term_trade_legsSumAggregateInputType
+    _min?: Short_term_trade_legsMinAggregateInputType
+    _max?: Short_term_trade_legsMaxAggregateInputType
+  }
+
+  export type Short_term_trade_legsGroupByOutputType = {
+    id: string
+    trade_id: string
+    type: $Enums.transaction_type
+    quantity: Decimal
+    price_per_unit: Decimal
+    brokerage_fee: Decimal
+    date: Date
+    created_at: Date | null
+    _count: Short_term_trade_legsCountAggregateOutputType | null
+    _avg: Short_term_trade_legsAvgAggregateOutputType | null
+    _sum: Short_term_trade_legsSumAggregateOutputType | null
+    _min: Short_term_trade_legsMinAggregateOutputType | null
+    _max: Short_term_trade_legsMaxAggregateOutputType | null
+  }
+
+  type GetShort_term_trade_legsGroupByPayload<T extends short_term_trade_legsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Short_term_trade_legsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Short_term_trade_legsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Short_term_trade_legsGroupByOutputType[P]>
+            : GetScalarType<T[P], Short_term_trade_legsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type short_term_trade_legsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    trade_id?: boolean
+    type?: boolean
+    quantity?: boolean
+    price_per_unit?: boolean
+    brokerage_fee?: boolean
+    date?: boolean
+    created_at?: boolean
+    trade?: boolean | short_term_tradesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["short_term_trade_legs"]>
+
+  export type short_term_trade_legsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    trade_id?: boolean
+    type?: boolean
+    quantity?: boolean
+    price_per_unit?: boolean
+    brokerage_fee?: boolean
+    date?: boolean
+    created_at?: boolean
+    trade?: boolean | short_term_tradesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["short_term_trade_legs"]>
+
+  export type short_term_trade_legsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    trade_id?: boolean
+    type?: boolean
+    quantity?: boolean
+    price_per_unit?: boolean
+    brokerage_fee?: boolean
+    date?: boolean
+    created_at?: boolean
+    trade?: boolean | short_term_tradesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["short_term_trade_legs"]>
+
+  export type short_term_trade_legsSelectScalar = {
+    id?: boolean
+    trade_id?: boolean
+    type?: boolean
+    quantity?: boolean
+    price_per_unit?: boolean
+    brokerage_fee?: boolean
+    date?: boolean
+    created_at?: boolean
+  }
+
+  export type short_term_trade_legsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "trade_id" | "type" | "quantity" | "price_per_unit" | "brokerage_fee" | "date" | "created_at", ExtArgs["result"]["short_term_trade_legs"]>
+  export type short_term_trade_legsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    trade?: boolean | short_term_tradesDefaultArgs<ExtArgs>
+  }
+  export type short_term_trade_legsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    trade?: boolean | short_term_tradesDefaultArgs<ExtArgs>
+  }
+  export type short_term_trade_legsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    trade?: boolean | short_term_tradesDefaultArgs<ExtArgs>
+  }
+
+  export type $short_term_trade_legsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "short_term_trade_legs"
+    objects: {
+      trade: Prisma.$short_term_tradesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      trade_id: string
+      type: $Enums.transaction_type
+      quantity: Prisma.Decimal
+      price_per_unit: Prisma.Decimal
+      brokerage_fee: Prisma.Decimal
+      date: Date
+      created_at: Date | null
+    }, ExtArgs["result"]["short_term_trade_legs"]>
+    composites: {}
+  }
+
+  type short_term_trade_legsGetPayload<S extends boolean | null | undefined | short_term_trade_legsDefaultArgs> = $Result.GetResult<Prisma.$short_term_trade_legsPayload, S>
+
+  type short_term_trade_legsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<short_term_trade_legsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Short_term_trade_legsCountAggregateInputType | true
+    }
+
+  export interface short_term_trade_legsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['short_term_trade_legs'], meta: { name: 'short_term_trade_legs' } }
+    /**
+     * Find zero or one Short_term_trade_legs that matches the filter.
+     * @param {short_term_trade_legsFindUniqueArgs} args - Arguments to find a Short_term_trade_legs
+     * @example
+     * // Get one Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends short_term_trade_legsFindUniqueArgs>(args: SelectSubset<T, short_term_trade_legsFindUniqueArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Short_term_trade_legs that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {short_term_trade_legsFindUniqueOrThrowArgs} args - Arguments to find a Short_term_trade_legs
+     * @example
+     * // Get one Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends short_term_trade_legsFindUniqueOrThrowArgs>(args: SelectSubset<T, short_term_trade_legsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Short_term_trade_legs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_trade_legsFindFirstArgs} args - Arguments to find a Short_term_trade_legs
+     * @example
+     * // Get one Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends short_term_trade_legsFindFirstArgs>(args?: SelectSubset<T, short_term_trade_legsFindFirstArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Short_term_trade_legs that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_trade_legsFindFirstOrThrowArgs} args - Arguments to find a Short_term_trade_legs
+     * @example
+     * // Get one Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends short_term_trade_legsFindFirstOrThrowArgs>(args?: SelectSubset<T, short_term_trade_legsFindFirstOrThrowArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Short_term_trade_legs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_trade_legsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.findMany()
+     * 
+     * // Get first 10 Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const short_term_trade_legsWithIdOnly = await prisma.short_term_trade_legs.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends short_term_trade_legsFindManyArgs>(args?: SelectSubset<T, short_term_trade_legsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Short_term_trade_legs.
+     * @param {short_term_trade_legsCreateArgs} args - Arguments to create a Short_term_trade_legs.
+     * @example
+     * // Create one Short_term_trade_legs
+     * const Short_term_trade_legs = await prisma.short_term_trade_legs.create({
+     *   data: {
+     *     // ... data to create a Short_term_trade_legs
+     *   }
+     * })
+     * 
+     */
+    create<T extends short_term_trade_legsCreateArgs>(args: SelectSubset<T, short_term_trade_legsCreateArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Short_term_trade_legs.
+     * @param {short_term_trade_legsCreateManyArgs} args - Arguments to create many Short_term_trade_legs.
+     * @example
+     * // Create many Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends short_term_trade_legsCreateManyArgs>(args?: SelectSubset<T, short_term_trade_legsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Short_term_trade_legs and returns the data saved in the database.
+     * @param {short_term_trade_legsCreateManyAndReturnArgs} args - Arguments to create many Short_term_trade_legs.
+     * @example
+     * // Create many Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Short_term_trade_legs and only return the `id`
+     * const short_term_trade_legsWithIdOnly = await prisma.short_term_trade_legs.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends short_term_trade_legsCreateManyAndReturnArgs>(args?: SelectSubset<T, short_term_trade_legsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Short_term_trade_legs.
+     * @param {short_term_trade_legsDeleteArgs} args - Arguments to delete one Short_term_trade_legs.
+     * @example
+     * // Delete one Short_term_trade_legs
+     * const Short_term_trade_legs = await prisma.short_term_trade_legs.delete({
+     *   where: {
+     *     // ... filter to delete one Short_term_trade_legs
+     *   }
+     * })
+     * 
+     */
+    delete<T extends short_term_trade_legsDeleteArgs>(args: SelectSubset<T, short_term_trade_legsDeleteArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Short_term_trade_legs.
+     * @param {short_term_trade_legsUpdateArgs} args - Arguments to update one Short_term_trade_legs.
+     * @example
+     * // Update one Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends short_term_trade_legsUpdateArgs>(args: SelectSubset<T, short_term_trade_legsUpdateArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Short_term_trade_legs.
+     * @param {short_term_trade_legsDeleteManyArgs} args - Arguments to filter Short_term_trade_legs to delete.
+     * @example
+     * // Delete a few Short_term_trade_legs
+     * const { count } = await prisma.short_term_trade_legs.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends short_term_trade_legsDeleteManyArgs>(args?: SelectSubset<T, short_term_trade_legsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Short_term_trade_legs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_trade_legsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends short_term_trade_legsUpdateManyArgs>(args: SelectSubset<T, short_term_trade_legsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Short_term_trade_legs and returns the data updated in the database.
+     * @param {short_term_trade_legsUpdateManyAndReturnArgs} args - Arguments to update many Short_term_trade_legs.
+     * @example
+     * // Update many Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Short_term_trade_legs and only return the `id`
+     * const short_term_trade_legsWithIdOnly = await prisma.short_term_trade_legs.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends short_term_trade_legsUpdateManyAndReturnArgs>(args: SelectSubset<T, short_term_trade_legsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Short_term_trade_legs.
+     * @param {short_term_trade_legsUpsertArgs} args - Arguments to update or create a Short_term_trade_legs.
+     * @example
+     * // Update or create a Short_term_trade_legs
+     * const short_term_trade_legs = await prisma.short_term_trade_legs.upsert({
+     *   create: {
+     *     // ... data to create a Short_term_trade_legs
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Short_term_trade_legs we want to update
+     *   }
+     * })
+     */
+    upsert<T extends short_term_trade_legsUpsertArgs>(args: SelectSubset<T, short_term_trade_legsUpsertArgs<ExtArgs>>): Prisma__short_term_trade_legsClient<$Result.GetResult<Prisma.$short_term_trade_legsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Short_term_trade_legs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_trade_legsCountArgs} args - Arguments to filter Short_term_trade_legs to count.
+     * @example
+     * // Count the number of Short_term_trade_legs
+     * const count = await prisma.short_term_trade_legs.count({
+     *   where: {
+     *     // ... the filter for the Short_term_trade_legs we want to count
+     *   }
+     * })
+    **/
+    count<T extends short_term_trade_legsCountArgs>(
+      args?: Subset<T, short_term_trade_legsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Short_term_trade_legsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Short_term_trade_legs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Short_term_trade_legsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Short_term_trade_legsAggregateArgs>(args: Subset<T, Short_term_trade_legsAggregateArgs>): Prisma.PrismaPromise<GetShort_term_trade_legsAggregateType<T>>
+
+    /**
+     * Group by Short_term_trade_legs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {short_term_trade_legsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends short_term_trade_legsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: short_term_trade_legsGroupByArgs['orderBy'] }
+        : { orderBy?: short_term_trade_legsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, short_term_trade_legsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetShort_term_trade_legsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the short_term_trade_legs model
+   */
+  readonly fields: short_term_trade_legsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for short_term_trade_legs.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__short_term_trade_legsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    trade<T extends short_term_tradesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, short_term_tradesDefaultArgs<ExtArgs>>): Prisma__short_term_tradesClient<$Result.GetResult<Prisma.$short_term_tradesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the short_term_trade_legs model
+   */
+  interface short_term_trade_legsFieldRefs {
+    readonly id: FieldRef<"short_term_trade_legs", 'String'>
+    readonly trade_id: FieldRef<"short_term_trade_legs", 'String'>
+    readonly type: FieldRef<"short_term_trade_legs", 'transaction_type'>
+    readonly quantity: FieldRef<"short_term_trade_legs", 'Decimal'>
+    readonly price_per_unit: FieldRef<"short_term_trade_legs", 'Decimal'>
+    readonly brokerage_fee: FieldRef<"short_term_trade_legs", 'Decimal'>
+    readonly date: FieldRef<"short_term_trade_legs", 'DateTime'>
+    readonly created_at: FieldRef<"short_term_trade_legs", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * short_term_trade_legs findUnique
+   */
+  export type short_term_trade_legsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trade_legs to fetch.
+     */
+    where: short_term_trade_legsWhereUniqueInput
+  }
+
+  /**
+   * short_term_trade_legs findUniqueOrThrow
+   */
+  export type short_term_trade_legsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trade_legs to fetch.
+     */
+    where: short_term_trade_legsWhereUniqueInput
+  }
+
+  /**
+   * short_term_trade_legs findFirst
+   */
+  export type short_term_trade_legsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trade_legs to fetch.
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trade_legs to fetch.
+     */
+    orderBy?: short_term_trade_legsOrderByWithRelationInput | short_term_trade_legsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for short_term_trade_legs.
+     */
+    cursor?: short_term_trade_legsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trade_legs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trade_legs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of short_term_trade_legs.
+     */
+    distinct?: Short_term_trade_legsScalarFieldEnum | Short_term_trade_legsScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trade_legs findFirstOrThrow
+   */
+  export type short_term_trade_legsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trade_legs to fetch.
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trade_legs to fetch.
+     */
+    orderBy?: short_term_trade_legsOrderByWithRelationInput | short_term_trade_legsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for short_term_trade_legs.
+     */
+    cursor?: short_term_trade_legsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trade_legs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trade_legs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of short_term_trade_legs.
+     */
+    distinct?: Short_term_trade_legsScalarFieldEnum | Short_term_trade_legsScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trade_legs findMany
+   */
+  export type short_term_trade_legsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * Filter, which short_term_trade_legs to fetch.
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of short_term_trade_legs to fetch.
+     */
+    orderBy?: short_term_trade_legsOrderByWithRelationInput | short_term_trade_legsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing short_term_trade_legs.
+     */
+    cursor?: short_term_trade_legsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` short_term_trade_legs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` short_term_trade_legs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of short_term_trade_legs.
+     */
+    distinct?: Short_term_trade_legsScalarFieldEnum | Short_term_trade_legsScalarFieldEnum[]
+  }
+
+  /**
+   * short_term_trade_legs create
+   */
+  export type short_term_trade_legsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a short_term_trade_legs.
+     */
+    data: XOR<short_term_trade_legsCreateInput, short_term_trade_legsUncheckedCreateInput>
+  }
+
+  /**
+   * short_term_trade_legs createMany
+   */
+  export type short_term_trade_legsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many short_term_trade_legs.
+     */
+    data: short_term_trade_legsCreateManyInput | short_term_trade_legsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * short_term_trade_legs createManyAndReturn
+   */
+  export type short_term_trade_legsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * The data used to create many short_term_trade_legs.
+     */
+    data: short_term_trade_legsCreateManyInput | short_term_trade_legsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * short_term_trade_legs update
+   */
+  export type short_term_trade_legsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a short_term_trade_legs.
+     */
+    data: XOR<short_term_trade_legsUpdateInput, short_term_trade_legsUncheckedUpdateInput>
+    /**
+     * Choose, which short_term_trade_legs to update.
+     */
+    where: short_term_trade_legsWhereUniqueInput
+  }
+
+  /**
+   * short_term_trade_legs updateMany
+   */
+  export type short_term_trade_legsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update short_term_trade_legs.
+     */
+    data: XOR<short_term_trade_legsUpdateManyMutationInput, short_term_trade_legsUncheckedUpdateManyInput>
+    /**
+     * Filter which short_term_trade_legs to update
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * Limit how many short_term_trade_legs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * short_term_trade_legs updateManyAndReturn
+   */
+  export type short_term_trade_legsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * The data used to update short_term_trade_legs.
+     */
+    data: XOR<short_term_trade_legsUpdateManyMutationInput, short_term_trade_legsUncheckedUpdateManyInput>
+    /**
+     * Filter which short_term_trade_legs to update
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * Limit how many short_term_trade_legs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * short_term_trade_legs upsert
+   */
+  export type short_term_trade_legsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the short_term_trade_legs to update in case it exists.
+     */
+    where: short_term_trade_legsWhereUniqueInput
+    /**
+     * In case the short_term_trade_legs found by the `where` argument doesn't exist, create a new short_term_trade_legs with this data.
+     */
+    create: XOR<short_term_trade_legsCreateInput, short_term_trade_legsUncheckedCreateInput>
+    /**
+     * In case the short_term_trade_legs was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<short_term_trade_legsUpdateInput, short_term_trade_legsUncheckedUpdateInput>
+  }
+
+  /**
+   * short_term_trade_legs delete
+   */
+  export type short_term_trade_legsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+    /**
+     * Filter which short_term_trade_legs to delete.
+     */
+    where: short_term_trade_legsWhereUniqueInput
+  }
+
+  /**
+   * short_term_trade_legs deleteMany
+   */
+  export type short_term_trade_legsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which short_term_trade_legs to delete
+     */
+    where?: short_term_trade_legsWhereInput
+    /**
+     * Limit how many short_term_trade_legs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * short_term_trade_legs without action
+   */
+  export type short_term_trade_legsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the short_term_trade_legs
+     */
+    select?: short_term_trade_legsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the short_term_trade_legs
+     */
+    omit?: short_term_trade_legsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: short_term_trade_legsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -39461,6 +42152,37 @@ export namespace Prisma {
   export type Price_alertsScalarFieldEnum = (typeof Price_alertsScalarFieldEnum)[keyof typeof Price_alertsScalarFieldEnum]
 
 
+  export const Short_term_tradesScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    symbol: 'symbol',
+    status: 'status',
+    total_buy_qty: 'total_buy_qty',
+    total_sell_qty: 'total_sell_qty',
+    average_buy_price: 'average_buy_price',
+    average_sell_price: 'average_sell_price',
+    realized_profit: 'realized_profit',
+    opened_at: 'opened_at',
+    closed_at: 'closed_at'
+  };
+
+  export type Short_term_tradesScalarFieldEnum = (typeof Short_term_tradesScalarFieldEnum)[keyof typeof Short_term_tradesScalarFieldEnum]
+
+
+  export const Short_term_trade_legsScalarFieldEnum: {
+    id: 'id',
+    trade_id: 'trade_id',
+    type: 'type',
+    quantity: 'quantity',
+    price_per_unit: 'price_per_unit',
+    brokerage_fee: 'brokerage_fee',
+    date: 'date',
+    created_at: 'created_at'
+  };
+
+  export type Short_term_trade_legsScalarFieldEnum = (typeof Short_term_trade_legsScalarFieldEnum)[keyof typeof Short_term_trade_legsScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -39770,6 +42492,20 @@ export namespace Prisma {
    * Reference to a field of type 'transaction_type[]'
    */
   export type ListEnumtransaction_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'transaction_type[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'short_term_trade_status'
+   */
+  export type Enumshort_term_trade_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'short_term_trade_status'>
+    
+
+
+  /**
+   * Reference to a field of type 'short_term_trade_status[]'
+   */
+  export type ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'short_term_trade_status[]'>
     
 
 
@@ -41842,6 +44578,7 @@ export namespace Prisma {
     updated_at?: DateTimeNullableFilter<"dse_companies"> | Date | string | null
     created_at?: DateTimeNullableFilter<"dse_companies"> | Date | string | null
     stocks?: StocksListRelationFilter
+    shortTermTrades?: Short_term_tradesListRelationFilter
   }
 
   export type dse_companiesOrderByWithRelationInput = {
@@ -41857,6 +44594,7 @@ export namespace Prisma {
     updated_at?: SortOrderInput | SortOrder
     created_at?: SortOrderInput | SortOrder
     stocks?: stocksOrderByRelationAggregateInput
+    shortTermTrades?: short_term_tradesOrderByRelationAggregateInput
   }
 
   export type dse_companiesWhereUniqueInput = Prisma.AtLeast<{
@@ -41875,6 +44613,7 @@ export namespace Prisma {
     updated_at?: DateTimeNullableFilter<"dse_companies"> | Date | string | null
     created_at?: DateTimeNullableFilter<"dse_companies"> | Date | string | null
     stocks?: StocksListRelationFilter
+    shortTermTrades?: Short_term_tradesListRelationFilter
   }, "id" | "symbol">
 
   export type dse_companiesOrderByWithAggregationInput = {
@@ -41931,6 +44670,7 @@ export namespace Prisma {
     transactions?: TransactionsListRelationFilter
     watchlist?: WatchlistListRelationFilter
     price_alerts?: Price_alertsListRelationFilter
+    shortTermTrades?: Short_term_tradesListRelationFilter
   }
 
   export type profilesOrderByWithRelationInput = {
@@ -41948,6 +44688,7 @@ export namespace Prisma {
     transactions?: transactionsOrderByRelationAggregateInput
     watchlist?: watchlistOrderByRelationAggregateInput
     price_alerts?: price_alertsOrderByRelationAggregateInput
+    shortTermTrades?: short_term_tradesOrderByRelationAggregateInput
   }
 
   export type profilesWhereUniqueInput = Prisma.AtLeast<{
@@ -41968,6 +44709,7 @@ export namespace Prisma {
     transactions?: TransactionsListRelationFilter
     watchlist?: WatchlistListRelationFilter
     price_alerts?: Price_alertsListRelationFilter
+    shortTermTrades?: Short_term_tradesListRelationFilter
   }, "id">
 
   export type profilesOrderByWithAggregationInput = {
@@ -42306,6 +45048,171 @@ export namespace Prisma {
     is_buy_triggered?: BoolWithAggregatesFilter<"price_alerts"> | boolean
     is_sell_triggered?: BoolWithAggregatesFilter<"price_alerts"> | boolean
     created_at?: DateTimeNullableWithAggregatesFilter<"price_alerts"> | Date | string | null
+  }
+
+  export type short_term_tradesWhereInput = {
+    AND?: short_term_tradesWhereInput | short_term_tradesWhereInput[]
+    OR?: short_term_tradesWhereInput[]
+    NOT?: short_term_tradesWhereInput | short_term_tradesWhereInput[]
+    id?: UuidFilter<"short_term_trades"> | string
+    user_id?: UuidNullableFilter<"short_term_trades"> | string | null
+    symbol?: StringFilter<"short_term_trades"> | string
+    status?: Enumshort_term_trade_statusFilter<"short_term_trades"> | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFilter<"short_term_trades"> | Date | string
+    closed_at?: DateTimeNullableFilter<"short_term_trades"> | Date | string | null
+    legs?: Short_term_trade_legsListRelationFilter
+    dse_company?: XOR<Dse_companiesScalarRelationFilter, dse_companiesWhereInput>
+    profiles?: XOR<ProfilesNullableScalarRelationFilter, profilesWhereInput> | null
+  }
+
+  export type short_term_tradesOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    symbol?: SortOrder
+    status?: SortOrder
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+    opened_at?: SortOrder
+    closed_at?: SortOrderInput | SortOrder
+    legs?: short_term_trade_legsOrderByRelationAggregateInput
+    dse_company?: dse_companiesOrderByWithRelationInput
+    profiles?: profilesOrderByWithRelationInput
+  }
+
+  export type short_term_tradesWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: short_term_tradesWhereInput | short_term_tradesWhereInput[]
+    OR?: short_term_tradesWhereInput[]
+    NOT?: short_term_tradesWhereInput | short_term_tradesWhereInput[]
+    user_id?: UuidNullableFilter<"short_term_trades"> | string | null
+    symbol?: StringFilter<"short_term_trades"> | string
+    status?: Enumshort_term_trade_statusFilter<"short_term_trades"> | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFilter<"short_term_trades"> | Date | string
+    closed_at?: DateTimeNullableFilter<"short_term_trades"> | Date | string | null
+    legs?: Short_term_trade_legsListRelationFilter
+    dse_company?: XOR<Dse_companiesScalarRelationFilter, dse_companiesWhereInput>
+    profiles?: XOR<ProfilesNullableScalarRelationFilter, profilesWhereInput> | null
+  }, "id">
+
+  export type short_term_tradesOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrderInput | SortOrder
+    symbol?: SortOrder
+    status?: SortOrder
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+    opened_at?: SortOrder
+    closed_at?: SortOrderInput | SortOrder
+    _count?: short_term_tradesCountOrderByAggregateInput
+    _avg?: short_term_tradesAvgOrderByAggregateInput
+    _max?: short_term_tradesMaxOrderByAggregateInput
+    _min?: short_term_tradesMinOrderByAggregateInput
+    _sum?: short_term_tradesSumOrderByAggregateInput
+  }
+
+  export type short_term_tradesScalarWhereWithAggregatesInput = {
+    AND?: short_term_tradesScalarWhereWithAggregatesInput | short_term_tradesScalarWhereWithAggregatesInput[]
+    OR?: short_term_tradesScalarWhereWithAggregatesInput[]
+    NOT?: short_term_tradesScalarWhereWithAggregatesInput | short_term_tradesScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"short_term_trades"> | string
+    user_id?: UuidNullableWithAggregatesFilter<"short_term_trades"> | string | null
+    symbol?: StringWithAggregatesFilter<"short_term_trades"> | string
+    status?: Enumshort_term_trade_statusWithAggregatesFilter<"short_term_trades"> | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalWithAggregatesFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalWithAggregatesFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalWithAggregatesFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalWithAggregatesFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalWithAggregatesFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeWithAggregatesFilter<"short_term_trades"> | Date | string
+    closed_at?: DateTimeNullableWithAggregatesFilter<"short_term_trades"> | Date | string | null
+  }
+
+  export type short_term_trade_legsWhereInput = {
+    AND?: short_term_trade_legsWhereInput | short_term_trade_legsWhereInput[]
+    OR?: short_term_trade_legsWhereInput[]
+    NOT?: short_term_trade_legsWhereInput | short_term_trade_legsWhereInput[]
+    id?: UuidFilter<"short_term_trade_legs"> | string
+    trade_id?: UuidFilter<"short_term_trade_legs"> | string
+    type?: Enumtransaction_typeFilter<"short_term_trade_legs"> | $Enums.transaction_type
+    quantity?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFilter<"short_term_trade_legs"> | Date | string
+    created_at?: DateTimeNullableFilter<"short_term_trade_legs"> | Date | string | null
+    trade?: XOR<Short_term_tradesScalarRelationFilter, short_term_tradesWhereInput>
+  }
+
+  export type short_term_trade_legsOrderByWithRelationInput = {
+    id?: SortOrder
+    trade_id?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrderInput | SortOrder
+    trade?: short_term_tradesOrderByWithRelationInput
+  }
+
+  export type short_term_trade_legsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: short_term_trade_legsWhereInput | short_term_trade_legsWhereInput[]
+    OR?: short_term_trade_legsWhereInput[]
+    NOT?: short_term_trade_legsWhereInput | short_term_trade_legsWhereInput[]
+    trade_id?: UuidFilter<"short_term_trade_legs"> | string
+    type?: Enumtransaction_typeFilter<"short_term_trade_legs"> | $Enums.transaction_type
+    quantity?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFilter<"short_term_trade_legs"> | Date | string
+    created_at?: DateTimeNullableFilter<"short_term_trade_legs"> | Date | string | null
+    trade?: XOR<Short_term_tradesScalarRelationFilter, short_term_tradesWhereInput>
+  }, "id">
+
+  export type short_term_trade_legsOrderByWithAggregationInput = {
+    id?: SortOrder
+    trade_id?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrderInput | SortOrder
+    _count?: short_term_trade_legsCountOrderByAggregateInput
+    _avg?: short_term_trade_legsAvgOrderByAggregateInput
+    _max?: short_term_trade_legsMaxOrderByAggregateInput
+    _min?: short_term_trade_legsMinOrderByAggregateInput
+    _sum?: short_term_trade_legsSumOrderByAggregateInput
+  }
+
+  export type short_term_trade_legsScalarWhereWithAggregatesInput = {
+    AND?: short_term_trade_legsScalarWhereWithAggregatesInput | short_term_trade_legsScalarWhereWithAggregatesInput[]
+    OR?: short_term_trade_legsScalarWhereWithAggregatesInput[]
+    NOT?: short_term_trade_legsScalarWhereWithAggregatesInput | short_term_trade_legsScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"short_term_trade_legs"> | string
+    trade_id?: UuidWithAggregatesFilter<"short_term_trade_legs"> | string
+    type?: Enumtransaction_typeWithAggregatesFilter<"short_term_trade_legs"> | $Enums.transaction_type
+    quantity?: DecimalWithAggregatesFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalWithAggregatesFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalWithAggregatesFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    date?: DateTimeWithAggregatesFilter<"short_term_trade_legs"> | Date | string
+    created_at?: DateTimeNullableWithAggregatesFilter<"short_term_trade_legs"> | Date | string | null
   }
 
   export type audit_log_entriesCreateInput = {
@@ -44638,6 +47545,7 @@ export namespace Prisma {
     updated_at?: Date | string | null
     created_at?: Date | string | null
     stocks?: stocksCreateNestedManyWithoutDse_companyInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutDse_companyInput
   }
 
   export type dse_companiesUncheckedCreateInput = {
@@ -44653,6 +47561,7 @@ export namespace Prisma {
     updated_at?: Date | string | null
     created_at?: Date | string | null
     stocks?: stocksUncheckedCreateNestedManyWithoutDse_companyInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutDse_companyInput
   }
 
   export type dse_companiesUpdateInput = {
@@ -44668,6 +47577,7 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     stocks?: stocksUpdateManyWithoutDse_companyNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutDse_companyNestedInput
   }
 
   export type dse_companiesUncheckedUpdateInput = {
@@ -44683,6 +47593,7 @@ export namespace Prisma {
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     stocks?: stocksUncheckedUpdateManyWithoutDse_companyNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutDse_companyNestedInput
   }
 
   export type dse_companiesCreateManyInput = {
@@ -44741,6 +47652,7 @@ export namespace Prisma {
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateInput = {
@@ -44757,6 +47669,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUpdateInput = {
@@ -44773,6 +47686,7 @@ export namespace Prisma {
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateInput = {
@@ -44789,6 +47703,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesCreateManyInput = {
@@ -45144,6 +48059,182 @@ export namespace Prisma {
     sell_max_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     is_buy_triggered?: BoolFieldUpdateOperationsInput | boolean
     is_sell_triggered?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_tradesCreateInput = {
+    id?: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    legs?: short_term_trade_legsCreateNestedManyWithoutTradeInput
+    dse_company: dse_companiesCreateNestedOneWithoutShortTermTradesInput
+    profiles?: profilesCreateNestedOneWithoutShortTermTradesInput
+  }
+
+  export type short_term_tradesUncheckedCreateInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    legs?: short_term_trade_legsUncheckedCreateNestedManyWithoutTradeInput
+  }
+
+  export type short_term_tradesUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legs?: short_term_trade_legsUpdateManyWithoutTradeNestedInput
+    dse_company?: dse_companiesUpdateOneRequiredWithoutShortTermTradesNestedInput
+    profiles?: profilesUpdateOneWithoutShortTermTradesNestedInput
+  }
+
+  export type short_term_tradesUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legs?: short_term_trade_legsUncheckedUpdateManyWithoutTradeNestedInput
+  }
+
+  export type short_term_tradesCreateManyInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+  }
+
+  export type short_term_tradesUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_tradesUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_trade_legsCreateInput = {
+    id?: string
+    type: $Enums.transaction_type
+    quantity: Decimal | DecimalJsLike | number | string
+    price_per_unit: Decimal | DecimalJsLike | number | string
+    brokerage_fee?: Decimal | DecimalJsLike | number | string
+    date: Date | string
+    created_at?: Date | string | null
+    trade: short_term_tradesCreateNestedOneWithoutLegsInput
+  }
+
+  export type short_term_trade_legsUncheckedCreateInput = {
+    id?: string
+    trade_id: string
+    type: $Enums.transaction_type
+    quantity: Decimal | DecimalJsLike | number | string
+    price_per_unit: Decimal | DecimalJsLike | number | string
+    brokerage_fee?: Decimal | DecimalJsLike | number | string
+    date: Date | string
+    created_at?: Date | string | null
+  }
+
+  export type short_term_trade_legsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trade?: short_term_tradesUpdateOneRequiredWithoutLegsNestedInput
+  }
+
+  export type short_term_trade_legsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    trade_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_trade_legsCreateManyInput = {
+    id?: string
+    trade_id: string
+    type: $Enums.transaction_type
+    quantity: Decimal | DecimalJsLike | number | string
+    price_per_unit: Decimal | DecimalJsLike | number | string
+    brokerage_fee?: Decimal | DecimalJsLike | number | string
+    date: Date | string
+    created_at?: Date | string | null
+  }
+
+  export type short_term_trade_legsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_trade_legsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    trade_id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
@@ -46990,7 +50081,17 @@ export namespace Prisma {
     none?: stocksWhereInput
   }
 
+  export type Short_term_tradesListRelationFilter = {
+    every?: short_term_tradesWhereInput
+    some?: short_term_tradesWhereInput
+    none?: short_term_tradesWhereInput
+  }
+
   export type stocksOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type short_term_tradesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -47354,6 +50455,141 @@ export namespace Prisma {
     buy_max_price?: SortOrder
     sell_min_price?: SortOrder
     sell_max_price?: SortOrder
+  }
+
+  export type Enumshort_term_trade_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.short_term_trade_status | Enumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    not?: NestedEnumshort_term_trade_statusFilter<$PrismaModel> | $Enums.short_term_trade_status
+  }
+
+  export type Short_term_trade_legsListRelationFilter = {
+    every?: short_term_trade_legsWhereInput
+    some?: short_term_trade_legsWhereInput
+    none?: short_term_trade_legsWhereInput
+  }
+
+  export type short_term_trade_legsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type short_term_tradesCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    status?: SortOrder
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+    opened_at?: SortOrder
+    closed_at?: SortOrder
+  }
+
+  export type short_term_tradesAvgOrderByAggregateInput = {
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+  }
+
+  export type short_term_tradesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    status?: SortOrder
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+    opened_at?: SortOrder
+    closed_at?: SortOrder
+  }
+
+  export type short_term_tradesMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    symbol?: SortOrder
+    status?: SortOrder
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+    opened_at?: SortOrder
+    closed_at?: SortOrder
+  }
+
+  export type short_term_tradesSumOrderByAggregateInput = {
+    total_buy_qty?: SortOrder
+    total_sell_qty?: SortOrder
+    average_buy_price?: SortOrder
+    average_sell_price?: SortOrder
+    realized_profit?: SortOrder
+  }
+
+  export type Enumshort_term_trade_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.short_term_trade_status | Enumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    not?: NestedEnumshort_term_trade_statusWithAggregatesFilter<$PrismaModel> | $Enums.short_term_trade_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumshort_term_trade_statusFilter<$PrismaModel>
+    _max?: NestedEnumshort_term_trade_statusFilter<$PrismaModel>
+  }
+
+  export type Short_term_tradesScalarRelationFilter = {
+    is?: short_term_tradesWhereInput
+    isNot?: short_term_tradesWhereInput
+  }
+
+  export type short_term_trade_legsCountOrderByAggregateInput = {
+    id?: SortOrder
+    trade_id?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type short_term_trade_legsAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
+  }
+
+  export type short_term_trade_legsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    trade_id?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type short_term_trade_legsMinOrderByAggregateInput = {
+    id?: SortOrder
+    trade_id?: SortOrder
+    type?: SortOrder
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
+    date?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type short_term_trade_legsSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    price_per_unit?: SortOrder
+    brokerage_fee?: SortOrder
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -48580,11 +51816,25 @@ export namespace Prisma {
     connect?: stocksWhereUniqueInput | stocksWhereUniqueInput[]
   }
 
+  export type short_term_tradesCreateNestedManyWithoutDse_companyInput = {
+    create?: XOR<short_term_tradesCreateWithoutDse_companyInput, short_term_tradesUncheckedCreateWithoutDse_companyInput> | short_term_tradesCreateWithoutDse_companyInput[] | short_term_tradesUncheckedCreateWithoutDse_companyInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutDse_companyInput | short_term_tradesCreateOrConnectWithoutDse_companyInput[]
+    createMany?: short_term_tradesCreateManyDse_companyInputEnvelope
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+  }
+
   export type stocksUncheckedCreateNestedManyWithoutDse_companyInput = {
     create?: XOR<stocksCreateWithoutDse_companyInput, stocksUncheckedCreateWithoutDse_companyInput> | stocksCreateWithoutDse_companyInput[] | stocksUncheckedCreateWithoutDse_companyInput[]
     connectOrCreate?: stocksCreateOrConnectWithoutDse_companyInput | stocksCreateOrConnectWithoutDse_companyInput[]
     createMany?: stocksCreateManyDse_companyInputEnvelope
     connect?: stocksWhereUniqueInput | stocksWhereUniqueInput[]
+  }
+
+  export type short_term_tradesUncheckedCreateNestedManyWithoutDse_companyInput = {
+    create?: XOR<short_term_tradesCreateWithoutDse_companyInput, short_term_tradesUncheckedCreateWithoutDse_companyInput> | short_term_tradesCreateWithoutDse_companyInput[] | short_term_tradesUncheckedCreateWithoutDse_companyInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutDse_companyInput | short_term_tradesCreateOrConnectWithoutDse_companyInput[]
+    createMany?: short_term_tradesCreateManyDse_companyInputEnvelope
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
   }
 
   export type stocksUpdateManyWithoutDse_companyNestedInput = {
@@ -48601,6 +51851,20 @@ export namespace Prisma {
     deleteMany?: stocksScalarWhereInput | stocksScalarWhereInput[]
   }
 
+  export type short_term_tradesUpdateManyWithoutDse_companyNestedInput = {
+    create?: XOR<short_term_tradesCreateWithoutDse_companyInput, short_term_tradesUncheckedCreateWithoutDse_companyInput> | short_term_tradesCreateWithoutDse_companyInput[] | short_term_tradesUncheckedCreateWithoutDse_companyInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutDse_companyInput | short_term_tradesCreateOrConnectWithoutDse_companyInput[]
+    upsert?: short_term_tradesUpsertWithWhereUniqueWithoutDse_companyInput | short_term_tradesUpsertWithWhereUniqueWithoutDse_companyInput[]
+    createMany?: short_term_tradesCreateManyDse_companyInputEnvelope
+    set?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    disconnect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    delete?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    update?: short_term_tradesUpdateWithWhereUniqueWithoutDse_companyInput | short_term_tradesUpdateWithWhereUniqueWithoutDse_companyInput[]
+    updateMany?: short_term_tradesUpdateManyWithWhereWithoutDse_companyInput | short_term_tradesUpdateManyWithWhereWithoutDse_companyInput[]
+    deleteMany?: short_term_tradesScalarWhereInput | short_term_tradesScalarWhereInput[]
+  }
+
   export type stocksUncheckedUpdateManyWithoutDse_companyNestedInput = {
     create?: XOR<stocksCreateWithoutDse_companyInput, stocksUncheckedCreateWithoutDse_companyInput> | stocksCreateWithoutDse_companyInput[] | stocksUncheckedCreateWithoutDse_companyInput[]
     connectOrCreate?: stocksCreateOrConnectWithoutDse_companyInput | stocksCreateOrConnectWithoutDse_companyInput[]
@@ -48613,6 +51877,20 @@ export namespace Prisma {
     update?: stocksUpdateWithWhereUniqueWithoutDse_companyInput | stocksUpdateWithWhereUniqueWithoutDse_companyInput[]
     updateMany?: stocksUpdateManyWithWhereWithoutDse_companyInput | stocksUpdateManyWithWhereWithoutDse_companyInput[]
     deleteMany?: stocksScalarWhereInput | stocksScalarWhereInput[]
+  }
+
+  export type short_term_tradesUncheckedUpdateManyWithoutDse_companyNestedInput = {
+    create?: XOR<short_term_tradesCreateWithoutDse_companyInput, short_term_tradesUncheckedCreateWithoutDse_companyInput> | short_term_tradesCreateWithoutDse_companyInput[] | short_term_tradesUncheckedCreateWithoutDse_companyInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutDse_companyInput | short_term_tradesCreateOrConnectWithoutDse_companyInput[]
+    upsert?: short_term_tradesUpsertWithWhereUniqueWithoutDse_companyInput | short_term_tradesUpsertWithWhereUniqueWithoutDse_companyInput[]
+    createMany?: short_term_tradesCreateManyDse_companyInputEnvelope
+    set?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    disconnect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    delete?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    update?: short_term_tradesUpdateWithWhereUniqueWithoutDse_companyInput | short_term_tradesUpdateWithWhereUniqueWithoutDse_companyInput[]
+    updateMany?: short_term_tradesUpdateManyWithWhereWithoutDse_companyInput | short_term_tradesUpdateManyWithWhereWithoutDse_companyInput[]
+    deleteMany?: short_term_tradesScalarWhereInput | short_term_tradesScalarWhereInput[]
   }
 
   export type dividendsCreateNestedManyWithoutProfilesInput = {
@@ -48656,6 +51934,13 @@ export namespace Prisma {
     connect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
   }
 
+  export type short_term_tradesCreateNestedManyWithoutProfilesInput = {
+    create?: XOR<short_term_tradesCreateWithoutProfilesInput, short_term_tradesUncheckedCreateWithoutProfilesInput> | short_term_tradesCreateWithoutProfilesInput[] | short_term_tradesUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutProfilesInput | short_term_tradesCreateOrConnectWithoutProfilesInput[]
+    createMany?: short_term_tradesCreateManyProfilesInputEnvelope
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+  }
+
   export type dividendsUncheckedCreateNestedManyWithoutProfilesInput = {
     create?: XOR<dividendsCreateWithoutProfilesInput, dividendsUncheckedCreateWithoutProfilesInput> | dividendsCreateWithoutProfilesInput[] | dividendsUncheckedCreateWithoutProfilesInput[]
     connectOrCreate?: dividendsCreateOrConnectWithoutProfilesInput | dividendsCreateOrConnectWithoutProfilesInput[]
@@ -48689,6 +51974,13 @@ export namespace Prisma {
     connectOrCreate?: price_alertsCreateOrConnectWithoutProfilesInput | price_alertsCreateOrConnectWithoutProfilesInput[]
     createMany?: price_alertsCreateManyProfilesInputEnvelope
     connect?: price_alertsWhereUniqueInput | price_alertsWhereUniqueInput[]
+  }
+
+  export type short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput = {
+    create?: XOR<short_term_tradesCreateWithoutProfilesInput, short_term_tradesUncheckedCreateWithoutProfilesInput> | short_term_tradesCreateWithoutProfilesInput[] | short_term_tradesUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutProfilesInput | short_term_tradesCreateOrConnectWithoutProfilesInput[]
+    createMany?: short_term_tradesCreateManyProfilesInputEnvelope
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
   }
 
   export type dividendsUpdateManyWithoutProfilesNestedInput = {
@@ -48769,6 +52061,20 @@ export namespace Prisma {
     deleteMany?: price_alertsScalarWhereInput | price_alertsScalarWhereInput[]
   }
 
+  export type short_term_tradesUpdateManyWithoutProfilesNestedInput = {
+    create?: XOR<short_term_tradesCreateWithoutProfilesInput, short_term_tradesUncheckedCreateWithoutProfilesInput> | short_term_tradesCreateWithoutProfilesInput[] | short_term_tradesUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutProfilesInput | short_term_tradesCreateOrConnectWithoutProfilesInput[]
+    upsert?: short_term_tradesUpsertWithWhereUniqueWithoutProfilesInput | short_term_tradesUpsertWithWhereUniqueWithoutProfilesInput[]
+    createMany?: short_term_tradesCreateManyProfilesInputEnvelope
+    set?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    disconnect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    delete?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    update?: short_term_tradesUpdateWithWhereUniqueWithoutProfilesInput | short_term_tradesUpdateWithWhereUniqueWithoutProfilesInput[]
+    updateMany?: short_term_tradesUpdateManyWithWhereWithoutProfilesInput | short_term_tradesUpdateManyWithWhereWithoutProfilesInput[]
+    deleteMany?: short_term_tradesScalarWhereInput | short_term_tradesScalarWhereInput[]
+  }
+
   export type dividendsUncheckedUpdateManyWithoutProfilesNestedInput = {
     create?: XOR<dividendsCreateWithoutProfilesInput, dividendsUncheckedCreateWithoutProfilesInput> | dividendsCreateWithoutProfilesInput[] | dividendsUncheckedCreateWithoutProfilesInput[]
     connectOrCreate?: dividendsCreateOrConnectWithoutProfilesInput | dividendsCreateOrConnectWithoutProfilesInput[]
@@ -48837,6 +52143,20 @@ export namespace Prisma {
     update?: price_alertsUpdateWithWhereUniqueWithoutProfilesInput | price_alertsUpdateWithWhereUniqueWithoutProfilesInput[]
     updateMany?: price_alertsUpdateManyWithWhereWithoutProfilesInput | price_alertsUpdateManyWithWhereWithoutProfilesInput[]
     deleteMany?: price_alertsScalarWhereInput | price_alertsScalarWhereInput[]
+  }
+
+  export type short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput = {
+    create?: XOR<short_term_tradesCreateWithoutProfilesInput, short_term_tradesUncheckedCreateWithoutProfilesInput> | short_term_tradesCreateWithoutProfilesInput[] | short_term_tradesUncheckedCreateWithoutProfilesInput[]
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutProfilesInput | short_term_tradesCreateOrConnectWithoutProfilesInput[]
+    upsert?: short_term_tradesUpsertWithWhereUniqueWithoutProfilesInput | short_term_tradesUpsertWithWhereUniqueWithoutProfilesInput[]
+    createMany?: short_term_tradesCreateManyProfilesInputEnvelope
+    set?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    disconnect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    delete?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    connect?: short_term_tradesWhereUniqueInput | short_term_tradesWhereUniqueInput[]
+    update?: short_term_tradesUpdateWithWhereUniqueWithoutProfilesInput | short_term_tradesUpdateWithWhereUniqueWithoutProfilesInput[]
+    updateMany?: short_term_tradesUpdateManyWithWhereWithoutProfilesInput | short_term_tradesUpdateManyWithWhereWithoutProfilesInput[]
+    deleteMany?: short_term_tradesScalarWhereInput | short_term_tradesScalarWhereInput[]
   }
 
   export type dse_companiesCreateNestedOneWithoutStocksInput = {
@@ -49027,6 +52347,96 @@ export namespace Prisma {
     delete?: profilesWhereInput | boolean
     connect?: profilesWhereUniqueInput
     update?: XOR<XOR<profilesUpdateToOneWithWhereWithoutPrice_alertsInput, profilesUpdateWithoutPrice_alertsInput>, profilesUncheckedUpdateWithoutPrice_alertsInput>
+  }
+
+  export type short_term_trade_legsCreateNestedManyWithoutTradeInput = {
+    create?: XOR<short_term_trade_legsCreateWithoutTradeInput, short_term_trade_legsUncheckedCreateWithoutTradeInput> | short_term_trade_legsCreateWithoutTradeInput[] | short_term_trade_legsUncheckedCreateWithoutTradeInput[]
+    connectOrCreate?: short_term_trade_legsCreateOrConnectWithoutTradeInput | short_term_trade_legsCreateOrConnectWithoutTradeInput[]
+    createMany?: short_term_trade_legsCreateManyTradeInputEnvelope
+    connect?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+  }
+
+  export type dse_companiesCreateNestedOneWithoutShortTermTradesInput = {
+    create?: XOR<dse_companiesCreateWithoutShortTermTradesInput, dse_companiesUncheckedCreateWithoutShortTermTradesInput>
+    connectOrCreate?: dse_companiesCreateOrConnectWithoutShortTermTradesInput
+    connect?: dse_companiesWhereUniqueInput
+  }
+
+  export type profilesCreateNestedOneWithoutShortTermTradesInput = {
+    create?: XOR<profilesCreateWithoutShortTermTradesInput, profilesUncheckedCreateWithoutShortTermTradesInput>
+    connectOrCreate?: profilesCreateOrConnectWithoutShortTermTradesInput
+    connect?: profilesWhereUniqueInput
+  }
+
+  export type short_term_trade_legsUncheckedCreateNestedManyWithoutTradeInput = {
+    create?: XOR<short_term_trade_legsCreateWithoutTradeInput, short_term_trade_legsUncheckedCreateWithoutTradeInput> | short_term_trade_legsCreateWithoutTradeInput[] | short_term_trade_legsUncheckedCreateWithoutTradeInput[]
+    connectOrCreate?: short_term_trade_legsCreateOrConnectWithoutTradeInput | short_term_trade_legsCreateOrConnectWithoutTradeInput[]
+    createMany?: short_term_trade_legsCreateManyTradeInputEnvelope
+    connect?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+  }
+
+  export type Enumshort_term_trade_statusFieldUpdateOperationsInput = {
+    set?: $Enums.short_term_trade_status
+  }
+
+  export type short_term_trade_legsUpdateManyWithoutTradeNestedInput = {
+    create?: XOR<short_term_trade_legsCreateWithoutTradeInput, short_term_trade_legsUncheckedCreateWithoutTradeInput> | short_term_trade_legsCreateWithoutTradeInput[] | short_term_trade_legsUncheckedCreateWithoutTradeInput[]
+    connectOrCreate?: short_term_trade_legsCreateOrConnectWithoutTradeInput | short_term_trade_legsCreateOrConnectWithoutTradeInput[]
+    upsert?: short_term_trade_legsUpsertWithWhereUniqueWithoutTradeInput | short_term_trade_legsUpsertWithWhereUniqueWithoutTradeInput[]
+    createMany?: short_term_trade_legsCreateManyTradeInputEnvelope
+    set?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    disconnect?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    delete?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    connect?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    update?: short_term_trade_legsUpdateWithWhereUniqueWithoutTradeInput | short_term_trade_legsUpdateWithWhereUniqueWithoutTradeInput[]
+    updateMany?: short_term_trade_legsUpdateManyWithWhereWithoutTradeInput | short_term_trade_legsUpdateManyWithWhereWithoutTradeInput[]
+    deleteMany?: short_term_trade_legsScalarWhereInput | short_term_trade_legsScalarWhereInput[]
+  }
+
+  export type dse_companiesUpdateOneRequiredWithoutShortTermTradesNestedInput = {
+    create?: XOR<dse_companiesCreateWithoutShortTermTradesInput, dse_companiesUncheckedCreateWithoutShortTermTradesInput>
+    connectOrCreate?: dse_companiesCreateOrConnectWithoutShortTermTradesInput
+    upsert?: dse_companiesUpsertWithoutShortTermTradesInput
+    connect?: dse_companiesWhereUniqueInput
+    update?: XOR<XOR<dse_companiesUpdateToOneWithWhereWithoutShortTermTradesInput, dse_companiesUpdateWithoutShortTermTradesInput>, dse_companiesUncheckedUpdateWithoutShortTermTradesInput>
+  }
+
+  export type profilesUpdateOneWithoutShortTermTradesNestedInput = {
+    create?: XOR<profilesCreateWithoutShortTermTradesInput, profilesUncheckedCreateWithoutShortTermTradesInput>
+    connectOrCreate?: profilesCreateOrConnectWithoutShortTermTradesInput
+    upsert?: profilesUpsertWithoutShortTermTradesInput
+    disconnect?: profilesWhereInput | boolean
+    delete?: profilesWhereInput | boolean
+    connect?: profilesWhereUniqueInput
+    update?: XOR<XOR<profilesUpdateToOneWithWhereWithoutShortTermTradesInput, profilesUpdateWithoutShortTermTradesInput>, profilesUncheckedUpdateWithoutShortTermTradesInput>
+  }
+
+  export type short_term_trade_legsUncheckedUpdateManyWithoutTradeNestedInput = {
+    create?: XOR<short_term_trade_legsCreateWithoutTradeInput, short_term_trade_legsUncheckedCreateWithoutTradeInput> | short_term_trade_legsCreateWithoutTradeInput[] | short_term_trade_legsUncheckedCreateWithoutTradeInput[]
+    connectOrCreate?: short_term_trade_legsCreateOrConnectWithoutTradeInput | short_term_trade_legsCreateOrConnectWithoutTradeInput[]
+    upsert?: short_term_trade_legsUpsertWithWhereUniqueWithoutTradeInput | short_term_trade_legsUpsertWithWhereUniqueWithoutTradeInput[]
+    createMany?: short_term_trade_legsCreateManyTradeInputEnvelope
+    set?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    disconnect?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    delete?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    connect?: short_term_trade_legsWhereUniqueInput | short_term_trade_legsWhereUniqueInput[]
+    update?: short_term_trade_legsUpdateWithWhereUniqueWithoutTradeInput | short_term_trade_legsUpdateWithWhereUniqueWithoutTradeInput[]
+    updateMany?: short_term_trade_legsUpdateManyWithWhereWithoutTradeInput | short_term_trade_legsUpdateManyWithWhereWithoutTradeInput[]
+    deleteMany?: short_term_trade_legsScalarWhereInput | short_term_trade_legsScalarWhereInput[]
+  }
+
+  export type short_term_tradesCreateNestedOneWithoutLegsInput = {
+    create?: XOR<short_term_tradesCreateWithoutLegsInput, short_term_tradesUncheckedCreateWithoutLegsInput>
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutLegsInput
+    connect?: short_term_tradesWhereUniqueInput
+  }
+
+  export type short_term_tradesUpdateOneRequiredWithoutLegsNestedInput = {
+    create?: XOR<short_term_tradesCreateWithoutLegsInput, short_term_tradesUncheckedCreateWithoutLegsInput>
+    connectOrCreate?: short_term_tradesCreateOrConnectWithoutLegsInput
+    upsert?: short_term_tradesUpsertWithoutLegsInput
+    connect?: short_term_tradesWhereUniqueInput
+    update?: XOR<XOR<short_term_tradesUpdateToOneWithWhereWithoutLegsInput, short_term_tradesUpdateWithoutLegsInput>, short_term_tradesUncheckedUpdateWithoutLegsInput>
   }
 
   export type NestedUuidNullableFilter<$PrismaModel = never> = {
@@ -49649,6 +53059,23 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type NestedEnumshort_term_trade_statusFilter<$PrismaModel = never> = {
+    equals?: $Enums.short_term_trade_status | Enumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    not?: NestedEnumshort_term_trade_statusFilter<$PrismaModel> | $Enums.short_term_trade_status
+  }
+
+  export type NestedEnumshort_term_trade_statusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.short_term_trade_status | Enumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    in?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.short_term_trade_status[] | ListEnumshort_term_trade_statusFieldRefInput<$PrismaModel>
+    not?: NestedEnumshort_term_trade_statusWithAggregatesFilter<$PrismaModel> | $Enums.short_term_trade_status
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumshort_term_trade_statusFilter<$PrismaModel>
+    _max?: NestedEnumshort_term_trade_statusFilter<$PrismaModel>
   }
 
   export type saml_relay_statesCreateWithoutFlow_stateInput = {
@@ -52565,6 +55992,7 @@ export namespace Prisma {
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutUsersInput = {
@@ -52580,6 +56008,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutUsersInput = {
@@ -52818,6 +56247,7 @@ export namespace Prisma {
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutUsersInput = {
@@ -52833,6 +56263,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type usersCreateWithoutWebauthn_challengesInput = {
@@ -53281,6 +56712,7 @@ export namespace Prisma {
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutDividendsInput = {
@@ -53296,6 +56728,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutDividendsInput = {
@@ -53366,6 +56799,7 @@ export namespace Prisma {
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutDividendsInput = {
@@ -53381,6 +56815,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type stocksCreateWithoutDse_companyInput = {
@@ -53421,6 +56856,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type short_term_tradesCreateWithoutDse_companyInput = {
+    id?: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    legs?: short_term_trade_legsCreateNestedManyWithoutTradeInput
+    profiles?: profilesCreateNestedOneWithoutShortTermTradesInput
+  }
+
+  export type short_term_tradesUncheckedCreateWithoutDse_companyInput = {
+    id?: string
+    user_id?: string | null
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    legs?: short_term_trade_legsUncheckedCreateNestedManyWithoutTradeInput
+  }
+
+  export type short_term_tradesCreateOrConnectWithoutDse_companyInput = {
+    where: short_term_tradesWhereUniqueInput
+    create: XOR<short_term_tradesCreateWithoutDse_companyInput, short_term_tradesUncheckedCreateWithoutDse_companyInput>
+  }
+
+  export type short_term_tradesCreateManyDse_companyInputEnvelope = {
+    data: short_term_tradesCreateManyDse_companyInput | short_term_tradesCreateManyDse_companyInput[]
+    skipDuplicates?: boolean
+  }
+
   export type stocksUpsertWithWhereUniqueWithoutDse_companyInput = {
     where: stocksWhereUniqueInput
     update: XOR<stocksUpdateWithoutDse_companyInput, stocksUncheckedUpdateWithoutDse_companyInput>
@@ -53451,6 +56924,39 @@ export namespace Prisma {
     portfolio_price?: DecimalNullableFilter<"stocks"> | Decimal | DecimalJsLike | number | string | null
     created_at?: DateTimeNullableFilter<"stocks"> | Date | string | null
     updated_at?: DateTimeNullableFilter<"stocks"> | Date | string | null
+  }
+
+  export type short_term_tradesUpsertWithWhereUniqueWithoutDse_companyInput = {
+    where: short_term_tradesWhereUniqueInput
+    update: XOR<short_term_tradesUpdateWithoutDse_companyInput, short_term_tradesUncheckedUpdateWithoutDse_companyInput>
+    create: XOR<short_term_tradesCreateWithoutDse_companyInput, short_term_tradesUncheckedCreateWithoutDse_companyInput>
+  }
+
+  export type short_term_tradesUpdateWithWhereUniqueWithoutDse_companyInput = {
+    where: short_term_tradesWhereUniqueInput
+    data: XOR<short_term_tradesUpdateWithoutDse_companyInput, short_term_tradesUncheckedUpdateWithoutDse_companyInput>
+  }
+
+  export type short_term_tradesUpdateManyWithWhereWithoutDse_companyInput = {
+    where: short_term_tradesScalarWhereInput
+    data: XOR<short_term_tradesUpdateManyMutationInput, short_term_tradesUncheckedUpdateManyWithoutDse_companyInput>
+  }
+
+  export type short_term_tradesScalarWhereInput = {
+    AND?: short_term_tradesScalarWhereInput | short_term_tradesScalarWhereInput[]
+    OR?: short_term_tradesScalarWhereInput[]
+    NOT?: short_term_tradesScalarWhereInput | short_term_tradesScalarWhereInput[]
+    id?: UuidFilter<"short_term_trades"> | string
+    user_id?: UuidNullableFilter<"short_term_trades"> | string | null
+    symbol?: StringFilter<"short_term_trades"> | string
+    status?: Enumshort_term_trade_statusFilter<"short_term_trades"> | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFilter<"short_term_trades"> | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFilter<"short_term_trades"> | Date | string
+    closed_at?: DateTimeNullableFilter<"short_term_trades"> | Date | string | null
   }
 
   export type dividendsCreateWithoutProfilesInput = {
@@ -53714,6 +57220,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type short_term_tradesCreateWithoutProfilesInput = {
+    id?: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    legs?: short_term_trade_legsCreateNestedManyWithoutTradeInput
+    dse_company: dse_companiesCreateNestedOneWithoutShortTermTradesInput
+  }
+
+  export type short_term_tradesUncheckedCreateWithoutProfilesInput = {
+    id?: string
+    symbol: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    legs?: short_term_trade_legsUncheckedCreateNestedManyWithoutTradeInput
+  }
+
+  export type short_term_tradesCreateOrConnectWithoutProfilesInput = {
+    where: short_term_tradesWhereUniqueInput
+    create: XOR<short_term_tradesCreateWithoutProfilesInput, short_term_tradesUncheckedCreateWithoutProfilesInput>
+  }
+
+  export type short_term_tradesCreateManyProfilesInputEnvelope = {
+    data: short_term_tradesCreateManyProfilesInput | short_term_tradesCreateManyProfilesInput[]
+    skipDuplicates?: boolean
+  }
+
   export type dividendsUpsertWithWhereUniqueWithoutProfilesInput = {
     where: dividendsWhereUniqueInput
     update: XOR<dividendsUpdateWithoutProfilesInput, dividendsUncheckedUpdateWithoutProfilesInput>
@@ -53956,6 +57500,22 @@ export namespace Prisma {
     created_at?: DateTimeNullableFilter<"price_alerts"> | Date | string | null
   }
 
+  export type short_term_tradesUpsertWithWhereUniqueWithoutProfilesInput = {
+    where: short_term_tradesWhereUniqueInput
+    update: XOR<short_term_tradesUpdateWithoutProfilesInput, short_term_tradesUncheckedUpdateWithoutProfilesInput>
+    create: XOR<short_term_tradesCreateWithoutProfilesInput, short_term_tradesUncheckedCreateWithoutProfilesInput>
+  }
+
+  export type short_term_tradesUpdateWithWhereUniqueWithoutProfilesInput = {
+    where: short_term_tradesWhereUniqueInput
+    data: XOR<short_term_tradesUpdateWithoutProfilesInput, short_term_tradesUncheckedUpdateWithoutProfilesInput>
+  }
+
+  export type short_term_tradesUpdateManyWithWhereWithoutProfilesInput = {
+    where: short_term_tradesScalarWhereInput
+    data: XOR<short_term_tradesUpdateManyMutationInput, short_term_tradesUncheckedUpdateManyWithoutProfilesInput>
+  }
+
   export type dse_companiesCreateWithoutStocksInput = {
     id?: string
     symbol: string
@@ -53968,6 +57528,7 @@ export namespace Prisma {
     current_price?: Decimal | DecimalJsLike | number | string | null
     updated_at?: Date | string | null
     created_at?: Date | string | null
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutDse_companyInput
   }
 
   export type dse_companiesUncheckedCreateWithoutStocksInput = {
@@ -53982,6 +57543,7 @@ export namespace Prisma {
     current_price?: Decimal | DecimalJsLike | number | string | null
     updated_at?: Date | string | null
     created_at?: Date | string | null
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutDse_companyInput
   }
 
   export type dse_companiesCreateOrConnectWithoutStocksInput = {
@@ -54038,6 +57600,7 @@ export namespace Prisma {
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutStocksInput = {
@@ -54053,6 +57616,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutStocksInput = {
@@ -54117,6 +57681,7 @@ export namespace Prisma {
     current_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortTermTrades?: short_term_tradesUpdateManyWithoutDse_companyNestedInput
   }
 
   export type dse_companiesUncheckedUpdateWithoutStocksInput = {
@@ -54131,6 +57696,7 @@ export namespace Prisma {
     current_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutDse_companyNestedInput
   }
 
   export type dividendsUpsertWithWhereUniqueWithoutStocksInput = {
@@ -54173,6 +57739,7 @@ export namespace Prisma {
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutStocksInput = {
@@ -54188,6 +57755,7 @@ export namespace Prisma {
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type transactionsUpsertWithWhereUniqueWithoutStocksInput = {
@@ -54252,6 +57820,7 @@ export namespace Prisma {
     stocks?: stocksCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutTransactionsInput = {
@@ -54267,6 +57836,7 @@ export namespace Prisma {
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutTransactionsInput = {
@@ -54337,6 +57907,7 @@ export namespace Prisma {
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutTransactionsInput = {
@@ -54352,6 +57923,7 @@ export namespace Prisma {
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesCreateWithoutWatchlistInput = {
@@ -54367,6 +57939,7 @@ export namespace Prisma {
     stocks?: stocksCreateNestedManyWithoutProfilesInput
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutWatchlistInput = {
@@ -54382,6 +57955,7 @@ export namespace Prisma {
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
     price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutWatchlistInput = {
@@ -54413,6 +57987,7 @@ export namespace Prisma {
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutWatchlistInput = {
@@ -54428,6 +58003,7 @@ export namespace Prisma {
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
     price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesCreateWithoutPrice_alertsInput = {
@@ -54443,6 +58019,7 @@ export namespace Prisma {
     stocks?: stocksCreateNestedManyWithoutProfilesInput
     transactions?: transactionsCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesUncheckedCreateWithoutPrice_alertsInput = {
@@ -54458,6 +58035,7 @@ export namespace Prisma {
     stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
     transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
     watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    shortTermTrades?: short_term_tradesUncheckedCreateNestedManyWithoutProfilesInput
   }
 
   export type profilesCreateOrConnectWithoutPrice_alertsInput = {
@@ -54489,6 +58067,7 @@ export namespace Prisma {
     stocks?: stocksUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUpdateManyWithoutProfilesNestedInput
   }
 
   export type profilesUncheckedUpdateWithoutPrice_alertsInput = {
@@ -54504,6 +58083,295 @@ export namespace Prisma {
     stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
     transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
     watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    shortTermTrades?: short_term_tradesUncheckedUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type short_term_trade_legsCreateWithoutTradeInput = {
+    id?: string
+    type: $Enums.transaction_type
+    quantity: Decimal | DecimalJsLike | number | string
+    price_per_unit: Decimal | DecimalJsLike | number | string
+    brokerage_fee?: Decimal | DecimalJsLike | number | string
+    date: Date | string
+    created_at?: Date | string | null
+  }
+
+  export type short_term_trade_legsUncheckedCreateWithoutTradeInput = {
+    id?: string
+    type: $Enums.transaction_type
+    quantity: Decimal | DecimalJsLike | number | string
+    price_per_unit: Decimal | DecimalJsLike | number | string
+    brokerage_fee?: Decimal | DecimalJsLike | number | string
+    date: Date | string
+    created_at?: Date | string | null
+  }
+
+  export type short_term_trade_legsCreateOrConnectWithoutTradeInput = {
+    where: short_term_trade_legsWhereUniqueInput
+    create: XOR<short_term_trade_legsCreateWithoutTradeInput, short_term_trade_legsUncheckedCreateWithoutTradeInput>
+  }
+
+  export type short_term_trade_legsCreateManyTradeInputEnvelope = {
+    data: short_term_trade_legsCreateManyTradeInput | short_term_trade_legsCreateManyTradeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type dse_companiesCreateWithoutShortTermTradesInput = {
+    id?: string
+    symbol: string
+    company_name: string
+    category?: string | null
+    sector?: string | null
+    address?: string | null
+    phone?: string | null
+    email?: string | null
+    current_price?: Decimal | DecimalJsLike | number | string | null
+    updated_at?: Date | string | null
+    created_at?: Date | string | null
+    stocks?: stocksCreateNestedManyWithoutDse_companyInput
+  }
+
+  export type dse_companiesUncheckedCreateWithoutShortTermTradesInput = {
+    id?: string
+    symbol: string
+    company_name: string
+    category?: string | null
+    sector?: string | null
+    address?: string | null
+    phone?: string | null
+    email?: string | null
+    current_price?: Decimal | DecimalJsLike | number | string | null
+    updated_at?: Date | string | null
+    created_at?: Date | string | null
+    stocks?: stocksUncheckedCreateNestedManyWithoutDse_companyInput
+  }
+
+  export type dse_companiesCreateOrConnectWithoutShortTermTradesInput = {
+    where: dse_companiesWhereUniqueInput
+    create: XOR<dse_companiesCreateWithoutShortTermTradesInput, dse_companiesUncheckedCreateWithoutShortTermTradesInput>
+  }
+
+  export type profilesCreateWithoutShortTermTradesInput = {
+    full_name?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    avatar_url?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    dividends?: dividendsCreateNestedManyWithoutProfilesInput
+    users: usersCreateNestedOneWithoutProfilesInput
+    stocks?: stocksCreateNestedManyWithoutProfilesInput
+    transactions?: transactionsCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsCreateNestedManyWithoutProfilesInput
+  }
+
+  export type profilesUncheckedCreateWithoutShortTermTradesInput = {
+    id: string
+    full_name?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    avatar_url?: string | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    dividends?: dividendsUncheckedCreateNestedManyWithoutProfilesInput
+    stocks?: stocksUncheckedCreateNestedManyWithoutProfilesInput
+    transactions?: transactionsUncheckedCreateNestedManyWithoutProfilesInput
+    watchlist?: watchlistUncheckedCreateNestedManyWithoutProfilesInput
+    price_alerts?: price_alertsUncheckedCreateNestedManyWithoutProfilesInput
+  }
+
+  export type profilesCreateOrConnectWithoutShortTermTradesInput = {
+    where: profilesWhereUniqueInput
+    create: XOR<profilesCreateWithoutShortTermTradesInput, profilesUncheckedCreateWithoutShortTermTradesInput>
+  }
+
+  export type short_term_trade_legsUpsertWithWhereUniqueWithoutTradeInput = {
+    where: short_term_trade_legsWhereUniqueInput
+    update: XOR<short_term_trade_legsUpdateWithoutTradeInput, short_term_trade_legsUncheckedUpdateWithoutTradeInput>
+    create: XOR<short_term_trade_legsCreateWithoutTradeInput, short_term_trade_legsUncheckedCreateWithoutTradeInput>
+  }
+
+  export type short_term_trade_legsUpdateWithWhereUniqueWithoutTradeInput = {
+    where: short_term_trade_legsWhereUniqueInput
+    data: XOR<short_term_trade_legsUpdateWithoutTradeInput, short_term_trade_legsUncheckedUpdateWithoutTradeInput>
+  }
+
+  export type short_term_trade_legsUpdateManyWithWhereWithoutTradeInput = {
+    where: short_term_trade_legsScalarWhereInput
+    data: XOR<short_term_trade_legsUpdateManyMutationInput, short_term_trade_legsUncheckedUpdateManyWithoutTradeInput>
+  }
+
+  export type short_term_trade_legsScalarWhereInput = {
+    AND?: short_term_trade_legsScalarWhereInput | short_term_trade_legsScalarWhereInput[]
+    OR?: short_term_trade_legsScalarWhereInput[]
+    NOT?: short_term_trade_legsScalarWhereInput | short_term_trade_legsScalarWhereInput[]
+    id?: UuidFilter<"short_term_trade_legs"> | string
+    trade_id?: UuidFilter<"short_term_trade_legs"> | string
+    type?: Enumtransaction_typeFilter<"short_term_trade_legs"> | $Enums.transaction_type
+    quantity?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFilter<"short_term_trade_legs"> | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFilter<"short_term_trade_legs"> | Date | string
+    created_at?: DateTimeNullableFilter<"short_term_trade_legs"> | Date | string | null
+  }
+
+  export type dse_companiesUpsertWithoutShortTermTradesInput = {
+    update: XOR<dse_companiesUpdateWithoutShortTermTradesInput, dse_companiesUncheckedUpdateWithoutShortTermTradesInput>
+    create: XOR<dse_companiesCreateWithoutShortTermTradesInput, dse_companiesUncheckedCreateWithoutShortTermTradesInput>
+    where?: dse_companiesWhereInput
+  }
+
+  export type dse_companiesUpdateToOneWithWhereWithoutShortTermTradesInput = {
+    where?: dse_companiesWhereInput
+    data: XOR<dse_companiesUpdateWithoutShortTermTradesInput, dse_companiesUncheckedUpdateWithoutShortTermTradesInput>
+  }
+
+  export type dse_companiesUpdateWithoutShortTermTradesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    company_name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    sector?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    current_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stocks?: stocksUpdateManyWithoutDse_companyNestedInput
+  }
+
+  export type dse_companiesUncheckedUpdateWithoutShortTermTradesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    company_name?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    sector?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    current_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stocks?: stocksUncheckedUpdateManyWithoutDse_companyNestedInput
+  }
+
+  export type profilesUpsertWithoutShortTermTradesInput = {
+    update: XOR<profilesUpdateWithoutShortTermTradesInput, profilesUncheckedUpdateWithoutShortTermTradesInput>
+    create: XOR<profilesCreateWithoutShortTermTradesInput, profilesUncheckedCreateWithoutShortTermTradesInput>
+    where?: profilesWhereInput
+  }
+
+  export type profilesUpdateToOneWithWhereWithoutShortTermTradesInput = {
+    where?: profilesWhereInput
+    data: XOR<profilesUpdateWithoutShortTermTradesInput, profilesUncheckedUpdateWithoutShortTermTradesInput>
+  }
+
+  export type profilesUpdateWithoutShortTermTradesInput = {
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dividends?: dividendsUpdateManyWithoutProfilesNestedInput
+    users?: usersUpdateOneRequiredWithoutProfilesNestedInput
+    stocks?: stocksUpdateManyWithoutProfilesNestedInput
+    transactions?: transactionsUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type profilesUncheckedUpdateWithoutShortTermTradesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dividends?: dividendsUncheckedUpdateManyWithoutProfilesNestedInput
+    stocks?: stocksUncheckedUpdateManyWithoutProfilesNestedInput
+    transactions?: transactionsUncheckedUpdateManyWithoutProfilesNestedInput
+    watchlist?: watchlistUncheckedUpdateManyWithoutProfilesNestedInput
+    price_alerts?: price_alertsUncheckedUpdateManyWithoutProfilesNestedInput
+  }
+
+  export type short_term_tradesCreateWithoutLegsInput = {
+    id?: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+    dse_company: dse_companiesCreateNestedOneWithoutShortTermTradesInput
+    profiles?: profilesCreateNestedOneWithoutShortTermTradesInput
+  }
+
+  export type short_term_tradesUncheckedCreateWithoutLegsInput = {
+    id?: string
+    user_id?: string | null
+    symbol: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+  }
+
+  export type short_term_tradesCreateOrConnectWithoutLegsInput = {
+    where: short_term_tradesWhereUniqueInput
+    create: XOR<short_term_tradesCreateWithoutLegsInput, short_term_tradesUncheckedCreateWithoutLegsInput>
+  }
+
+  export type short_term_tradesUpsertWithoutLegsInput = {
+    update: XOR<short_term_tradesUpdateWithoutLegsInput, short_term_tradesUncheckedUpdateWithoutLegsInput>
+    create: XOR<short_term_tradesCreateWithoutLegsInput, short_term_tradesUncheckedCreateWithoutLegsInput>
+    where?: short_term_tradesWhereInput
+  }
+
+  export type short_term_tradesUpdateToOneWithWhereWithoutLegsInput = {
+    where?: short_term_tradesWhereInput
+    data: XOR<short_term_tradesUpdateWithoutLegsInput, short_term_tradesUncheckedUpdateWithoutLegsInput>
+  }
+
+  export type short_term_tradesUpdateWithoutLegsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dse_company?: dse_companiesUpdateOneRequiredWithoutShortTermTradesNestedInput
+    profiles?: profilesUpdateOneWithoutShortTermTradesNestedInput
+  }
+
+  export type short_term_tradesUncheckedUpdateWithoutLegsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    symbol?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type saml_relay_statesCreateManyFlow_stateInput = {
@@ -55376,6 +59244,19 @@ export namespace Prisma {
     updated_at?: Date | string | null
   }
 
+  export type short_term_tradesCreateManyDse_companyInput = {
+    id?: string
+    user_id?: string | null
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
+  }
+
   export type stocksUpdateWithoutDse_companyInput = {
     id?: StringFieldUpdateOperationsInput | string
     face_value?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -55414,6 +59295,47 @@ export namespace Prisma {
     portfolio_price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_tradesUpdateWithoutDse_companyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legs?: short_term_trade_legsUpdateManyWithoutTradeNestedInput
+    profiles?: profilesUpdateOneWithoutShortTermTradesNestedInput
+  }
+
+  export type short_term_tradesUncheckedUpdateWithoutDse_companyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legs?: short_term_trade_legsUncheckedUpdateManyWithoutTradeNestedInput
+  }
+
+  export type short_term_tradesUncheckedUpdateManyWithoutDse_companyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type dividendsCreateManyProfilesInput = {
@@ -55469,6 +59391,19 @@ export namespace Prisma {
     is_buy_triggered?: boolean
     is_sell_triggered?: boolean
     created_at?: Date | string | null
+  }
+
+  export type short_term_tradesCreateManyProfilesInput = {
+    id?: string
+    symbol: string
+    status?: $Enums.short_term_trade_status
+    total_buy_qty?: Decimal | DecimalJsLike | number | string
+    total_sell_qty?: Decimal | DecimalJsLike | number | string
+    average_buy_price?: Decimal | DecimalJsLike | number | string
+    average_sell_price?: Decimal | DecimalJsLike | number | string
+    realized_profit?: Decimal | DecimalJsLike | number | string
+    opened_at?: Date | string
+    closed_at?: Date | string | null
   }
 
   export type dividendsUpdateWithoutProfilesInput = {
@@ -55640,6 +59575,47 @@ export namespace Prisma {
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type short_term_tradesUpdateWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legs?: short_term_trade_legsUpdateManyWithoutTradeNestedInput
+    dse_company?: dse_companiesUpdateOneRequiredWithoutShortTermTradesNestedInput
+  }
+
+  export type short_term_tradesUncheckedUpdateWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    legs?: short_term_trade_legsUncheckedUpdateManyWithoutTradeNestedInput
+  }
+
+  export type short_term_tradesUncheckedUpdateManyWithoutProfilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    symbol?: StringFieldUpdateOperationsInput | string
+    status?: Enumshort_term_trade_statusFieldUpdateOperationsInput | $Enums.short_term_trade_status
+    total_buy_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_sell_qty?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_buy_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    average_sell_price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    realized_profit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    opened_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    closed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type dividendsCreateManyStocksInput = {
     id?: string
     user_id?: string | null
@@ -55737,6 +59713,46 @@ export namespace Prisma {
     transaction_date?: DateTimeFieldUpdateOperationsInput | Date | string
     brokerage_fee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_trade_legsCreateManyTradeInput = {
+    id?: string
+    type: $Enums.transaction_type
+    quantity: Decimal | DecimalJsLike | number | string
+    price_per_unit: Decimal | DecimalJsLike | number | string
+    brokerage_fee?: Decimal | DecimalJsLike | number | string
+    date: Date | string
+    created_at?: Date | string | null
+  }
+
+  export type short_term_trade_legsUpdateWithoutTradeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_trade_legsUncheckedUpdateWithoutTradeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type short_term_trade_legsUncheckedUpdateManyWithoutTradeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: Enumtransaction_typeFieldUpdateOperationsInput | $Enums.transaction_type
+    quantity?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    price_per_unit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    brokerage_fee?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 

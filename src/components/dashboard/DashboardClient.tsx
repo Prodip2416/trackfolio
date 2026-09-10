@@ -218,7 +218,7 @@ export default function DashboardClient({
       const dateObj = new Date(txn.transaction_date)
       if (dateObj.getFullYear() !== selectedActivityYear) return
 
-      const key = dateObj.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })
+      const key = `${months[dateObj.getMonth()]} ${selectedActivityYear.toString().slice(-2)}`
       const current = monthlyStats.get(key)
       if (!current) return
 
@@ -270,7 +270,7 @@ export default function DashboardClient({
     dividends.forEach(div => {
       const dateObj = new Date(div.date)
       if (dateObj.getFullYear() === selectedDividendYear) {
-        const key = dateObj.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })
+        const key = `${months[dateObj.getMonth()]} ${dateObj.getFullYear().toString().slice(-2)}`
         if (monthlyStats.has(key) && div.cash_amount) {
           const stat = monthlyStats.get(key)!
           stat.amount += div.cash_amount
@@ -309,7 +309,7 @@ export default function DashboardClient({
       if (txn.type !== 'SELL') return
       const dateObj = new Date(txn.transaction_date)
       if (dateObj.getFullYear() === selectedSellYear) {
-        const key = dateObj.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })
+        const key = `${months[dateObj.getMonth()]} ${dateObj.getFullYear().toString().slice(-2)}`
         if (monthlyStats.has(key)) {
           const stat = monthlyStats.get(key)!
           const amount = (txn.quantity * txn.price_per_unit) - txn.brokerage_fee

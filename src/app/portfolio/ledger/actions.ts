@@ -38,8 +38,8 @@ export async function getAssetLedger(stockId?: string, year?: string, type?: str
   if (!user) return { error: 'Unauthorized' }
 
   try {
-    let transactionWhere: any = { user_id: user.id }
-    let dividendWhere: any = { user_id: user.id }
+    const transactionWhere: any = { user_id: user.id }
+    const dividendWhere: any = { user_id: user.id }
 
     if (stockId && stockId !== 'ALL') {
       transactionWhere.stock_id = stockId
