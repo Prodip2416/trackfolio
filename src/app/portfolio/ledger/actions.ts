@@ -96,6 +96,7 @@ export async function getAssetLedger(stockId?: string, year?: string, type?: str
     const normalizedTransactions = rawTransactions.map(t => ({
       id: t.id,
       date: t.transaction_date.toISOString(),
+      created_at: (t.created_at || t.transaction_date).toISOString(),
       type: t.type, // 'BUY' | 'SELL'
       symbol: t.stocks?.symbol || 'Unknown',
       company_name: t.stocks?.dse_company?.company_name || 'Unknown',
@@ -107,6 +108,7 @@ export async function getAssetLedger(stockId?: string, year?: string, type?: str
     const normalizedDividends = rawDividends.map(d => ({
       id: d.id,
       date: d.date.toISOString(),
+      created_at: (d.created_at || d.date).toISOString(),
       type: 'DIVIDEND',
       symbol: d.stocks?.symbol || 'Unknown',
       company_name: d.stocks?.dse_company?.company_name || 'Unknown',
@@ -115,9 +117,13 @@ export async function getAssetLedger(stockId?: string, year?: string, type?: str
       total: d.cash_amount ? Number(d.cash_amount) : 0
     }))
 
-    // Combine and sort by date descending
+    // LIFO: most recently added entry first. Sort by transaction/dividend date
+    // descending first, and break ties by created_at so same-day entries still
+    // show the latest-entered one on top.
     const combinedLedger = [...normalizedTransactions, ...normalizedDividends].sort((a, b) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime()
+      const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime()
+      if (dateDiff !== 0) return dateDiff
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
 
     return { data: combinedLedger }

@@ -90,8 +90,8 @@ export default function LedgerClient({
             {dict.sidebar?.assetLedger || 'Asset Ledger'}
           </h2>
         </div>
-        
-        <LedgerFilters 
+
+        <LedgerFilters
           stocks={stocks}
           initialStockId={initialStockId}
           initialYear={initialYear}
@@ -100,7 +100,7 @@ export default function LedgerClient({
         />
       </div>
 
-      <LedgerSummaryCards 
+      <LedgerSummaryCards
         totalShareCount={totalShareCount}
         totalBuyPrice={totalBuyPrice}
         totalSellPrice={totalSellPrice}
@@ -109,7 +109,7 @@ export default function LedgerClient({
         dict={dict}
       />
 
-      <LedgerTable 
+      <LedgerTable
         data={initialData}
         isPending={isPending}
         isLoading={isLoading}

@@ -53,6 +53,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const [isReportsOpen, setIsReportsOpen] = useState(false)
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false)
   const [isWatchlistOpen, setIsWatchlistOpen] = useState(false)
+  const [isShortTermOpen, setIsShortTermOpen] = useState(false)
   const [lastPathname, setLastPathname] = useState(pathname)
 
   // Sync open state with pathname without causing a cascading render in an effect
@@ -62,6 +63,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
     setIsReportsOpen(pathname.startsWith('/reports'))
     setIsPortfolioOpen(pathname.startsWith('/portfolio'))
     setIsWatchlistOpen(pathname.startsWith('/watchlist'))
+    setIsShortTermOpen(pathname.startsWith('/short-term'))
   }
 
   const navItems = [
@@ -95,7 +97,14 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
       ]
     },
     { name: dict.sidebar.tradeLog, href: '/transactions', icon: ArrowRightLeft },
-    { name: 'Short Term', href: '/short-term', icon: Zap },
+    {
+      name: 'Short Term',
+      icon: Zap,
+      subItems: [
+        { name: 'Dashboard', href: '/short-term' },
+        { name: 'Transaction', href: '/short-term/transactions' },
+      ]
+    },
     { name: dict.sidebar.dividendLog, href: '/dividends', icon: Coins },
     { name: dict.sidebar.history, href: '/history', icon: History },
     {
@@ -141,14 +150,16 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
         {navItems.map((item) => {
           if (item.subItems) {
             const isActive = pathname.startsWith(
-              item.name === dict.sidebar.reports ? '/reports' : 
-              item.name === dict.sidebar.portfolio ? '/portfolio' : 
+              item.name === dict.sidebar.reports ? '/reports' :
+              item.name === dict.sidebar.portfolio ? '/portfolio' :
               item.name === (dict.sidebar.watchlist || 'Watchlist') ? '/watchlist' :
+              item.name === 'Short Term' ? '/short-term' :
               '/analytics'
             )
-            const isOpen = item.name === dict.sidebar.reports ? isReportsOpen : 
+            const isOpen = item.name === dict.sidebar.reports ? isReportsOpen :
                            item.name === dict.sidebar.portfolio ? isPortfolioOpen :
                            item.name === (dict.sidebar.watchlist || 'Watchlist') ? isWatchlistOpen :
+                           item.name === 'Short Term' ? isShortTermOpen :
                            isAnalyticsOpen
             const toggleOpen = () => {
               if (item.name === dict.sidebar.reports) {
@@ -157,6 +168,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                   setIsPortfolioOpen(false)
                   setIsAnalyticsOpen(false)
                   setIsWatchlistOpen(false)
+                  setIsShortTermOpen(false)
                 }
               } else if (item.name === dict.sidebar.portfolio) {
                 setIsPortfolioOpen(!isPortfolioOpen)
@@ -164,6 +176,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                   setIsReportsOpen(false)
                   setIsAnalyticsOpen(false)
                   setIsWatchlistOpen(false)
+                  setIsShortTermOpen(false)
                 }
               } else if (item.name === (dict.sidebar.watchlist || 'Watchlist')) {
                 setIsWatchlistOpen(!isWatchlistOpen)
@@ -171,6 +184,15 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                   setIsReportsOpen(false)
                   setIsAnalyticsOpen(false)
                   setIsPortfolioOpen(false)
+                  setIsShortTermOpen(false)
+                }
+              } else if (item.name === 'Short Term') {
+                setIsShortTermOpen(!isShortTermOpen)
+                if (!isShortTermOpen) {
+                  setIsReportsOpen(false)
+                  setIsAnalyticsOpen(false)
+                  setIsPortfolioOpen(false)
+                  setIsWatchlistOpen(false)
                 }
               } else {
                 setIsAnalyticsOpen(!isAnalyticsOpen)
@@ -178,6 +200,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                   setIsReportsOpen(false)
                   setIsPortfolioOpen(false)
                   setIsWatchlistOpen(false)
+                  setIsShortTermOpen(false)
                 }
               }
             }

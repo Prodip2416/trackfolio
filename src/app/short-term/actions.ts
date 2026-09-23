@@ -4,16 +4,45 @@ import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function getShortTermTrades() {
+export async function getOwnedShortTermSymbols() {
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
   if (error || !user) throw new Error('Unauthorized')
 
   const trades = await prisma.short_term_trades.findMany({
     where: { user_id: user.id },
+    select: { symbol: true },
+    distinct: ['symbol'],
+    orderBy: { symbol: 'asc' }
+  })
+
+  return trades.map(t => t.symbol)
+}
+
+export async function getShortTermTrades(symbol?: string, year?: string) {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error || !user) throw new Error('Unauthorized')
+
+  const where: any = { user_id: user.id }
+
+  if (symbol && symbol !== 'ALL') {
+    where.symbol = symbol
+  }
+
+  if (year && year !== 'ALL') {
+    const yearNum = parseInt(year)
+    where.opened_at = {
+      gte: new Date(`${yearNum}-01-01T00:00:00.000Z`),
+      lte: new Date(`${yearNum}-12-31T23:59:59.999Z`)
+    }
+  }
+
+  const trades = await prisma.short_term_trades.findMany({
+    where,
     include: {
       legs: {
-        orderBy: { date: 'desc' }
+        orderBy: [{ date: 'desc' }, { created_at: 'desc' }]
       }
     },
     orderBy: [
@@ -23,7 +52,7 @@ export async function getShortTermTrades() {
   })
 
   // Prisma decimal fixes for Next.js
-  return trades.map(trade => ({
+  const mapped = trades.map(trade => ({
     ...trade,
     total_buy_qty: Number(trade.total_buy_qty),
     total_sell_qty: Number(trade.total_sell_qty),
@@ -37,6 +66,21 @@ export async function getShortTermTrades() {
       brokerage_fee: Number(leg.brokerage_fee),
     }))
   }))
+
+  // LIFO: the trade whose most recent leg was entered last shows first.
+  // Each trade's legs are already sorted latest-first, so legs[0] is its last entry.
+  mapped.sort((a, b) => {
+    const aLeg = a.legs[0]
+    const bLeg = b.legs[0]
+    if (!aLeg || !bLeg) return 0
+    const dateDiff = new Date(bLeg.date).getTime() - new Date(aLeg.date).getTime()
+    if (dateDiff !== 0) return dateDiff
+    const bCreated = bLeg.created_at ? new Date(bLeg.created_at).getTime() : 0
+    const aCreated = aLeg.created_at ? new Date(aLeg.created_at).getTime() : 0
+    return bCreated - aCreated
+  })
+
+  return mapped
 }
 
 export async function addTradeLeg(data: {
@@ -60,7 +104,7 @@ export async function addTradeLeg(data: {
     if (data.type === 'SELL') {
       throw new Error('Cannot sell without an OPEN trade for this stock.')
     }
-    
+
     // Create new trade campaign
     trade = await prisma.short_term_trades.create({
       data: {
@@ -70,6 +114,13 @@ export async function addTradeLeg(data: {
         opened_at: data.date
       }
     })
+  }
+
+  if (data.type === 'SELL') {
+    const remainingQty = Number(trade.total_buy_qty) - Number(trade.total_sell_qty)
+    if (data.quantity > remainingQty) {
+      throw new Error(`Cannot sell more than available holding. Remaining: ${remainingQty} Qty.`)
+    }
   }
 
   // Add the leg
@@ -135,6 +186,7 @@ export async function addTradeLeg(data: {
     }
   })
 
+  revalidatePath('/short-term/transactions')
   revalidatePath('/short-term')
 }
 
@@ -150,5 +202,6 @@ export async function deleteTrade(tradeId: string) {
     }
   })
 
+  revalidatePath('/short-term/transactions')
   revalidatePath('/short-term')
 }

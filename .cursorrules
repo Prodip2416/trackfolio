@@ -22,3 +22,4 @@
 - Always output strict TypeScript.
 - Follow Next.js 15+ best practices.
 - Do not use old Next.js Pages router conventions (`getServerSideProps`, etc.).
+

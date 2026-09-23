@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, Wallet, Target, Trophy, Clock, History, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
+import { useState, useTransition } from 'react'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { Plus, Target, Clock, History, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Trash2, Loader2 } from 'lucide-react'
 import TradeFormModal from './TradeFormModal'
+import ShortTermFilters from './ShortTermFilters'
 import { deleteTrade } from '@/app/short-term/actions'
 import ConfirmModal from '@/components/shared/ConfirmModal'
 import toast from 'react-hot-toast'
@@ -31,19 +33,58 @@ export type Trade = {
   legs: TradeLeg[]
 }
 
-export default function ShortTermClient({ trades, availableSymbols }: { trades: Trade[], availableSymbols: string[] }) {
+export default function ShortTermClient({
+  trades,
+  availableSymbols,
+  filterSymbols,
+  initialSymbol,
+  initialYear
+}: {
+  trades: Trade[]
+  availableSymbols: string[]
+  filterSymbols: string[]
+  initialSymbol: string
+  initialYear: string
+}) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [isFilterPending, startTransition] = useTransition()
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'OPEN' | 'CLOSED'>('OPEN')
   const [expandedTradeId, setExpandedTradeId] = useState<string | null>(null)
-  
+  const [currentPage, setCurrentPage] = useState(1)
+
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  const ITEMS_PER_PAGE = 5
+
   const openTrades = trades.filter(t => t.status === 'OPEN')
   const closedTrades = trades.filter(t => t.status === 'CLOSED')
-  
-  const totalRealizedProfit = trades.reduce((sum, t) => sum + t.realized_profit, 0)
-  
+  const currentList = activeTab === 'OPEN' ? openTrades : closedTrades
+  const totalPages = Math.max(1, Math.ceil(currentList.length / ITEMS_PER_PAGE))
+  const safePage = Math.min(currentPage, totalPages)
+  const paginatedTrades = currentList.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE)
+
+  const handleTabChange = (tab: 'OPEN' | 'CLOSED') => {
+    setActiveTab(tab)
+    setCurrentPage(1)
+  }
+
+  const handleFilterChange = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value === 'ALL') {
+      params.delete(key)
+    } else {
+      params.set(key, value)
+    }
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
   const handleDelete = async () => {
     if (!deleteId) return
     setIsDeleting(true)
@@ -60,58 +101,33 @@ export default function ShortTermClient({ trades, availableSymbols }: { trades: 
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Trade Journal</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Track your short-term swing and day trades.</p>
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Log Trade
-        </button>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center">
-          <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mr-4">
-            <Wallet className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Realized Profit</p>
-            <h3 className={`text-2xl font-black ${totalRealizedProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-              ৳{totalRealizedProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-            </h3>
-          </div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center">
-          <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mr-4">
-            <Target className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Open Trades</p>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white">{openTrades.length}</h3>
-          </div>
-        </div>
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center">
-          <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mr-4">
-            <Trophy className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Completed Trades</p>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white">{closedTrades.length}</h3>
-          </div>
+        <div className="flex items-center gap-3">
+          <ShortTermFilters
+            symbols={filterSymbols}
+            initialSymbol={initialSymbol}
+            initialYear={initialYear}
+            handleFilterChange={handleFilterChange}
+          />
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Log Trade
+          </button>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200 dark:border-slate-800">
         <button
-          onClick={() => setActiveTab('OPEN')}
-          className={`flex items-center pb-4 px-4 text-sm font-medium border-b-2 transition-colors ${
+          onClick={() => handleTabChange('OPEN')}
+          className={`flex items-center pb-4 px-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
             activeTab === 'OPEN'
               ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
@@ -121,8 +137,8 @@ export default function ShortTermClient({ trades, availableSymbols }: { trades: 
           Active Trades ({openTrades.length})
         </button>
         <button
-          onClick={() => setActiveTab('CLOSED')}
-          className={`flex items-center pb-4 px-4 text-sm font-medium border-b-2 transition-colors ${
+          onClick={() => handleTabChange('CLOSED')}
+          className={`flex items-center pb-4 px-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
             activeTab === 'CLOSED'
               ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
@@ -134,8 +150,14 @@ export default function ShortTermClient({ trades, availableSymbols }: { trades: 
       </div>
 
       {/* Trade List */}
-      <div className="space-y-4">
-        {(activeTab === 'OPEN' ? openTrades : closedTrades).map(trade => (
+      <div className="relative min-h-[120px]">
+        {isFilterPending && (
+          <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm z-30 flex items-center justify-center rounded-2xl">
+            <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
+          </div>
+        )}
+        <div className="space-y-4 max-h-[560px] overflow-y-auto custom-scrollbar pr-1">
+        {paginatedTrades.map(trade => (
           <div key={trade.id} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden">
             {/* Header / Summary */}
             <div 
@@ -170,9 +192,9 @@ export default function ShortTermClient({ trades, availableSymbols }: { trades: 
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button 
+                  <button
                     onClick={(e) => { e.stopPropagation(); setDeleteId(trade.id); }}
-                    className="p-2 text-gray-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10"
+                    className="p-2 text-gray-400 hover:text-rose-500 transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -205,14 +227,59 @@ export default function ShortTermClient({ trades, availableSymbols }: { trades: 
             )}
           </div>
         ))}
-        
-        {(activeTab === 'OPEN' ? openTrades : closedTrades).length === 0 && (
+
+        {currentList.length === 0 && (
           <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-gray-300 dark:border-slate-700">
             <Target className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-600 mb-3" />
             <p className="text-gray-500 dark:text-gray-400">No trades found in this category.</p>
           </div>
         )}
+        </div>
       </div>
+
+      {/* Pagination */}
+      {currentList.length > 0 && totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-[13px] text-gray-500 dark:text-gray-400 hidden sm:block">
+            Showing page <span className="font-semibold text-gray-900 dark:text-white">{safePage}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
+          </p>
+          <div className="flex-1 flex justify-between sm:justify-end gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Previous
+            </button>
+
+            <div className="hidden sm:flex items-center gap-1 mx-2">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`relative inline-flex items-center justify-center min-w-[32px] h-8 px-1 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                    page === safePage
+                      ? 'bg-indigo-600 text-white shadow-sm border border-indigo-600'
+                      : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {isAddModalOpen && (
         <TradeFormModal 
