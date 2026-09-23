@@ -60,7 +60,7 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
       <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md relative flex flex-col max-h-full">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors z-10"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors z-10 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -101,9 +101,9 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
                 <button
                   type="button"
                   onClick={() => setType('BUY')}
-                  className={`py-3 rounded-xl font-bold text-sm transition-colors border ${
-                    type === 'BUY' 
-                      ? 'bg-indigo-600 border-indigo-600 text-white' 
+                  className={`py-3 rounded-xl font-bold text-sm transition-colors border cursor-pointer ${
+                    type === 'BUY'
+                      ? 'bg-indigo-600 border-indigo-600 text-white'
                       : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
@@ -112,9 +112,9 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
                 <button
                   type="button"
                   onClick={() => setType('SELL')}
-                  className={`py-3 rounded-xl font-bold text-sm transition-colors border ${
-                    type === 'SELL' 
-                      ? 'bg-rose-500 border-rose-500 text-white' 
+                  className={`py-3 rounded-xl font-bold text-sm transition-colors border cursor-pointer ${
+                    type === 'SELL'
+                      ? 'bg-rose-500 border-rose-500 text-white'
                       : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
@@ -191,7 +191,7 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none"
               >
                 {isSubmitting ? (
                   <>

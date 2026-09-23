@@ -10,7 +10,6 @@ interface DashboardSummaryCardsProps {
     totalDividend: number
     totalShares: number
     totalProfitLoss: number
-    realizedPL: number
     currentPortfolioValue: number
     totalSellAmount: number
   }
@@ -19,7 +18,7 @@ interface DashboardSummaryCardsProps {
 
 export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCardsProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
       {/* Total Invested */}
       <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }} className="relative overflow-hidden bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-gray-900 p-4 rounded-xl border border-indigo-100/50 dark:border-indigo-800/30 shadow-md shadow-indigo-100/20 dark:shadow-none flex flex-col justify-between cursor-pointer">
         <div className="flex justify-between items-start relative z-10">
@@ -98,22 +97,6 @@ export default function DashboardSummaryCards({ kpis, dict }: DashboardSummaryCa
           </div>
         </div>
         <div className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-2xl ${kpis.totalProfitLoss > 0 ? 'bg-green-400/10 dark:bg-green-600/10' : kpis.totalProfitLoss < 0 ? 'bg-rose-400/10 dark:bg-rose-600/10' : 'bg-gray-400/10 dark:bg-gray-600/10'}`}></div>
-      </motion.div>
-      
-      {/* Realized Profit/Loss */}
-      <motion.div whileHover={{ y: -5, scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }} className={`relative overflow-hidden bg-gradient-to-br p-4 rounded-xl border shadow-md flex flex-col justify-between cursor-pointer ${kpis.realizedPL >= 0 ? 'from-cyan-50 to-white dark:from-cyan-900/20 dark:to-gray-900 border-cyan-100/50 dark:border-cyan-800/30 shadow-cyan-100/20 dark:shadow-none' : 'from-rose-50 to-white dark:from-rose-900/20 dark:to-gray-900 border-rose-100/50 dark:border-rose-800/30 shadow-rose-100/20 dark:shadow-none'}`}>
-        <div className="flex justify-between items-start relative z-10">
-          <div>
-            <p className={`text-[10px] font-semibold uppercase tracking-wider mb-0.5 ${kpis.realizedPL >= 0 ? 'text-cyan-600/70 dark:text-cyan-400' : 'text-rose-600/70 dark:text-rose-400'}`}>Realized P/L</p>
-            <h2 className={`text-base sm:text-lg font-bold ${kpis.realizedPL >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
-              <AnimatedCounter value={kpis.realizedPL} prefix={kpis.realizedPL > 0 ? '+৳' : '৳'} decimals={2} />
-            </h2>
-          </div>
-          <div className={`p-2 rounded-lg backdrop-blur-sm ${kpis.realizedPL >= 0 ? 'bg-cyan-100/50 dark:bg-cyan-900/50' : 'bg-rose-100/50 dark:bg-rose-900/50'}`}>
-            <Banknote className={`w-4 h-4 ${kpis.realizedPL >= 0 ? 'text-cyan-600 dark:text-cyan-400' : 'text-rose-600 dark:text-rose-400'}`} />
-          </div>
-        </div>
-        <div className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-2xl ${kpis.realizedPL >= 0 ? 'bg-cyan-400/10 dark:bg-cyan-600/10' : 'bg-rose-400/10 dark:bg-rose-600/10'}`}></div>
       </motion.div>
     </div>
   )

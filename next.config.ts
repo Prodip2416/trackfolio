@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: any = {
-  output: 'standalone',
   basePath: '/trackfolio',
   allowedDevOrigins: ['0.0.0.0', '10.38.117.40', 'localhost'],
   async redirects() {

@@ -137,46 +137,11 @@ export default function DashboardClient({
     
     const totalProfitLoss = currentPortfolioValue - totalInvested
 
-    let totalRealizedPL = 0;
-    const stockMap = new Map<string, { totalBuyCost: number; totalBuyQty: number; realizedPL: number }>();
-    
-    // Sort transactions by date first (oldest to newest) to accurately calculate average buy price at time of sale
-    const sortedTxns = [...transactions].sort((a, b) => new Date(a.transaction_date).getTime() - new Date(b.transaction_date).getTime());
-    
-    sortedTxns.forEach(txn => {
-      const symbol = txn.stocks?.symbol || 'Unknown';
-      if (!stockMap.has(symbol)) {
-        stockMap.set(symbol, { totalBuyCost: 0, totalBuyQty: 0, realizedPL: 0 });
-      }
-      
-      const stock = stockMap.get(symbol)!;
-      
-      if (txn.type === 'BUY') {
-        const cost = (txn.quantity * txn.price_per_unit) + txn.brokerage_fee;
-        stock.totalBuyCost += cost;
-        stock.totalBuyQty += txn.quantity;
-      } else if (txn.type === 'SELL') {
-        const netSell = (txn.quantity * txn.price_per_unit) - txn.brokerage_fee;
-        const avgBuyPrice = stock.totalBuyQty > 0 ? (stock.totalBuyCost / stock.totalBuyQty) : 0;
-        const costBasisOfSold = avgBuyPrice * txn.quantity;
-        
-        stock.realizedPL += (netSell - costBasisOfSold);
-        
-        stock.totalBuyQty -= txn.quantity;
-        stock.totalBuyCost -= costBasisOfSold;
-      }
-    });
-
-    stockMap.forEach(stock => {
-      totalRealizedPL += stock.realizedPL;
-    });
-
-    return { 
-      totalInvested: Math.max(0, totalInvested), 
-      totalDividend, 
-      totalShares: Math.max(0, totalShares), 
+    return {
+      totalInvested: Math.max(0, totalInvested),
+      totalDividend,
+      totalShares: Math.max(0, totalShares),
       totalProfitLoss,
-      realizedPL: totalRealizedPL,
       currentPortfolioValue,
       totalSellAmount: Math.max(0, totalSellAmount)
     }
@@ -368,7 +333,7 @@ export default function DashboardClient({
       <motion.div variants={itemVariants}>
         <DashboardSummaryCards kpis={kpis} dict={dict} />
       </motion.div>
-      
+
       <motion.div variants={itemVariants}>
         <DashboardPieCharts 
           portfolioData={portfolioData} 
