@@ -19,11 +19,9 @@ export default async function DividendsPage() {
 
   const dict = await getDictionary()
 
-    // Fetch user's latest 10 entries across all time.
     const rawDividends = await prisma.dividends.findMany({
       where: { user_id: user.id },
-      orderBy: { created_at: 'desc' },
-      take: 10,
+      orderBy: { date: 'desc' },
     include: {
       stocks: {
         select: {
