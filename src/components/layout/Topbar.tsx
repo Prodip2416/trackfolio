@@ -25,7 +25,7 @@ export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTim
     if (isPending) return
     setIsFetching(true)
     
-    fetch('/api/sync', { method: 'POST' })
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/sync`, { method: 'POST' })
       .then(async (res) => {
         if (!res.ok) {
           const data = await res.json()

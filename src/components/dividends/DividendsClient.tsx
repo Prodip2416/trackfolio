@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Trash2, Pencil, Calendar, CalendarDays, CalendarRange, Sun, Clock, Timer, Zap } from 'lucide-react'
+import { Plus, Trash2, Pencil, Calendar, CalendarDays, CalendarRange, Sun, Clock, Timer, Zap, ChevronLeft, ChevronRight } from 'lucide-react'
 import DividendForm from '@/components/dividends/DividendForm'
 import { deleteDividend } from '@/app/dividends/actions'
 import ConfirmModal from '@/components/shared/ConfirmModal'
@@ -40,12 +40,23 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
   const availableYears = Array.from(new Set(initialDividends.map(d => d.year))).sort((a, b) => b - a)
   const currentYear = new Date().getFullYear().toString()
   const [selectedYear, setSelectedYear] = useState<string>(availableYears.length > 0 ? availableYears[0].toString() : currentYear)
-  
-  const filteredDividends = selectedYear === 'All' 
-    ? initialDividends 
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year)
+    setCurrentPage(1)
+  }
+
+  const filteredDividends = selectedYear === 'All'
+    ? initialDividends
     : initialDividends.filter(d => d.year.toString() === selectedYear)
-    
+
   const totalCash = filteredDividends.reduce((sum, div) => sum + (div.cash_amount || 0), 0)
+
+  const itemsPerPage = 10
+  const totalPages = Math.max(1, Math.ceil(filteredDividends.length / itemsPerPage))
+  const safePage = Math.min(currentPage, totalPages)
+  const paginatedDividends = filteredDividends.slice((safePage - 1) * itemsPerPage, safePage * itemsPerPage)
   
   const yearly = totalCash
   const monthly = totalCash / 12
@@ -68,7 +79,7 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
                 ...availableYears.map(year => ({ label: year.toString(), value: year.toString() }))
               ]}
               value={selectedYear}
-              onChange={setSelectedYear}
+              onChange={handleYearChange}
               placeholder="Select Year"
               searchPlaceholder="Search year..."
               buttonClassName="px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-sm text-sm font-medium text-gray-900 dark:text-white min-h-[38px] w-full text-left"
@@ -190,7 +201,7 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-100 dark:divide-slate-800 transition-colors">
-                  {filteredDividends.map((div) => {
+                  {paginatedDividends.map((div) => {
                     return (
                       <tr key={div.id} className="even:bg-gray-50/60 dark:even:bg-slate-800/40 odd:bg-white dark:odd:bg-slate-900 hover:bg-indigo-50/40 dark:hover:bg-slate-800/80 transition-colors group">
                         <td className="px-4 py-2 whitespace-nowrap">
@@ -248,7 +259,69 @@ export default function DividendsClient({ initialDividends, dict }: { initialDiv
                   })}
                 </tbody>
               </table>
-            </div>
+              </div>
+
+              {/* Pagination Footer */}
+              <div className="bg-gray-50/50 dark:bg-slate-900/50 px-6 py-4 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between transition-colors shrink-0">
+                <div className="hidden sm:block">
+                  <p className="text-[13px] text-gray-500 dark:text-gray-400">
+                    Showing page <span className="font-semibold text-gray-900 dark:text-white">{safePage}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
+                  </p>
+                </div>
+                <div className="flex-1 flex justify-between sm:justify-end gap-2">
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={safePage === 1}
+                    className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Previous
+                  </button>
+
+                  {/* Page Numbers */}
+                  <div className="hidden sm:flex items-center gap-1 mx-2">
+                    {(() => {
+                      const pages: (number | string)[] = [];
+                      if (totalPages <= 5) {
+                        for (let i = 1; i <= totalPages; i++) pages.push(i);
+                      } else if (safePage <= 3) {
+                        pages.push(1, 2, 3, 4, '...', totalPages);
+                      } else if (safePage >= totalPages - 2) {
+                        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                      } else {
+                        pages.push(1, '...', safePage - 1, safePage, safePage + 1, '...', totalPages);
+                      }
+                      return pages.map((page, index) => {
+                        if (page === '...') {
+                          return <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
+                        }
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page as number)}
+                            className={`relative inline-flex items-center justify-center min-w-[32px] h-8 px-1 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
+                              page === safePage
+                                ? 'bg-indigo-600 text-white shadow-sm border border-indigo-600'
+                                : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-400 border border-transparent hover:bg-gray-100 dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        )
+                      });
+                    })()}
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={safePage === totalPages}
+                    className="relative inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
