@@ -38,7 +38,7 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
 
     setIsSubmitting(true)
     try {
-      await addTradeLeg({
+      const result = await addTradeLeg({
         symbol,
         type,
         quantity: Number(quantity),
@@ -46,6 +46,10 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
         fee: numFee,
         date: new Date(date)
       })
+      if ('error' in result) {
+        toast.error(result.error)
+        return
+      }
       toast.success(`Trade leg added successfully!`)
       onClose()
     } catch (error: any) {

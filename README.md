@@ -78,10 +78,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="your_supabase_anon_key"
 ```
 
 ### 4. Setup Prisma Database
+The Prisma client is generated automatically on `npm install` (`postinstall`).
+
+Schema changes are applied as SQL files in `prisma/sql/`, run in order in the Supabase SQL editor.
+Do **not** use `npx prisma db push`: Prisma only manages the `public` schema, so it would drop the
+`profiles → auth.users` foreign key that Supabase relies on.
+
+### Checks
 ```bash
-npx prisma generate
-npx prisma db push
+npm run lint
+npm run typecheck
+npm test
 ```
+CI (`.github/workflows/ci.yml`) runs these plus `npm run build` on every push and PR.
 
 ### 5. Run the Development Server
 ```bash

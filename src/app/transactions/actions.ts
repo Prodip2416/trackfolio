@@ -2,9 +2,9 @@
 
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePortfolioViews } from '@/lib/revalidate'
 import { z } from 'zod'
-import { recalculateStockAggregates } from '@/lib/stock-aggregates'
+import { recalculateStockAggregates, OversellError } from '@/lib/stock-aggregates'
 
 const smartTransactionSchema = z.object({
   symbol: z.string().min(1, "Please select a valid Stock Symbol"),
@@ -84,47 +84,50 @@ export async function addSmartTransaction(prevState: any, formData: FormData) {
       create: { id: user.id, email: user.email }
     })
 
-    // 1. Check if the stock already exists in the user's portfolio (`stocks` table)
-    const existingStock = await prisma.stocks.findFirst({
-      where: { user_id: user.id, symbol }
-    })
+    await prisma.$transaction(async (tx) => {
+      // 1. Check if the stock already exists in the user's portfolio (`stocks` table)
+      const existingStock = await tx.stocks.findFirst({
+        where: { user_id: user.id, symbol }
+      })
 
-    let stockId = existingStock?.id
+      let stockId = existingStock?.id
 
-    // 2. If not, create it!
-    if (!stockId) {
-      const newStock = await prisma.stocks.create({
+      // 2. If not, create it!
+      if (!stockId) {
+        if (type === 'SELL') {
+          throw new OversellError({ date: new Date(transaction_date), attempted: quantity, available: 0 })
+        }
+        const newStock = await tx.stocks.create({
+          data: {
+            user_id: user.id,
+            symbol
+          }
+        })
+        stockId = newStock.id
+      }
+
+      // 3. Save the transaction
+      await tx.transactions.create({
         data: {
           user_id: user.id,
-          symbol
+          stock_id: stockId,
+          type: type as any,
+          quantity,
+          price_per_unit,
+          transaction_date: new Date(transaction_date),
+          brokerage_fee,
+          note
         }
       })
-      stockId = newStock.id
-    } else if (type === 'BUY') {
-      // Intentionally left blank, no need to update current_price on stocks anymore
-    }
 
-    // 3. Save the transaction
-    await prisma.transactions.create({
-      data: {
-        user_id: user.id,
-        stock_id: stockId,
-        type: type as any,
-        quantity,
-        price_per_unit,
-        transaction_date: new Date(transaction_date),
-        brokerage_fee,
-        note
-      }
+      // 4. Recalculate Aggregates (rolls back if any SELL exceeds the holding)
+      await recalculateStockAggregates(stockId, { db: tx, strict: true })
     })
 
-    // 4. Recalculate Aggregates
-    await recalculateStockAggregates(stockId)
-
-    revalidatePath('/transactions')
-    revalidatePath('/portfolio')
+    revalidatePortfolioViews()
     return { success: 'Transaction saved successfully!' }
   } catch (error) {
+    if (error instanceof OversellError) return { error: error.message }
     console.error('Error adding transaction:', error)
     return { error: 'Failed to save transaction.' }
   }
@@ -165,27 +168,31 @@ export async function updateSmartTransaction(id: string, prevState: any, formDat
 
   try {
     // We are not changing the stock symbol on update, just the transaction details
-    await prisma.transactions.updateMany({
-      where: { id, user_id: user.id },
-      data: {
-        type: type as any,
-        quantity,
-        price_per_unit,
-        transaction_date: new Date(transaction_date),
-        brokerage_fee,
-        note
-      }
+    const found = await prisma.$transaction(async (tx) => {
+      const txn = await tx.transactions.findUnique({ where: { id, user_id: user.id } })
+      if (!txn) return false
+
+      await tx.transactions.update({
+        where: { id, user_id: user.id },
+        data: {
+          type: type as any,
+          quantity,
+          price_per_unit,
+          transaction_date: new Date(transaction_date),
+          brokerage_fee,
+          note
+        }
+      })
+
+      await recalculateStockAggregates(txn.stock_id!, { db: tx, strict: true })
+      return true
     })
+    if (!found) return { error: 'Transaction not found' }
 
-    const txn = await prisma.transactions.findUnique({ where: { id, user_id: user.id } })
-    if (txn) {
-      await recalculateStockAggregates(txn.stock_id!)
-    }
-
-    revalidatePath('/transactions')
-    revalidatePath('/portfolio')
+    revalidatePortfolioViews()
     return { success: 'Transaction updated successfully!' }
   } catch (error) {
+    if (error instanceof OversellError) return { error: error.message }
     console.error('Error updating transaction:', error)
     return { error: 'Failed to update transaction.' }
   }
@@ -198,20 +205,24 @@ export async function deleteTransaction(id: string) {
   if (!user) return { error: 'Unauthorized' }
 
   try {
-    const txn = await prisma.transactions.findUnique({ where: { id, user_id: user.id } })
-    if (!txn) return { error: 'Transaction not found' }
+    const found = await prisma.$transaction(async (tx) => {
+      const txn = await tx.transactions.findUnique({ where: { id, user_id: user.id } })
+      if (!txn) return false
 
-    await prisma.transactions.delete({
-      where: { id, user_id: user.id }
+      await tx.transactions.delete({
+        where: { id, user_id: user.id }
+      })
+
+      // Deleting a BUY must not leave a later SELL uncovered
+      await recalculateStockAggregates(txn.stock_id!, { db: tx, strict: txn.type === 'BUY' })
+      return true
     })
-    
-    // Recalculate Aggregates
-    await recalculateStockAggregates(txn.stock_id!)
+    if (!found) return { error: 'Transaction not found' }
 
-    revalidatePath('/transactions')
-    revalidatePath('/portfolio')
+    revalidatePortfolioViews()
     return { success: true }
   } catch (error) {
+    if (error instanceof OversellError) return { error: `Cannot delete this BUY. ${error.message}` }
     console.error('Error deleting transaction:', error)
     return { error: 'Failed to delete transaction.' }
   }

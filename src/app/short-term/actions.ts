@@ -3,6 +3,8 @@
 import prisma from '@/lib/prisma'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { z } from 'zod'
+import type { Prisma } from '@/generated/prisma/client'
 
 export async function getOwnedShortTermSymbols() {
   const supabase = await createClient()
@@ -83,32 +85,64 @@ export async function getShortTermTrades(symbol?: string, year?: string) {
   return mapped
 }
 
-export async function addTradeLeg(data: {
-  symbol: string
-  type: 'BUY' | 'SELL'
-  quantity: number
-  price: number
-  fee: number
-  date: Date
-}) {
+const tradeLegSchema = z.object({
+  symbol: z.string().trim().min(1, 'Please select a stock symbol').transform(s => s.toUpperCase()),
+  type: z.enum(['BUY', 'SELL']),
+  quantity: z.number().int('Quantity must be a whole number').positive('Quantity must be greater than 0'),
+  price: z.number().positive('Price must be greater than 0'),
+  fee: z.number().min(0, 'Fee cannot be negative'),
+  date: z.coerce.date({ error: 'Please select a valid date' }),
+})
+
+class TradeLegError extends Error {}
+
+export async function addTradeLeg(input: z.input<typeof tradeLegSchema>): Promise<{ success: true } | { error: string }> {
   const supabase = await createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
-  if (error || !user) throw new Error('Unauthorized')
+  if (error || !user) return { error: 'Unauthorized' }
 
+  const parsed = tradeLegSchema.safeParse(input)
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message || 'Validation failed' }
+  }
+  const data = parsed.data
+
+  try {
+    // Serializable so two concurrent submits can't both read the same parent totals
+    await prisma.$transaction(
+      tx => applyTradeLeg(tx, user.id, data),
+      { isolationLevel: 'Serializable' }
+    )
+  } catch (err) {
+    if (err instanceof TradeLegError) return { error: err.message }
+    console.error('Error adding trade leg:', err)
+    return { error: 'Failed to add trade leg. Please try again.' }
+  }
+
+  revalidatePath('/short-term/transactions')
+  revalidatePath('/short-term')
+  return { success: true }
+}
+
+async function applyTradeLeg(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  data: z.output<typeof tradeLegSchema>
+) {
   // Find active OPEN trade for this symbol
-  let trade = await prisma.short_term_trades.findFirst({
-    where: { user_id: user.id, symbol: data.symbol, status: 'OPEN' }
+  let trade = await tx.short_term_trades.findFirst({
+    where: { user_id: userId, symbol: data.symbol, status: 'OPEN' }
   })
 
   if (!trade) {
     if (data.type === 'SELL') {
-      throw new Error('Cannot sell without an OPEN trade for this stock.')
+      throw new TradeLegError('Cannot sell without an OPEN trade for this stock.')
     }
 
     // Create new trade campaign
-    trade = await prisma.short_term_trades.create({
+    trade = await tx.short_term_trades.create({
       data: {
-        user_id: user.id,
+        user_id: userId,
         symbol: data.symbol,
         status: 'OPEN',
         opened_at: data.date
@@ -119,12 +153,12 @@ export async function addTradeLeg(data: {
   if (data.type === 'SELL') {
     const remainingQty = Number(trade.total_buy_qty) - Number(trade.total_sell_qty)
     if (data.quantity > remainingQty) {
-      throw new Error(`Cannot sell more than available holding. Remaining: ${remainingQty} Qty.`)
+      throw new TradeLegError(`Cannot sell more than available holding. Remaining: ${remainingQty} Qty.`)
     }
   }
 
   // Add the leg
-  await prisma.short_term_trade_legs.create({
+  await tx.short_term_trade_legs.create({
     data: {
       trade_id: trade.id,
       type: data.type,
@@ -173,7 +207,7 @@ export async function addTradeLeg(data: {
   }
 
   // Update parent
-  await prisma.short_term_trades.update({
+  await tx.short_term_trades.update({
     where: { id: trade.id },
     data: {
       total_buy_qty: newBuyQty,
@@ -185,9 +219,6 @@ export async function addTradeLeg(data: {
       closed_at: closedAt
     }
   })
-
-  revalidatePath('/short-term/transactions')
-  revalidatePath('/short-term')
 }
 
 export async function deleteTrade(tradeId: string) {

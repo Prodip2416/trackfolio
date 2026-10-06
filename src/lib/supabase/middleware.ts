@@ -15,13 +15,15 @@ function isSupabaseConfigured() {
 }
 
 export async function updateSession(request: NextRequest) {
+  // Fail closed: without auth configured, no route may be served
+  if (!isSupabaseConfigured()) {
+    console.error('Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    return new NextResponse('Service unavailable: authentication is not configured.', { status: 503 })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
-
-  if (!isSupabaseConfigured()) {
-    return supabaseResponse
-  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
