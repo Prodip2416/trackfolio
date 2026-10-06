@@ -2,9 +2,9 @@
 
 import { createClient } from '@/lib/supabase/server'
 import prisma from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePortfolioViews } from '@/lib/revalidate'
 import { z } from 'zod'
-import { recalculateStockAggregates } from '@/lib/stock-aggregates'
+import { recalculateStockAggregates, OversellError } from '@/lib/stock-aggregates'
 
 const dividendSchema = z.object({
   symbol: z.string().min(1, 'Please select a valid Stock Symbol'),
@@ -121,8 +121,7 @@ export async function addDividend(formData: FormData) {
 
     await recalculateStockAggregates(stock.id)
 
-    revalidatePath('/dividends')
-    revalidatePath('/portfolio')
+    revalidatePortfolioViews()
     return { success: 'Dividend added successfully!' }
   } catch (error) {
     console.error('Error adding dividend:', error)
@@ -139,16 +138,19 @@ export async function deleteDividend(id: string) {
     const div = await prisma.dividends.findUnique({ where: { id, user_id: user.id } })
     if (!div) return { error: 'Dividend not found' }
 
-    await prisma.dividends.delete({
-      where: { id, user_id: user.id }
-    })
-    
-    await recalculateStockAggregates(div.stock_id!)
+    await prisma.$transaction(async (tx) => {
+      await tx.dividends.delete({
+        where: { id, user_id: user.id }
+      })
 
-    revalidatePath('/dividends')
-    revalidatePath('/portfolio')
+      // Removing bonus shares must not leave a later SELL uncovered
+      await recalculateStockAggregates(div.stock_id!, { db: tx, strict: true })
+    })
+
+    revalidatePortfolioViews()
     return { success: true }
   } catch (error) {
+    if (error instanceof OversellError) return { error: `Cannot delete this dividend. ${error.message}` }
     console.error('Error deleting dividend:', error)
     return { error: 'Failed to delete dividend.' }
   }
@@ -210,29 +212,31 @@ export async function updateDividend(id: string, formData: FormData) {
       return { error: 'A dividend for this stock on this date already exists.' }
     }
 
-    await prisma.dividends.update({
-      where: { id },
-      data: {
-        stock_id: stock.id,
-        type: type as any,
-        year,
-        cash_amount,
-        bonus_quantity,
-        date: new Date(date),
-        note
+    await prisma.$transaction(async (tx) => {
+      await tx.dividends.update({
+        where: { id, user_id: user.id },
+        data: {
+          stock_id: stock.id,
+          type: type as any,
+          year,
+          cash_amount,
+          bonus_quantity,
+          date: new Date(date),
+          note
+        }
+      })
+
+      // Recalculate both stocks if the dividend moved; a reduced bonus must not leave a SELL uncovered
+      if (existingDiv.stock_id !== stock.id) {
+        await recalculateStockAggregates(existingDiv.stock_id!, { db: tx, strict: true })
       }
+      await recalculateStockAggregates(stock.id, { db: tx, strict: true })
     })
 
-    // Recalculate if stock changed, we should theoretically recalculate both, but usually stock doesn't change
-    if (existingDiv.stock_id !== stock.id) {
-       await recalculateStockAggregates(existingDiv.stock_id!)
-    }
-    await recalculateStockAggregates(stock.id)
-
-    revalidatePath('/dividends')
-    revalidatePath('/portfolio')
+    revalidatePortfolioViews()
     return { success: 'Dividend updated successfully!' }
   } catch (error) {
+    if (error instanceof OversellError) return { error: `Cannot update this dividend. ${error.message}` }
     console.error('Error updating dividend:', error)
     return { error: 'Failed to update dividend.' }
   }

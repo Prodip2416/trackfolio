@@ -40,5 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-package-lock.json
+# prisma client (generated on install via `prisma generate`)
+/src/generated/
+
+# npm is the package manager; package-lock.json is committed
 yarn.lock

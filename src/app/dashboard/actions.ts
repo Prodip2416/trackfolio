@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePortfolioViews } from '@/lib/revalidate'
 import { syncDseData } from '@/lib/sync'
 
 export async function syncDashboardData() {
@@ -14,9 +14,7 @@ export async function syncDashboardData() {
 
   await syncDseData(user.id)
 
-  revalidatePath('/')
-  revalidatePath('/dashboard')
-  revalidatePath('/portfolio')
+  revalidatePortfolioViews()
   
   return { success: true }
 }

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import TaxReportClient from '@/components/reports/tax/TaxReportClient'
 import { getDictionary } from '@/i18n/getDictionary'
 import { cookies } from 'next/headers'
+import { computeHoldingTimeline } from '@/lib/stock-aggregates'
 
 export const metadata = {
   title: 'Tax & Capital Gain Report - TrackFolio',
@@ -27,31 +28,35 @@ export default async function TaxReportPage() {
     redirect('/login')
   }
 
-  // Fetch all transactions, ordered chronologically to calculate Weighted Average Cost
+  // Fetch all transactions; ordering is handled by computeHoldingTimeline
   const transactions = await prisma.transactions.findMany({
     where: { user_id: user.id },
-    orderBy: { transaction_date: 'asc' },
     select: {
       id: true,
+      stock_id: true,
       type: true,
       quantity: true,
       price_per_unit: true,
       brokerage_fee: true,
       transaction_date: true,
+      created_at: true,
       stocks: {
         select: { symbol: true }
       }
     }
   })
 
-  // Fetch all dividends
+  // Fetch all dividends (bonus shares affect cost per unit)
   const dividends = await prisma.dividends.findMany({
     where: { user_id: user.id },
     orderBy: { date: 'asc' },
     select: {
       id: true,
+      stock_id: true,
       cash_amount: true,
+      bonus_quantity: true,
       date: true,
+      created_at: true,
       stocks: {
         select: { symbol: true }
       }
@@ -75,67 +80,36 @@ export default async function TaxReportPage() {
   })
 
   // Group Capital Gains by Financial Year
-  // We need to calculate Realized Gain using Weighted Average Cost
+  // Realized Gain uses the same Weighted Average Cost (incl. bonus shares) as the portfolio
   const capitalGainsByFY: Record<string, any[]> = {}
-  
-  // Track inventory state per stock symbol
-  // Record<Symbol, { qty: number, totalCost: number }>
-  const inventory: Record<string, { qty: number, totalCost: number }> = {}
 
-  transactions.forEach(txn => {
-    if (!txn.stocks) return
-    const symbol = txn.stocks.symbol
-    if (!inventory[symbol]) {
-      inventory[symbol] = { qty: 0, totalCost: 0 }
-    }
-    
-    const qty = Number(txn.quantity)
-    const price = Number(txn.price_per_unit)
-    const fee = Number(txn.brokerage_fee || 0)
-    const date = new Date(txn.transaction_date)
-    const fy = getFinancialYear(date)
+  const byStock = new Map<string, { symbol: string, txns: typeof transactions, divs: typeof dividends }>()
+  for (const txn of transactions) {
+    if (!txn.stock_id || !txn.stocks) continue
+    if (!byStock.has(txn.stock_id)) byStock.set(txn.stock_id, { symbol: txn.stocks.symbol, txns: [], divs: [] })
+    byStock.get(txn.stock_id)!.txns.push(txn)
+  }
+  for (const div of dividends) {
+    if (div.stock_id) byStock.get(div.stock_id)?.divs.push(div)
+  }
 
-    if (txn.type === 'BUY') {
-      // Add to inventory
-      inventory[symbol].qty += qty
-      inventory[symbol].totalCost += (qty * price) + fee
-    } else if (txn.type === 'SELL') {
-      // Calculate Realized Gain
-      const currentQty = inventory[symbol].qty
-      const currentCost = inventory[symbol].totalCost
-      
-      let costPerUnit = 0
-      if (currentQty > 0) {
-        costPerUnit = currentCost / currentQty
-      }
-
-      // Cost of Goods Sold (COGS)
-      const costOfSoldShares = costPerUnit * qty
-      
-      // Net Sell Value
-      const netSellValue = (qty * price) - fee
-      
-      // Realized Gain = Net Sell - COGS
-      const realizedGain = netSellValue - costOfSoldShares
-
-      // Deduct from inventory
-      inventory[symbol].qty = Math.max(0, currentQty - qty)
-      inventory[symbol].totalCost = Math.max(0, currentCost - costOfSoldShares)
-
-      // Record this gain in the respective Financial Year
+  for (const { symbol, txns, divs } of byStock.values()) {
+    const { realizedSells } = computeHoldingTimeline(txns, divs)
+    for (const sell of realizedSells) {
+      const fy = getFinancialYear(sell.date)
       if (!capitalGainsByFY[fy]) capitalGainsByFY[fy] = []
-      
       capitalGainsByFY[fy].push({
-        id: txn.id,
-        symbol: symbol,
-        date: date.toISOString(),
-        qtySold: qty,
-        sellValue: netSellValue,
-        costValue: costOfSoldShares,
-        realizedGain: realizedGain
+        ...sell,
+        symbol,
+        date: sell.date.toISOString()
       })
     }
-  })
+  }
+
+  // Keep entries chronological within each FY
+  for (const fy of Object.keys(capitalGainsByFY)) {
+    capitalGainsByFY[fy].sort((a, b) => a.date.localeCompare(b.date))
+  }
 
   // Determine all available Financial Years to populate the Dropdown
   const availableYears = Array.from(new Set([
