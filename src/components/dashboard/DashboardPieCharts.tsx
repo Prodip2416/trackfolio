@@ -39,7 +39,7 @@ export default function DashboardPieCharts({
   }
 
   return (
-    <>
+    <div className="space-y-3">
       {/* Portfolio Allocation Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Left: Portfolio Allocation */}
@@ -277,6 +277,6 @@ export default function DashboardPieCharts({
           )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
