@@ -219,7 +219,7 @@ export default function PortfolioClient({
                         {stock.latest_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right">
-                        <span className="text-[11px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                        <span className={`text-[11px] sm:text-xs font-bold ${stock.portfolio_price < stock.latest_price ? 'text-green-600 dark:text-green-400' : 'text-rose-600 dark:text-rose-400'}`}>
                           {stock.portfolio_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
