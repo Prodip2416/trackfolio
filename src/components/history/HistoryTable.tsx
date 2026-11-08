@@ -115,10 +115,10 @@ export default function HistoryTable({
                       </span>
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-xs text-green-600 dark:text-green-400 text-right font-medium">
-                      {div.cash_amount ? `৳${div.cash_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
+                      {div.cash_amount ? `৳${div.cash_amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
-                      {div.bonus_quantity ? `+${div.bonus_quantity.toLocaleString()}` : '-'}
+                      {div.bonus_quantity ? `+${div.bonus_quantity.toLocaleString('en-US')}` : '-'}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
                       <div className="flex items-center justify-end space-x-3 transition-opacity">
@@ -173,7 +173,7 @@ export default function HistoryTable({
                         {txn.transaction_date ? formatDate(txn.transaction_date) : '-'}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right font-medium">
-                        {txn.quantity?.toLocaleString() ?? '-'}
+                        {txn.quantity?.toLocaleString('en-US') ?? '-'}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right">
                         {txn.price_per_unit?.toFixed(2) ?? '-'}
@@ -182,7 +182,7 @@ export default function HistoryTable({
                         {txn.brokerage_fee?.toFixed(2) || '0.00'}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
-                        {total ? total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}
+                        {total ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
                         <div className="flex items-center justify-end space-x-3 transition-opacity">

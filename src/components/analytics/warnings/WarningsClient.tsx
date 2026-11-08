@@ -186,7 +186,7 @@ export default function WarningsClient({ exposures, totalInvestment, riskThresho
                             {data.percentage.toFixed(1)}% of Portfolio
                           </p>
                           <p className="text-gray-500 text-xs mt-1">
-                            Investment: ৳{data.investment.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                            Investment: ৳{data.investment.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                           </p>
                         </div>
                       )

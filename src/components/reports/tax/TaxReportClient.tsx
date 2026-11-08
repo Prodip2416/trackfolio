@@ -125,7 +125,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">{dict?.reports?.totalCapitalGain || 'Total Capital Gain'}</p>
                 <h2 className={`text-2xl font-black mt-1 ${totalCapitalGain >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                  {totalCapitalGain >= 0 ? '+' : ''}৳{totalCapitalGain.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  {totalCapitalGain >= 0 ? '+' : ''}৳{totalCapitalGain.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </h2>
               </div>
               <div className={`p-2 rounded-lg ${totalCapitalGain >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
@@ -139,7 +139,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">{dict?.reports?.totalCashDividend || 'Total Cash Dividend'}</p>
                 <h2 className="text-2xl font-black mt-1 text-indigo-600">
-                  ৳{totalDividend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  ৳{totalDividend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </h2>
               </div>
               <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
@@ -153,7 +153,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider print:text-gray-500">{dict?.reports?.grossTaxableIncome || 'Gross Taxable Income'}</p>
                 <h2 className="text-2xl font-black mt-1 text-white print:text-gray-900">
-                  ৳{taxableIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  ৳{taxableIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </h2>
               </div>
               <div className="p-2 rounded-lg bg-gray-800 text-gray-300 print:bg-gray-100 print:text-gray-600">
@@ -185,11 +185,11 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
                   groupedGains.map((row) => (
                     <tr key={row.symbol} className="hover:bg-gray-50 transition-colors print:hover:bg-transparent">
                       <td className="px-5 py-3 whitespace-nowrap text-sm font-bold text-gray-900">{row.symbol}</td>
-                      <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-600 font-medium text-right">{row.qty.toLocaleString()}</td>
-                      <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-600 text-right">{row.costValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                      <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-600 text-right">{row.sellValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-600 font-medium text-right">{row.qty.toLocaleString('en-US')}</td>
+                      <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-600 text-right">{row.costValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td className="px-5 py-3 whitespace-nowrap text-sm text-gray-600 text-right">{row.sellValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                       <td className={`px-5 py-3 whitespace-nowrap text-sm font-bold text-right ${row.gain >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                        {row.gain > 0 ? '+' : ''}{row.gain.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {row.gain > 0 ? '+' : ''}{row.gain.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>
                   ))
@@ -206,7 +206,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
                   <tr>
                     <td colSpan={4} className="px-5 py-3 text-right text-sm font-bold text-gray-900">{dict?.reports?.totalCapitalGain || 'Total Capital Gain'}:</td>
                     <td className={`px-5 py-3 text-right text-sm font-black ${totalCapitalGain >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                      {totalCapitalGain > 0 ? '+' : ''}{totalCapitalGain.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {totalCapitalGain > 0 ? '+' : ''}{totalCapitalGain.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                   </tr>
                 </tfoot>
@@ -235,7 +235,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
                     <tr key={row.symbol} className="hover:bg-gray-50 transition-colors print:hover:bg-transparent">
                       <td className="px-5 py-3 whitespace-nowrap text-sm font-bold text-gray-900">{row.symbol}</td>
                       <td className="px-5 py-3 whitespace-nowrap text-sm font-bold text-indigo-600 text-right">
-                        {row.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {row.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>
                   ))
@@ -252,7 +252,7 @@ export default function TaxReportClient({ availableYears, dividendsByFY, capital
                   <tr>
                     <td className="px-5 py-3 text-right text-sm font-bold text-gray-900">{dict?.reports?.totalDividend || 'Total Dividend:'}</td>
                     <td className="px-5 py-3 text-right text-sm font-black text-indigo-600">
-                      {totalDividend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {totalDividend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                   </tr>
                 </tfoot>

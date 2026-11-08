@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X, Zap } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X, Zap, NotebookPen } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
@@ -49,44 +49,50 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
 
   const userInitial = user ? (user.user_metadata?.full_name || user.email || 'U').charAt(0).toUpperCase() : 'U'
   const userName = user ? (user.user_metadata?.full_name || user.email?.split('@')[0] || 'User') : 'User'
-  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false)
-  const [isReportsOpen, setIsReportsOpen] = useState(false)
-  const [isPortfolioOpen, setIsPortfolioOpen] = useState(false)
-  const [isWatchlistOpen, setIsWatchlistOpen] = useState(false)
-  const [isShortTermOpen, setIsShortTermOpen] = useState(false)
+  // Only one submenu is open at a time; keyed by the submenu's base path.
+  const SUBMENU_BASES = ['/portfolio', '/watchlist', '/analytics', '/short-term', '/planner', '/reports']
+  const baseFor = (p: string) => SUBMENU_BASES.find(b => p === b || p.startsWith(`${b}/`)) ?? null
+  const [openMenu, setOpenMenu] = useState<string | null>(() => baseFor(pathname))
   const [lastPathname, setLastPathname] = useState(pathname)
 
   // Sync open state with pathname without causing a cascading render in an effect
   if (pathname !== lastPathname) {
     setLastPathname(pathname)
-    setIsAnalyticsOpen(pathname.startsWith('/analytics'))
-    setIsReportsOpen(pathname.startsWith('/reports'))
-    setIsPortfolioOpen(pathname.startsWith('/portfolio'))
-    setIsWatchlistOpen(pathname.startsWith('/watchlist'))
-    setIsShortTermOpen(pathname.startsWith('/short-term'))
+    setOpenMenu(baseFor(pathname))
   }
 
-  const navItems = [
+  type NavItem = {
+    name: string
+    icon: typeof LayoutDashboard
+    href?: string
+    base?: string
+    subItems?: { name: string; href: string }[]
+  }
+
+  const navItems: NavItem[] = [
     { name: dict.sidebar.dashboard, href: '/', icon: LayoutDashboard },
     { 
-      name: dict.sidebar.portfolio, 
+      name: dict.sidebar.portfolio,
       icon: Briefcase,
+      base: '/portfolio',
       subItems: [
         { name: dict.sidebar.overview, href: '/portfolio' },
         { name: dict.sidebar.assetLedger, href: '/portfolio/ledger' },
       ]
     },
     { 
-      name: dict.sidebar.watchlist || 'Watchlist', 
+      name: dict.sidebar.watchlist || 'Watchlist',
       icon: Star,
+      base: '/watchlist',
       subItems: [
         { name: dict.sidebar.myWatchlist || 'My Watchlist', href: '/watchlist' },
         { name: dict.sidebar.priceAlerts || 'Price Alerts', href: '/watchlist/alerts' },
       ]
     },
     { 
-      name: dict.sidebar.analytics, 
+      name: dict.sidebar.analytics,
       icon: PieChart,
+      base: '/analytics',
       subItems: [
         { name: dict.sidebar.performance, href: '/analytics/performance' },
         { name: dict.sidebar.diversification, href: '/analytics/diversification' },
@@ -100,9 +106,20 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
     {
       name: 'Short Term',
       icon: Zap,
+      base: '/short-term',
       subItems: [
         { name: 'Dashboard', href: '/short-term' },
         { name: 'Transaction', href: '/short-term/transactions' },
+      ]
+    },
+    {
+      name: dict.sidebar.planner || 'Planner',
+      icon: NotebookPen,
+      base: '/planner',
+      subItems: [
+        { name: dict.sidebar.tradePlan || 'Trade Plan', href: '/planner' },
+        { name: dict.sidebar.plannerNotes || 'Notes & Journal', href: '/planner/notes' },
+        { name: dict.sidebar.whatIfCalculator || 'What-If Calculator', href: '/planner/calculator' },
       ]
     },
     { name: dict.sidebar.dividendLog, href: '/dividends', icon: Coins },
@@ -110,6 +127,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
     {
       name: dict.sidebar.reports,
       icon: FileText,
+      base: '/reports',
       subItems: [
         { name: dict.sidebar.taxCapitalGain, href: '/reports/tax' },
         { name: dict.sidebar.buyReport, href: '/reports/buy' },
@@ -149,61 +167,10 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
       <div className="flex-1 py-6 px-4 space-y-1 overflow-y-auto custom-scrollbar">
         {navItems.map((item) => {
           if (item.subItems) {
-            const isActive = pathname.startsWith(
-              item.name === dict.sidebar.reports ? '/reports' :
-              item.name === dict.sidebar.portfolio ? '/portfolio' :
-              item.name === (dict.sidebar.watchlist || 'Watchlist') ? '/watchlist' :
-              item.name === 'Short Term' ? '/short-term' :
-              '/analytics'
-            )
-            const isOpen = item.name === dict.sidebar.reports ? isReportsOpen :
-                           item.name === dict.sidebar.portfolio ? isPortfolioOpen :
-                           item.name === (dict.sidebar.watchlist || 'Watchlist') ? isWatchlistOpen :
-                           item.name === 'Short Term' ? isShortTermOpen :
-                           isAnalyticsOpen
-            const toggleOpen = () => {
-              if (item.name === dict.sidebar.reports) {
-                setIsReportsOpen(!isReportsOpen)
-                if (!isReportsOpen) {
-                  setIsPortfolioOpen(false)
-                  setIsAnalyticsOpen(false)
-                  setIsWatchlistOpen(false)
-                  setIsShortTermOpen(false)
-                }
-              } else if (item.name === dict.sidebar.portfolio) {
-                setIsPortfolioOpen(!isPortfolioOpen)
-                if (!isPortfolioOpen) {
-                  setIsReportsOpen(false)
-                  setIsAnalyticsOpen(false)
-                  setIsWatchlistOpen(false)
-                  setIsShortTermOpen(false)
-                }
-              } else if (item.name === (dict.sidebar.watchlist || 'Watchlist')) {
-                setIsWatchlistOpen(!isWatchlistOpen)
-                if (!isWatchlistOpen) {
-                  setIsReportsOpen(false)
-                  setIsAnalyticsOpen(false)
-                  setIsPortfolioOpen(false)
-                  setIsShortTermOpen(false)
-                }
-              } else if (item.name === 'Short Term') {
-                setIsShortTermOpen(!isShortTermOpen)
-                if (!isShortTermOpen) {
-                  setIsReportsOpen(false)
-                  setIsAnalyticsOpen(false)
-                  setIsPortfolioOpen(false)
-                  setIsWatchlistOpen(false)
-                }
-              } else {
-                setIsAnalyticsOpen(!isAnalyticsOpen)
-                if (!isAnalyticsOpen) {
-                  setIsReportsOpen(false)
-                  setIsPortfolioOpen(false)
-                  setIsWatchlistOpen(false)
-                  setIsShortTermOpen(false)
-                }
-              }
-            }
+            const base = item.base ?? ''
+            const isActive = baseFor(pathname) === base
+            const isOpen = openMenu === base
+            const toggleOpen = () => setOpenMenu(isOpen ? null : base)
             const Icon = item.icon
             return (
               <div key={item.name} className="flex flex-col space-y-1">

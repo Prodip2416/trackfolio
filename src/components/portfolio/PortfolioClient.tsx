@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Briefcase, TrendingUp, ChevronLeft, ChevronRight, Calculator, Wallet, DollarSign, Activity, Eye, X, History, ArrowRightLeft, Coins, FileText, PieChart } from 'lucide-react'
 import Link from 'next/link'
 import { motion, Variants } from 'framer-motion'
@@ -57,17 +57,21 @@ export default function PortfolioClient({
   const [stockHistory, setStockHistory] = useState<TransactionHistoryItem[]>([])
   const [isLoadingHistory, setIsLoadingHistory] = useState(false)
 
+  // Tracks the latest requested stock so a slower, older response can't overwrite it
+  const historyRequestRef = useRef<string | null>(null)
+
   const openDetailsDrawer = async (stock: StockHolding) => {
+    historyRequestRef.current = stock.id
     setSelectedStockDetails(stock)
     setIsLoadingHistory(true)
     setStockHistory([])
     try {
       const history = await getStockHistory(stock.id)
-      setStockHistory(history)
+      if (historyRequestRef.current === stock.id) setStockHistory(history)
     } catch (e) {
       console.error(e)
     } finally {
-      setIsLoadingHistory(false)
+      if (historyRequestRef.current === stock.id) setIsLoadingHistory(false)
     }
   }
 
@@ -209,18 +213,18 @@ export default function PortfolioClient({
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right">
                         <span className="text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white bg-gray-50/80 dark:bg-slate-800/80 px-1.5 sm:px-2 py-0.5 rounded-md border border-gray-100 dark:border-slate-700">
-                          {stock.total_quantity.toLocaleString()}
+                          {stock.total_quantity.toLocaleString('en-US')}
                         </span>
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right text-[11px] sm:text-xs font-medium text-gray-900 dark:text-white">
-                        {stock.average_buy_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {stock.average_buy_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right text-[11px] sm:text-xs font-medium text-gray-900 dark:text-white">
-                        {stock.latest_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {stock.latest_price > 0 ? stock.latest_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right">
                         <span className={`text-[11px] sm:text-xs font-bold ${stock.portfolio_price < stock.latest_price ? 'text-green-600 dark:text-green-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                          {stock.portfolio_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {stock.portfolio_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right">
@@ -229,16 +233,17 @@ export default function PortfolioClient({
                         </span>
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right text-[11px] sm:text-xs font-bold text-gray-900 dark:text-white">
-                        {stock.total_investment.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {stock.total_investment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right">
                         {(() => {
-                          const pl = (stock.total_quantity * stock.latest_price) - stock.total_investment;
+                          // Unknown (unsynced) price → 0 P/L instead of a -100% loss
+                          const pl = stock.latest_price > 0 ? (stock.total_quantity * stock.latest_price) - stock.total_investment : 0;
                           const plPercent = stock.total_investment > 0 ? (pl / stock.total_investment) * 100 : 0;
                           return (
                             <div className="flex flex-col items-end">
                               <span className={`text-[11px] sm:text-xs font-bold ${pl > 0 ? 'text-green-600 dark:text-green-400' : pl < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-500'}`}>
-                                {pl > 0 ? '+' : ''}{pl.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                {pl > 0 ? '+' : ''}{pl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
                               <span className={`text-[9px] sm:text-[10px] font-medium ${pl > 0 ? 'text-green-600/70 dark:text-green-400/70' : pl < 0 ? 'text-rose-600/70 dark:text-rose-400/70' : 'text-gray-400'}`}>
                                 {pl > 0 ? '+' : ''}{plPercent.toFixed(2)}%
@@ -276,7 +281,7 @@ export default function PortfolioClient({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={9} className="px-6 py-16 text-center">
+                    <td colSpan={11} className="px-6 py-16 text-center">
                       <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-50 mb-3">
                         <Briefcase className="w-5 h-5 text-gray-400" />
                       </div>
@@ -427,11 +432,11 @@ export default function PortfolioClient({
                         
                         <div className="text-right">
                           <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
-                            ৳{item.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            ৳{item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </p>
                           {item.type !== 'DIVIDEND' && (
                             <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mt-0.5">
-                              @ ৳{item.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              @ ৳{item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </p>
                           )}
                           {item.type === 'DIVIDEND' && item.quantity > 0 && (

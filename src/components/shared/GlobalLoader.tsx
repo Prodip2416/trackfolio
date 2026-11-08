@@ -51,7 +51,7 @@ export default function GlobalLoader() {
   if (!mounted || !isLoading) return null
 
   return (
-    <div className="fixed top-16 left-64 right-0 bottom-0 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm z-[100] flex items-center justify-center transition-opacity duration-200">
+    <div className="fixed top-16 left-0 lg:left-64 right-0 bottom-0 bg-white/50 dark:bg-slate-950/50 backdrop-blur-sm z-[100] flex items-center justify-center transition-opacity duration-200">
       <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
     </div>
   )

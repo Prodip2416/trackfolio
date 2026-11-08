@@ -9,12 +9,15 @@ export async function syncDashboardData() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    throw new Error('Unauthorized')
+    return { error: 'Unauthorized' }
   }
 
-  await syncDseData(user.id)
-
-  revalidatePortfolioViews()
-  
-  return { success: true }
+  try {
+    const { priceError } = await syncDseData(user.id)
+    revalidatePortfolioViews()
+    return priceError ? { error: priceError } : { success: true }
+  } catch (error) {
+    console.error('Dashboard sync failed:', error)
+    return { error: 'Failed to sync data. Please try again.' }
+  }
 }

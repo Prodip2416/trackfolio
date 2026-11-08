@@ -201,7 +201,7 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                       <div className="bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-900/20 dark:to-slate-800 border border-indigo-100/50 dark:border-indigo-800/30 p-5 rounded-2xl shadow-sm text-center transition-colors">
                         <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-3 transition-colors">To reach your target average, you need to buy:</p>
                         <div className="flex items-center justify-center space-x-2 text-2xl font-black text-indigo-600 dark:text-indigo-400 mb-1 transition-colors">
-                          <span>{targetResult.requiredQty.toLocaleString()}</span>
+                          <span>{targetResult.requiredQty.toLocaleString('en-US')}</span>
                           <span className="text-sm text-indigo-400 dark:text-indigo-500">shares</span>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-500 font-bold mb-4 transition-colors">
@@ -211,12 +211,12 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                         <div className="pt-4 border-t border-indigo-100 dark:border-indigo-800/50 flex justify-between items-center text-left transition-colors">
                           <div>
                             <p className="text-[10px] uppercase font-bold text-indigo-400 dark:text-indigo-500 transition-colors">Total Investment</p>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white transition-colors">৳{targetResult.requiredInvestment.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white transition-colors">৳{targetResult.requiredInvestment.toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
                           </div>
                           <ArrowRight className="w-4 h-4 text-indigo-300 dark:text-indigo-600 transition-colors" />
                           <div className="text-right">
                             <p className="text-[10px] uppercase font-bold text-indigo-400 dark:text-indigo-500 transition-colors">New Total Shares</p>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white transition-colors">{targetResult.newTotalQty.toLocaleString()}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white transition-colors">{targetResult.newTotalQty.toLocaleString('en-US')}</p>
                           </div>
                         </div>
                       </div>
@@ -234,11 +234,11 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                       <div className="bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-900/20 dark:to-slate-800 border border-emerald-100/50 dark:border-emerald-800/30 p-5 rounded-2xl shadow-sm text-center transition-colors">
                         <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-3 transition-colors">With this investment, you can buy:</p>
                         <div className="flex items-center justify-center space-x-2 text-2xl font-black text-emerald-600 dark:text-emerald-400 mb-1 transition-colors">
-                          <span>{budgetResult.newQty.toLocaleString()}</span>
+                          <span>{budgetResult.newQty.toLocaleString('en-US')}</span>
                           <span className="text-sm text-emerald-400 dark:text-emerald-600">shares</span>
                         </div>
                         <p className="text-xs text-gray-500 dark:text-gray-500 font-bold mb-4 transition-colors">
-                          costing ৳{budgetResult.actualInvestment.toLocaleString(undefined, { maximumFractionDigits: 0 })} at current live price ৳{currentPrice.toFixed(2)}
+                          costing ৳{budgetResult.actualInvestment.toLocaleString('en-US', { maximumFractionDigits: 0 })} at current live price ৳{currentPrice.toFixed(2)}
                         </p>
                         
                         <div className="pt-4 border-t border-emerald-100 dark:border-emerald-800/50 flex justify-between items-center text-left transition-colors">
@@ -249,7 +249,7 @@ export default function AverageDownCalculator({ stock, onClose }: Props) {
                           <ArrowRight className="w-4 h-4 text-emerald-300 dark:text-emerald-600 transition-colors" />
                           <div className="text-right">
                             <p className="text-[10px] uppercase font-bold text-emerald-400 dark:text-emerald-600 transition-colors">New Total Shares</p>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white transition-colors">{budgetResult.newTotalQty.toLocaleString()}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white transition-colors">{budgetResult.newTotalQty.toLocaleString('en-US')}</p>
                           </div>
                         </div>
                       </div>

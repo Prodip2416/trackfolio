@@ -20,7 +20,7 @@ export default function ShortTermSummaryCards({
         <div>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Realized Profit</p>
           <h3 className={`text-2xl font-black ${totalRealizedProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-            ৳{totalRealizedProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            ৳{totalRealizedProfit.toLocaleString('en-US', { maximumFractionDigits: 2 })}
           </h3>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function ShortTermSummaryCards({
         <div>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Fees Paid</p>
           <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-            ৳{totalFees.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            ৳{totalFees.toLocaleString('en-US', { maximumFractionDigits: 2 })}
           </h3>
         </div>
       </div>

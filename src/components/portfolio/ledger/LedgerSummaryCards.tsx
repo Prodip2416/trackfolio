@@ -32,7 +32,7 @@ export default function LedgerSummaryCards({
             </div>
           </div>
           <div className="text-lg font-bold text-gray-900 dark:text-white">
-            {totalShareCount.toLocaleString()}
+            {totalShareCount.toLocaleString('en-US')}
           </div>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function LedgerSummaryCards({
             </div>
           </div>
           <div className="text-lg font-bold text-gray-900 dark:text-white">
-            ৳ {totalBuyPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ৳ {totalBuyPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function LedgerSummaryCards({
             </div>
           </div>
           <div className="text-lg font-bold text-gray-900 dark:text-white">
-            ৳ {totalSellPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ৳ {totalSellPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function LedgerSummaryCards({
             </div>
           </div>
           <div className="text-lg font-bold text-gray-900 dark:text-white">
-            ৳ {totalCashDividend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ৳ {totalCashDividend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default function LedgerSummaryCards({
             </div>
           </div>
           <div className="text-lg font-bold text-gray-900 dark:text-white">
-            {totalBonusShare.toLocaleString()}
+            {totalBonusShare.toLocaleString('en-US')}
           </div>
         </div>
       </div>

@@ -10,19 +10,17 @@ const dictionaries = {
 
 export type Locale = keyof typeof dictionaries
 
-export const getDictionary = async () => {
-  const cookieStore = await cookies()
-  const locale = (cookieStore.get('NEXT_LOCALE')?.value || 'en') as Locale
-  
-  if (!dictionaries[locale]) {
-    return dictionaries.en()
-  }
-  
-  return dictionaries[locale]()
-}
+// Whitelist check: a cookie like "constructor" must not hit Object.prototype
+const isLocale = (v: string | undefined): v is Locale =>
+  !!v && Object.hasOwn(dictionaries, v)
 
 export const getLocale = async (): Promise<Locale> => {
   const cookieStore = await cookies()
-  return (cookieStore.get('NEXT_LOCALE')?.value || 'en') as Locale
+  const value = cookieStore.get('NEXT_LOCALE')?.value
+  return isLocale(value) ? value : 'en'
+}
+
+export const getDictionary = async () => {
+  return dictionaries[await getLocale()]()
 }
 

@@ -27,9 +27,13 @@ export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTim
     
     fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/sync`, { method: 'POST' })
       .then(async (res) => {
+        // Expired session → proxy redirects to /login (200 HTML); don't report that as success
+        if (res.redirected) {
+          throw new Error('Your session has expired. Please log in again.')
+        }
         if (!res.ok) {
-          const data = await res.json()
-          throw new Error(data.error || 'Failed to sync prices')
+          const data = await res.json().catch(() => null)
+          throw new Error(data?.error || 'Failed to sync prices')
         }
         
         // Use transition to keep the loading state active while Next.js refreshes the page

@@ -1,10 +1,13 @@
-version: '3.8'
-
 services:
   trackfolio:
     build:
       context: .
       dockerfile: Dockerfile
+      # Values come from .env (compose reads it for interpolation)
+      args:
+        - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+        - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-}
     container_name: trackfolio_app
     restart: unless-stopped
     ports:

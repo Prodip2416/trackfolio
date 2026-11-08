@@ -12,10 +12,13 @@ export async function POST() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { skipped } = await syncDseData(user.id)
+    const { skipped, priceError } = await syncDseData(user.id)
 
     revalidatePath('/', 'layout')
 
+    if (priceError) {
+      return NextResponse.json({ error: priceError }, { status: 502 })
+    }
     return NextResponse.json({ success: true, skipped })
   } catch (error) {
     console.error('Sync Error:', error)

@@ -36,10 +36,10 @@ const TreemapTooltip = ({ active, payload }: any) => {
     return (
       <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-sm">
         <p className="font-bold text-gray-900 mb-1">{data.name}</p>
-        <p className="text-gray-600">Investment: ৳{data.investment.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-        <p className="text-gray-600">Current Value: ৳{data.currentValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+        <p className="text-gray-600">Investment: ৳{data.investment.toLocaleString('en-US', { maximumFractionDigits: 2 })}</p>
+        <p className="text-gray-600">Current Value: ৳{data.currentValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}</p>
         <p className={`font-semibold mt-1 ${data.isProfit ? 'text-green-600' : 'text-red-600'}`}>
-          {data.isProfit ? '+' : ''}{data.gainLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })} ({data.gainLossPercent.toFixed(2)}%)
+          {data.isProfit ? '+' : ''}{data.gainLoss.toLocaleString('en-US', { maximumFractionDigits: 2 })} ({data.gainLossPercent.toFixed(2)}%)
         </p>
       </div>
     )
@@ -168,7 +168,7 @@ export default function PerformanceClient({ data, historyData }: { data: Perform
                         <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-sm">
                           <p className="font-bold text-gray-900 mb-1">{label}</p>
                           <p className="text-indigo-600 font-semibold">
-                            Total Invested: ৳{payload[0].value?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                            Total Invested: ৳{payload[0].value?.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                           </p>
                         </div>
                       )
@@ -240,7 +240,7 @@ export default function PerformanceClient({ data, historyData }: { data: Perform
                         <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-sm">
                           <p className="font-bold text-gray-900">{data.name}</p>
                           <p className={`font-semibold ${data.isProfit ? 'text-green-600' : 'text-red-600'}`}>
-                            {data.isProfit ? 'Profit' : 'Loss'}: ৳{Math.abs(data.gainLoss).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                            {data.isProfit ? 'Profit' : 'Loss'}: ৳{Math.abs(data.gainLoss).toLocaleString('en-US', { maximumFractionDigits: 2 })}
                           </p>
                         </div>
                       )

@@ -26,9 +26,9 @@ export default function DashboardPieCharts({
         <div className="bg-white dark:bg-gray-800 p-2.5 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg">
           <p className="font-bold text-gray-900 dark:text-white text-xs">{data.name}</p>
           {type === 'portfolio' && (
-            <p className="text-[10px] text-gray-600 dark:text-gray-300 mt-1">{dict.dashboard.shares}: {data.qty.toLocaleString()}</p>
+            <p className="text-[10px] text-gray-600 dark:text-gray-300 mt-1">{dict.dashboard.shares}: {data.qty.toLocaleString('en-US')}</p>
           )}
-          <p className="text-[10px] text-gray-600 dark:text-gray-300 mt-0.5">{dict.dashboard.invested}: ৳{data.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+          <p className="text-[10px] text-gray-600 dark:text-gray-300 mt-0.5">{dict.dashboard.invested}: ৳{data.value.toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
           <div className="mt-1.5 text-[10px] font-bold px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-md inline-block">
             {percent}%
           </div>
@@ -137,10 +137,10 @@ export default function DashboardPieCharts({
                           <span className="text-xs font-bold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</span>
                         </div>
                         <div className="w-[20%] text-right text-[11px] font-medium text-gray-600 dark:text-gray-400 truncate">
-                          {item.qty.toLocaleString()}
+                          {item.qty.toLocaleString('en-US')}
                         </div>
                         <div className="w-[30%] text-right text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
-                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString()}
+                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString('en-US')}
                         </div>
                         <div className="w-[20%] text-right">
                           <span className="text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded">
@@ -257,7 +257,7 @@ export default function DashboardPieCharts({
                           <span className="text-xs font-bold text-gray-900 dark:text-white truncate" title={item.name}>{item.name}</span>
                         </div>
                         <div className="w-[25%] text-right text-[11px] font-bold text-gray-700 dark:text-gray-300 truncate">
-                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString()}
+                          ৳{(item.value >= 1000) ? `${(item.value/1000).toFixed(1)}k` : item.value.toLocaleString('en-US')}
                         </div>
                         <div className="w-[25%] text-right">
                           <span className="text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-1.5 py-0.5 rounded">

@@ -94,13 +94,13 @@ export default function LedgerTable({ data, isPending, isLoading, dict }: Ledger
                   {row.symbol}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-right text-gray-900 dark:text-white">
-                  {row.quantity > 0 ? row.quantity.toLocaleString() : '-'}
+                  {row.quantity > 0 ? row.quantity.toLocaleString('en-US') : '-'}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-right text-gray-600 dark:text-gray-300">
-                  {row.price_per_unit ? `৳ ${row.price_per_unit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
+                  {row.price_per_unit ? `৳ ${row.price_per_unit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-right font-medium text-gray-900 dark:text-white">
-                  {row.total > 0 ? `৳ ${row.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
+                  {row.total > 0 ? `৳ ${row.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
                 </td>
               </tr>
             ))}

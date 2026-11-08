@@ -29,6 +29,7 @@ model dividends {
   stocks         stocks?       @relation(fields: [stock_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   profiles       profiles      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@unique([user_id, stock_id, date], map: "dividends_user_stock_date_key")
   @@index([user_id])
   @@index([stock_id])
   @@schema("public")
@@ -51,6 +52,8 @@ model dse_companies {
   // Relation to user portfolio stocks
   stocks          stocks[]
   shortTermTrades short_term_trades[]
+  tradePlans      trade_plans[]
+  plannerNotes    planner_notes[]
 
   @@schema("public")
 }
@@ -71,6 +74,8 @@ model profiles {
   watchlist       watchlist[]
   price_alerts    price_alerts[]
   shortTermTrades short_term_trades[]
+  tradePlans      trade_plans[]
+  plannerNotes    planner_notes[]
 
   @@schema("public")
 }
@@ -209,5 +214,60 @@ model short_term_trade_legs {
   trade short_term_trades @relation(fields: [trade_id], references: [id], onDelete: Cascade)
 
   @@index([trade_id])
+  @@schema("public")
+}
+
+enum trade_plan_status {
+  IDEA
+  ACTIVE
+  EXECUTED
+  CANCELLED
+
+  @@schema("public")
+}
+
+/// Hypothetical buy/sell plans (Planner). Never touches real transactions.
+model trade_plans {
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String            @db.Uuid
+  symbol         String
+  type           transaction_type
+  price          Decimal           @db.Decimal
+  quantity       Decimal           @db.Decimal
+  commission_pct Decimal           @default(0) @db.Decimal
+  stop_loss      Decimal?          @db.Decimal
+  target_price   Decimal?          @db.Decimal
+  reason         String?
+  status         trade_plan_status @default(IDEA)
+  review_date    DateTime?         @db.Date
+  executed_at    DateTime?         @db.Timestamptz(6)
+  created_at     DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime          @default(now()) @updatedAt @db.Timestamptz(6)
+
+  dse_company dse_companies @relation(fields: [symbol], references: [symbol])
+  profiles    profiles      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, status])
+  @@schema("public")
+}
+
+/// Free-form notes and decision journal (Planner).
+model planner_notes {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     String    @db.Uuid
+  symbol      String?
+  title       String
+  body        String?
+  tags        String[]  @default([])
+  pinned      Boolean   @default(false)
+  review_date DateTime? @db.Date
+  outcome     String?
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  dse_company dse_companies? @relation(fields: [symbol], references: [symbol])
+  profiles    profiles       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
   @@schema("public")
 }

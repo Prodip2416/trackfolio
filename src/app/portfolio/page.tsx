@@ -53,7 +53,8 @@ export default async function PortfolioPage({
     const currentPrice = Number(stock.dse_company?.current_price || 0)
     
     globalTotalInvestment += investment
-    globalCurrentValue += (qty * currentPrice)
+    // Unknown (unsynced) price → value at cost so it doesn't show as a -100% loss
+    globalCurrentValue += currentPrice > 0 ? qty * currentPrice : investment
     globalTotalShares += qty
   })
 

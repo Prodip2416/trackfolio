@@ -5,6 +5,8 @@ import prisma from '@/lib/prisma'
 import { revalidatePortfolioViews } from '@/lib/revalidate'
 import { z } from 'zod'
 import { recalculateStockAggregates, OversellError } from '@/lib/stock-aggregates'
+import { pastOrTodayDateString } from '@/lib/date-schema'
+import { serializableTx } from '@/lib/tx'
 
 const smartTransactionSchema = z.object({
   symbol: z.string().min(1, "Please select a valid Stock Symbol"),
@@ -13,7 +15,7 @@ const smartTransactionSchema = z.object({
   type: z.enum(['BUY', 'SELL']),
   quantity: z.number().int("Quantity must be a whole number").positive("Quantity must be greater than 0"),
   price_per_unit: z.number().positive("Price must be greater than 0"),
-  transaction_date: z.string().min(1, "Please select a valid Transaction Date"),
+  transaction_date: pastOrTodayDateString,
   brokerage_fee: z.number().min(0, "Brokerage fee cannot be negative").optional(),
   note: z.string().optional(),
 })
@@ -84,26 +86,25 @@ export async function addSmartTransaction(prevState: any, formData: FormData) {
       create: { id: user.id, email: user.email }
     })
 
-    await prisma.$transaction(async (tx) => {
-      // 1. Check if the stock already exists in the user's portfolio (`stocks` table)
-      const existingStock = await tx.stocks.findFirst({
-        where: { user_id: user.id, symbol }
-      })
-
-      let stockId = existingStock?.id
-
-      // 2. If not, create it!
-      if (!stockId) {
-        if (type === 'SELL') {
+    await serializableTx(async (tx) => {
+      // 1. Find (SELL) or find-or-create (BUY) the stock in the user's portfolio.
+      // upsert avoids a unique-index race when two first BUYs arrive together.
+      let stockId: string
+      if (type === 'SELL') {
+        const existingStock = await tx.stocks.findFirst({
+          where: { user_id: user.id, symbol }
+        })
+        if (!existingStock) {
           throw new OversellError({ date: new Date(transaction_date), attempted: quantity, available: 0 })
         }
-        const newStock = await tx.stocks.create({
-          data: {
-            user_id: user.id,
-            symbol
-          }
+        stockId = existingStock.id
+      } else {
+        const stock = await tx.stocks.upsert({
+          where: { user_id_symbol: { user_id: user.id, symbol } },
+          update: {},
+          create: { user_id: user.id, symbol }
         })
-        stockId = newStock.id
+        stockId = stock.id
       }
 
       // 3. Save the transaction
@@ -168,7 +169,7 @@ export async function updateSmartTransaction(id: string, prevState: any, formDat
 
   try {
     // We are not changing the stock symbol on update, just the transaction details
-    const found = await prisma.$transaction(async (tx) => {
+    const found = await serializableTx(async (tx) => {
       const txn = await tx.transactions.findUnique({ where: { id, user_id: user.id } })
       if (!txn) return false
 
@@ -205,7 +206,7 @@ export async function deleteTransaction(id: string) {
   if (!user) return { error: 'Unauthorized' }
 
   try {
-    const found = await prisma.$transaction(async (tx) => {
+    const found = await serializableTx(async (tx) => {
       const txn = await tx.transactions.findUnique({ where: { id, user_id: user.id } })
       if (!txn) return false
 

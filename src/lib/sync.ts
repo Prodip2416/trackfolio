@@ -24,7 +24,15 @@ async function fetchDsePrices(retries = 1): Promise<Response> {
 }
 
 export async function syncDseData(userId: string) {
-  const skipped = !(await syncPrices())
+  // A DSE outage must not block the (network-free) holdings recalculation below
+  let skipped = false
+  let priceError: string | null = null
+  try {
+    skipped = !(await syncPrices())
+  } catch (error) {
+    console.error('DSE price sync failed:', error)
+    priceError = 'Could not fetch live prices from DSE. Showing last known prices.'
+  }
 
   // Keep this user's stored aggregates in sync with the current calculation logic.
   // Sequential to stay within the small DB pool.
@@ -36,7 +44,7 @@ export async function syncDseData(userId: string) {
     await recalculateStockAggregates(stock.id)
   }
 
-  return { success: true, skipped }
+  return { success: priceError === null, skipped, priceError }
 }
 
 // Returns false when skipped because another sync ran recently

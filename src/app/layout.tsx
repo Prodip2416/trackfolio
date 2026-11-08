@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "/",
+    url: "/trackfolio",
     title: "TrackFolio | Modern Portfolio & Investment Tracker",
     description: "Monitor your investments, calculate profit/loss, and analyze your financial performance with TrackFolio.",
     siteName: "TrackFolio",
@@ -43,16 +43,10 @@ export const metadata: Metadata = {
     description: "Monitor your investments, calculate profit/loss, and analyze your financial performance with TrackFolio.",
     creator: "@trackfolio",
   },
+  // Everything is behind login — don't invite search engines to index the login wall
   robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+    index: false,
+    follow: false,
   },
 };
 

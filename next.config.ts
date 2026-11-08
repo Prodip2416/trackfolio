@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
-const nextConfig: any = {
+const nextConfig: NextConfig = {
+  // Required by the Dockerfile (copies .next/standalone); ignored by Vercel
+  output: 'standalone',
   basePath: '/trackfolio',
   env: {
     NEXT_PUBLIC_BASE_PATH: '/trackfolio',
@@ -15,18 +17,6 @@ const nextConfig: any = {
         permanent: false,
       },
     ];
-  },
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
   },
 };
 

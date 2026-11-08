@@ -56,7 +56,7 @@ const CustomTooltip = ({ active, payload, total }: any) => {
       <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-sm">
         <p className="font-bold text-gray-900 mb-1">{data.name}</p>
         <p className="text-gray-600">
-          Investment: ৳{data.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          Investment: ৳{data.value.toLocaleString('en-US', { maximumFractionDigits: 2 })}
         </p>
         <p className="text-indigo-600 font-bold mt-1">
           {percent}% of Portfolio

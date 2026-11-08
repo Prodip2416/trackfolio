@@ -40,7 +40,11 @@ export async function signup(formData: FormData) {
     options: {
       data: {
         full_name: fullName,
-      }
+      },
+      // Confirmation link lands on our callback (must be in Supabase → Auth → Redirect URLs)
+      ...(process.env.NEXT_PUBLIC_SITE_URL && {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/trackfolio/auth/callback`
+      })
     }
   })
 
