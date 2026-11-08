@@ -80,7 +80,7 @@ export default function DividendsClient({ yearlyData, topStocksData, totalDivide
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">Total Dividend Income</p>
-            <h3 className="text-2xl font-black text-gray-900">৳{totalDividend.toLocaleString(undefined, { maximumFractionDigits: 2 })}</h3>
+            <h3 className="text-2xl font-black text-gray-900">৳{totalDividend.toLocaleString('en-US', { maximumFractionDigits: 2 })}</h3>
           </div>
         </div>
 
@@ -90,7 +90,7 @@ export default function DividendsClient({ yearlyData, topStocksData, totalDivide
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">Total Investment</p>
-            <h3 className="text-2xl font-black text-gray-900">৳{totalInvestment.toLocaleString(undefined, { maximumFractionDigits: 2 })}</h3>
+            <h3 className="text-2xl font-black text-gray-900">৳{totalInvestment.toLocaleString('en-US', { maximumFractionDigits: 2 })}</h3>
           </div>
         </div>
 
@@ -132,49 +132,49 @@ export default function DividendsClient({ yearlyData, topStocksData, totalDivide
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <Calendar className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Yearly</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{yearly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{yearly.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </div>
           
           {/* Monthly */}
           <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <CalendarDays className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Monthly</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{monthly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{monthly.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </div>
 
           {/* Weekly */}
           <div className="bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <CalendarRange className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Weekly</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{weekly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{weekly.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </div>
 
           {/* Daily */}
           <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <Sun className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Daily</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{daily.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{daily.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </div>
 
           {/* Hourly */}
           <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <Clock className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Hourly</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{hourly.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{hourly.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
           </div>
 
           {/* Per Min */}
           <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <Timer className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Per Min</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{perMin.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{perMin.toLocaleString('en-US', {minimumFractionDigits: 4, maximumFractionDigits: 4})}</p>
           </div>
 
           {/* Per Sec */}
           <div className="bg-gradient-to-br from-rose-500 to-rose-600 rounded-xl p-4 shadow-sm text-white relative overflow-hidden group">
             <Zap className="absolute right-[-10px] bottom-[-10px] w-16 h-16 text-white/20 group-hover:scale-110 transition-transform" />
             <p className="text-sm font-bold text-white/95 mb-1 relative z-10 uppercase tracking-wide">Per Sec</p>
-            <p className="text-lg font-extrabold text-white relative z-10">৳{perSec.toLocaleString(undefined, {minimumFractionDigits: 6, maximumFractionDigits: 6})}</p>
+            <p className="text-lg font-extrabold text-white relative z-10">৳{perSec.toLocaleString('en-US', {minimumFractionDigits: 6, maximumFractionDigits: 6})}</p>
           </div>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function DividendsClient({ yearlyData, topStocksData, totalDivide
                         <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-sm">
                           <p className="font-bold text-gray-900">{data.year}</p>
                           <p className="text-indigo-600 font-semibold mt-1">
-                            Income: ৳{data.amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                            Income: ৳{data.amount.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                           </p>
                         </div>
                       )
@@ -260,7 +260,7 @@ export default function DividendsClient({ yearlyData, topStocksData, totalDivide
                         <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-sm">
                           <p className="font-bold text-gray-900">{data.name}</p>
                           <p className="text-indigo-600 font-semibold mt-1">
-                            Dividends: ৳{data.amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                            Dividends: ৳{data.amount.toLocaleString('en-US', { maximumFractionDigits: 2 })}
                           </p>
                         </div>
                       )

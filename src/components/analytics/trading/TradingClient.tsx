@@ -112,7 +112,7 @@ export default function TradingClient({ volumeData, ratioData, winRatio, lossRat
                           {payload.map((entry, index) => (
                             <p key={index} style={{ color: entry.color }} className="font-semibold flex justify-between gap-4 mt-1">
                               <span>{entry.name}:</span>
-                              <span>৳{Number(entry.value).toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                              <span>৳{Number(entry.value).toLocaleString('en-US', { maximumFractionDigits: 2 })}</span>
                             </p>
                           ))}
                         </div>

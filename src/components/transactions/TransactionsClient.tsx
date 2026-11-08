@@ -5,6 +5,7 @@ import { Plus, Pencil, Trash2 } from 'lucide-react'
 import SmartTransactionForm from '@/components/transactions/SmartTransactionForm'
 import { deleteTransaction } from '@/app/transactions/actions'
 import ConfirmModal from '@/components/shared/ConfirmModal'
+import { runAction } from '@/lib/run-action'
 
 type Transaction = {
   id: string
@@ -29,7 +30,7 @@ export default function TransactionsClient({ initialTransactions, dict }: { init
   const confirmDelete = async () => {
     if (!deleteTransactionId) return
     setIsDeleting(true)
-    await deleteTransaction(deleteTransactionId)
+    await runAction(() => deleteTransaction(deleteTransactionId), 'Transaction deleted')
     setIsDeleting(false)
     setDeleteTransactionId(null)
   }
@@ -125,7 +126,7 @@ export default function TransactionsClient({ initialTransactions, dict }: { init
                           </span>
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right font-medium">
-                          {txn.quantity.toLocaleString()}
+                          {txn.quantity.toLocaleString('en-US')}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right">
                           {txn.price_per_unit.toFixed(2)}
@@ -134,7 +135,7 @@ export default function TransactionsClient({ initialTransactions, dict }: { init
                           {txn.brokerage_fee?.toFixed(2) || '0.00'}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
-                          {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap text-right text-xs font-medium">
                           <div className="flex items-center justify-end space-x-3">

@@ -6,6 +6,7 @@ import SearchableDropdown from '@/components/shared/SearchableDropdown'
 import PremiumDatePicker from '@/components/shared/PremiumDatePicker'
 import { addTradeLeg } from '@/app/short-term/actions'
 import toast from 'react-hot-toast'
+import { todayLocal } from '@/lib/date'
 
 interface Props {
   isOpen: boolean
@@ -19,7 +20,7 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
   const [quantity, setQuantity] = useState('')
   const [price, setPrice] = useState('')
   const [fee, setFee] = useState('')
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
+  const [date, setDate] = useState<string>(todayLocal)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!isOpen) return null
@@ -44,7 +45,7 @@ export default function TradeFormModal({ isOpen, onClose, availableSymbols }: Pr
         quantity: Number(quantity),
         price: Number(price),
         fee: numFee,
-        date: new Date(date)
+        date
       })
       if ('error' in result) {
         toast.error(result.error)

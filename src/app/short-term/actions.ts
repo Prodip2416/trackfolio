@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import type { Prisma } from '@/generated/prisma/client'
+import { computeShortTermTotals, ShortTermCalcError } from '@/lib/short-term-calc'
+import { pastOrTodayDateString } from '@/lib/date-schema'
 
 export async function getOwnedShortTermSymbols() {
   const supabase = await createClient()
@@ -91,7 +93,7 @@ const tradeLegSchema = z.object({
   quantity: z.number().int('Quantity must be a whole number').positive('Quantity must be greater than 0'),
   price: z.number().positive('Price must be greater than 0'),
   fee: z.number().min(0, 'Fee cannot be negative'),
-  date: z.coerce.date({ error: 'Please select a valid date' }),
+  date: pastOrTodayDateString.transform(s => new Date(`${s}T00:00:00.000Z`)),
 })
 
 class TradeLegError extends Error {}
@@ -114,7 +116,7 @@ export async function addTradeLeg(input: z.input<typeof tradeLegSchema>): Promis
       { isolationLevel: 'Serializable' }
     )
   } catch (err) {
-    if (err instanceof TradeLegError) return { error: err.message }
+    if (err instanceof TradeLegError || err instanceof ShortTermCalcError) return { error: err.message }
     console.error('Error adding trade leg:', err)
     return { error: 'Failed to add trade leg. Please try again.' }
   }
@@ -150,11 +152,8 @@ async function applyTradeLeg(
     })
   }
 
-  if (data.type === 'SELL') {
-    const remainingQty = Number(trade.total_buy_qty) - Number(trade.total_sell_qty)
-    if (data.quantity > remainingQty) {
-      throw new TradeLegError(`Cannot sell more than available holding. Remaining: ${remainingQty} Qty.`)
-    }
+  if (data.type === 'SELL' && data.date < trade.opened_at) {
+    throw new TradeLegError('Sell date cannot be before the trade was opened.')
   }
 
   // Add the leg
@@ -169,54 +168,32 @@ async function applyTradeLeg(
     }
   })
 
-  // Calculate updated parent values
-  const prevBuyQty = Number(trade.total_buy_qty)
-  const prevSellQty = Number(trade.total_sell_qty)
-  const prevAvgBuy = Number(trade.average_buy_price)
-  const prevAvgSell = Number(trade.average_sell_price)
-  let prevRealized = Number(trade.realized_profit)
+  // Rebuild parent totals from all legs (average cost on shares still held).
+  // Throws ShortTermCalcError if a sell exceeds holdings at its date → rolls back.
+  const legs = await tx.short_term_trade_legs.findMany({
+    where: { trade_id: trade.id },
+    select: { type: true, quantity: true, price_per_unit: true, brokerage_fee: true, date: true, created_at: true }
+  })
+  const totals = computeShortTermTotals(legs.map(l => ({
+    type: l.type as 'BUY' | 'SELL',
+    quantity: Number(l.quantity),
+    price_per_unit: Number(l.price_per_unit),
+    brokerage_fee: Number(l.brokerage_fee),
+    date: l.date,
+    created_at: l.created_at
+  })))
 
-  let newBuyQty = prevBuyQty
-  let newSellQty = prevSellQty
-  let newAvgBuy = prevAvgBuy
-  let newAvgSell = prevAvgSell
-  let status = trade.status
-  let closedAt = trade.closed_at
-
-  if (data.type === 'BUY') {
-    newBuyQty = prevBuyQty + data.quantity
-    // Weighted average calculation for buys
-    // Note: The user said they will enter fee manually (Brokerage + purchase fee).
-    // So Cost = (Qty * Price) + Fee. 
-    // Avg Cost = Total Cost / Total Qty
-    newAvgBuy = ((prevAvgBuy * prevBuyQty) + ((data.price * data.quantity) + data.fee)) / newBuyQty
-  } else {
-    newSellQty = prevSellQty + data.quantity
-    // Weighted average for sell price tracking
-    // Revenue = (Qty * Price) - Fee
-    newAvgSell = ((prevAvgSell * prevSellQty) + ((data.price * data.quantity) - data.fee)) / newSellQty
-    
-    // Realized Profit = (Sell Price - Average Buy Price) * Sell Qty - Brokerage Fee
-    const profitFromThisSell = (data.price - newAvgBuy) * data.quantity - data.fee
-    prevRealized += profitFromThisSell
-    
-    if (newSellQty >= newBuyQty) {
-      status = 'CLOSED'
-      closedAt = data.date
-    }
-  }
-
-  // Update parent
   await tx.short_term_trades.update({
     where: { id: trade.id },
     data: {
-      total_buy_qty: newBuyQty,
-      total_sell_qty: newSellQty,
-      average_buy_price: newAvgBuy,
-      average_sell_price: newAvgSell,
-      realized_profit: prevRealized,
-      status: status,
-      closed_at: closedAt
+      total_buy_qty: totals.total_buy_qty,
+      total_sell_qty: totals.total_sell_qty,
+      average_buy_price: totals.average_buy_price,
+      average_sell_price: totals.average_sell_price,
+      realized_profit: totals.realized_profit,
+      status: totals.status,
+      opened_at: totals.opened_at ?? trade.opened_at,
+      closed_at: totals.closed_at
     }
   })
 }

@@ -2,12 +2,14 @@
 
 import { useMemo, useTransition, useState } from 'react'
 import { syncDashboardData } from '@/app/dashboard/actions'
-import toast from 'react-hot-toast'
+import { runAction } from '@/lib/run-action'
 import { useTheme } from 'next-themes'
 import DashboardSummaryCards from './DashboardSummaryCards'
 import DashboardPieCharts from './DashboardPieCharts'
 import DashboardBarCharts from './DashboardBarCharts'
 import RecentTradesTable from './RecentTradesTable'
+import PlannerSnapshotCard from './PlannerSnapshotCard'
+import type { PlannerSnapshot } from '@/lib/planner-snapshot'
 import { motion, Variants } from 'framer-motion'
 
 type Transaction = {
@@ -56,12 +58,14 @@ export default function DashboardClient({
   dividends,
   stocks,
   lastSyncTime,
+  plannerSnapshot,
   dict
-}: { 
+}: {
   transactions: Transaction[],
   dividends: Dividend[],
   stocks: StockHolding[],
   lastSyncTime?: string | null,
+  plannerSnapshot?: PlannerSnapshot | null,
   dict: any
 }) {
   const { theme } = useTheme()
@@ -110,13 +114,7 @@ export default function DashboardClient({
 
   const handleSync = () => {
     startTransition(async () => {
-      try {
-        await syncDashboardData()
-        toast.success("Prices synced successfully")
-      } catch (err: any) {
-        console.error("Failed to sync:", err)
-        toast.error(err.message || "Failed to sync prices")
-      }
+      await runAction(() => syncDashboardData(), "Prices synced successfully")
     })
   }
 
@@ -125,7 +123,8 @@ export default function DashboardClient({
     const totalInvested = stocks.reduce((acc, stock) => acc + stock.total_investment, 0)
     const totalShares = stocks.reduce((acc, stock) => acc + stock.total_quantity, 0)
     const currentPortfolioValue = stocks.reduce((acc, stock) => {
-      return acc + (stock.total_quantity * stock.current_price)
+      // Unknown (unsynced) price → value at cost so it doesn't show as a -100% loss
+      return acc + (stock.current_price > 0 ? stock.total_quantity * stock.current_price : stock.total_investment)
     }, 0)
     const totalDividend = dividends.reduce((acc, div) => acc + (div.cash_amount || 0), 0)
     const totalSellAmount = transactions.reduce((acc, txn) => {
@@ -333,6 +332,12 @@ export default function DashboardClient({
       <motion.div variants={itemVariants}>
         <DashboardSummaryCards kpis={kpis} dict={dict} />
       </motion.div>
+
+      {plannerSnapshot && (
+        <motion.div variants={itemVariants}>
+          <PlannerSnapshotCard snapshot={plannerSnapshot} />
+        </motion.div>
+      )}
 
       <motion.div variants={itemVariants}>
         <DashboardPieCharts 

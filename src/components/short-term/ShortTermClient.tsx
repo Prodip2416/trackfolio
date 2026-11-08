@@ -36,12 +36,14 @@ export type Trade = {
 export default function ShortTermClient({
   trades,
   availableSymbols,
+  currentPrices,
   filterSymbols,
   initialSymbol,
   initialYear
 }: {
   trades: Trade[]
   availableSymbols: string[]
+  currentPrices: Record<string, number>
   filterSymbols: string[]
   initialSymbol: string
   initialYear: string
@@ -171,7 +173,7 @@ export default function ShortTermClient({
                 <div>
                   <h3 className="font-bold text-lg text-gray-900 dark:text-white">{trade.symbol}</h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Opened: {new Date(trade.opened_at).toLocaleDateString()}
+                    Opened: {new Date(trade.opened_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </p>
                 </div>
               </div>
@@ -182,15 +184,90 @@ export default function ShortTermClient({
                   <p className="font-bold text-gray-900 dark:text-white">{trade.total_buy_qty - trade.total_sell_qty} Qty</p>
                 </div>
                 <div className="text-right">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Total Cost</p>
+                  <p className="font-bold text-gray-900 dark:text-white">
+                    ৳{(trade.total_buy_qty * trade.average_buy_price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </p>
+                </div>
+                <div className="text-right">
                   <p className="text-xs text-gray-500 dark:text-gray-400">Avg Buy Price</p>
                   <p className="font-bold text-gray-900 dark:text-white">৳{trade.average_buy_price.toFixed(2)}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Realized Profit</p>
-                  <p className={`font-bold ${trade.realized_profit > 0 ? 'text-emerald-600 dark:text-emerald-400' : trade.realized_profit < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
-                    ৳{trade.realized_profit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </p>
-                </div>
+                {(() => {
+                  const cp = currentPrices[trade.symbol]
+                  const diff = cp != null ? cp - trade.average_buy_price : 0
+                  const color = cp == null || diff === 0
+                    ? 'text-gray-900 dark:text-white'
+                    : diff > 0
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-rose-600 dark:text-rose-400'
+                  const pct = cp != null && trade.average_buy_price > 0 ? (diff / trade.average_buy_price) * 100 : null
+                  return (
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Current Price</p>
+                      <p className={`font-bold ${color}`}>
+                        {cp != null ? `৳${cp.toFixed(2)}` : '—'}
+                        {pct != null && (
+                          <span className="ml-1 text-xs font-semibold">({pct > 0 ? '+' : ''}{pct.toFixed(2)}%)</span>
+                        )}
+                      </p>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const cp = currentPrices[trade.symbol]
+                  const holding = trade.total_buy_qty - trade.total_sell_qty
+                  const value = cp != null ? holding * cp : null
+                  const diff = value != null ? value - holding * trade.average_buy_price : 0
+                  const color = value == null || diff === 0
+                    ? 'text-gray-900 dark:text-white'
+                    : diff > 0
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-rose-600 dark:text-rose-400'
+                  return (
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Current Value</p>
+                      <p className={`font-bold ${color}`}>
+                        {value != null
+                          ? `৳${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : '—'}
+                      </p>
+                    </div>
+                  )
+                })()}
+                {(() => {
+                  const cp = currentPrices[trade.symbol]
+                  const holding = trade.total_buy_qty - trade.total_sell_qty
+                  const cost = holding * trade.average_buy_price
+                  const pl = cp != null ? holding * cp - cost : null
+                  const pct = pl != null && cost > 0 ? (pl / cost) * 100 : null
+                  const color = pl == null || pl === 0
+                    ? 'text-gray-900 dark:text-white'
+                    : pl > 0
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : 'text-rose-600 dark:text-rose-400'
+                  return (
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Unrealized P/L</p>
+                      <p className={`font-bold ${color}`}>
+                        {pl != null
+                          ? `${pl > 0 ? '+' : pl < 0 ? '-' : ''}৳${Math.abs(pl).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : '—'}
+                        {pct != null && (
+                          <span className="ml-1 text-xs font-semibold">({pct > 0 ? '+' : ''}{pct.toFixed(2)}%)</span>
+                        )}
+                      </p>
+                    </div>
+                  )
+                })()}
+                {activeTab === 'CLOSED' && (
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Realized Profit</p>
+                    <p className={`font-bold ${trade.realized_profit > 0 ? 'text-emerald-600 dark:text-emerald-400' : trade.realized_profit < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-gray-900 dark:text-white'}`}>
+                      ৳{trade.realized_profit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </div>
+                )}
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={(e) => { e.stopPropagation(); setDeleteId(trade.id); }}
@@ -218,7 +295,7 @@ export default function ShortTermClient({
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium text-gray-900 dark:text-white">Fee: ৳{leg.brokerage_fee.toFixed(2)}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(leg.date).toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(leg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
                       </div>
                     </div>
                   ))}

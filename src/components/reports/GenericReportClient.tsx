@@ -27,11 +27,13 @@ export default function GenericReportClient({
 
   const yearOptions = useMemo(() => {
     const options = [{ label: dict?.reports?.allYears || 'All Years', value: 'ALL' }]
-    for (let i = 2025; i <= 2075; i++) {
-      options.push({ label: i.toString(), value: i.toString() })
-    }
+    // Years that actually have data, plus the current year (default filter)
+    const years = new Set([...uniqueYears, new Date().getFullYear().toString()])
+    Array.from(years)
+      .sort((a, b) => Number(b) - Number(a))
+      .forEach(y => options.push({ label: y, value: y }))
     return options
-  }, [])
+  }, [dict, uniqueYears])
 
   const stockOptions = useMemo(() => {
     const options = [{ label: dict?.reports?.allStocks || 'All Stocks', value: 'ALL' }]
@@ -39,9 +41,11 @@ export default function GenericReportClient({
       options.push({ label: sym, value: sym })
     })
     return options
-  }, [uniqueStocks])
+  }, [dict, uniqueStocks])
 
   useEffect(() => {
+    // Ignore responses from superseded requests
+    let cancelled = false
     const fetchData = async () => {
       setIsLoading(true)
       try {
@@ -50,15 +54,16 @@ export default function GenericReportClient({
           filterStock,
           filterYear
         })
-        setData(result)
+        if (!cancelled) setData(result)
       } catch (error) {
-        console.error("Failed to fetch report data:", error)
+        if (!cancelled) console.error("Failed to fetch report data:", error)
       } finally {
-        setIsLoading(false)
+        if (!cancelled) setIsLoading(false)
       }
     }
 
     fetchData()
+    return () => { cancelled = true }
   }, [reportType, filterStock, filterYear])
 
   const formatDate = (dateString: string) => {
@@ -158,7 +163,7 @@ export default function GenericReportClient({
                {dict?.reports?.filteredTotal || 'Filtered Total'}
              </span>
              <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400 transition-colors">
-               ৳{currentTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+               ৳{currentTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
              </span>
           </div>
         </div>
@@ -278,10 +283,10 @@ export default function GenericReportClient({
                               </span>
                             </td>
                             <td className="px-4 py-2 whitespace-nowrap text-xs text-green-600 dark:text-green-400 text-right font-medium">
-                              {row.cash_amount ? `৳${row.cash_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
+                              {row.cash_amount ? `৳${row.cash_amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
                             </td>
                             <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
-                              {row.bonus_quantity ? `+${row.bonus_quantity.toLocaleString()}` : '-'}
+                              {row.bonus_quantity ? `+${row.bonus_quantity.toLocaleString('en-US')}` : '-'}
                             </td>
                           </tr>
                         )
@@ -297,7 +302,7 @@ export default function GenericReportClient({
                               {row.date ? formatDate(row.date) : '-'}
                             </td>
                             <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right font-medium">
-                              {row.quantity?.toLocaleString() ?? '-'}
+                              {row.quantity?.toLocaleString('en-US') ?? '-'}
                             </td>
                             <td className="px-4 py-2 whitespace-nowrap text-xs text-gray-900 dark:text-white text-right">
                               {row.price_per_unit?.toFixed(2) ?? '-'}
@@ -306,7 +311,7 @@ export default function GenericReportClient({
                               {row.brokerage_fee?.toFixed(2) || '0.00'}
                             </td>
                             <td className="px-4 py-2 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white text-right">
-                              {total ? total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}
+                              {total ? total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}
                             </td>
                           </tr>
                         )

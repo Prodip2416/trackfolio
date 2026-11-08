@@ -6,6 +6,8 @@ import { getDSECompanies, addSmartTransaction, updateSmartTransaction } from '@/
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import PremiumDatePicker from '@/components/shared/PremiumDatePicker'
+import { runAction } from '@/lib/run-action'
+import { todayLocal } from '@/lib/date'
 
 type DSECompany = {
   symbol: string
@@ -24,31 +26,46 @@ type InitialData = {
   brokerage_fee: number
 }
 
-export default function SmartTransactionForm({ 
-  onClose, 
-  initialData 
-}: { 
+/** Values to pre-fill a NEW trade (e.g. from a Planner plan). Unlike initialData, this does not edit anything. */
+export type TradePrefill = {
+  symbol: string
+  company_name: string
+  type: 'BUY' | 'SELL'
+  quantity: number
+  price_per_unit: number
+  brokerage_fee: number
+}
+
+export default function SmartTransactionForm({
+  onClose,
+  initialData,
+  prefill,
+  onSaved
+}: {
   onClose: () => void,
-  initialData?: InitialData
+  initialData?: InitialData,
+  prefill?: TradePrefill,
+  onSaved?: () => void | Promise<void>
 }) {
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<DSECompany[]>([])
-  
-  // If editing, pre-fill selected company
+  const seed = initialData ?? prefill
+
+  // If editing (or pre-filling), pre-select the company
   const [selectedCompany, setSelectedCompany] = useState<DSECompany | null>(
-    initialData ? {
-      symbol: initialData.symbol,
-      company_name: initialData.company_name,
+    seed ? {
+      symbol: seed.symbol,
+      company_name: seed.company_name,
       sector: ''
     } : null
   )
-  
+
   const [isLoading, setIsLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
-  const [type, setType] = useState<'BUY' | 'SELL'>(initialData?.type || 'BUY')
+  const [type, setType] = useState<'BUY' | 'SELL'>(seed?.type || 'BUY')
   const [transactionDate, setTransactionDate] = useState(
-    initialData ? initialData.transaction_date.split('T')[0] : new Date().toISOString().split('T')[0]
+    initialData ? initialData.transaction_date.split('T')[0] : todayLocal()
   )
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -60,9 +77,14 @@ export default function SmartTransactionForm({
         return
       }
       setIsSearching(true)
-      const data = await getDSECompanies(query)
-      setResults(data || [])
-      setIsSearching(false)
+      try {
+        const data = await getDSECompanies(query)
+        setResults(data || [])
+      } catch {
+        setResults([])
+      } finally {
+        setIsSearching(false)
+      }
     }
 
     const timer = setTimeout(() => {
@@ -122,23 +144,16 @@ export default function SmartTransactionForm({
     formData.append('company_name', selectedCompany.company_name)
     formData.append('sector', selectedCompany.sector || '')
     
-    if (!formData.get('transaction_date')) {
-      formData.set('transaction_date', new Date().toISOString().split('T')[0])
-    }
-
-    let result
-    if (initialData) {
-      result = await updateSmartTransaction(initialData.id, null, formData)
-    } else {
-      result = await addSmartTransaction(null, formData)
-    }
-    
+    const ok = await runAction(
+      () => initialData
+        ? updateSmartTransaction(initialData.id, null, formData)
+        : addSmartTransaction(null, formData),
+      initialData ? 'Trade updated successfully!' : 'Trade logged successfully!'
+    )
+    if (ok && onSaved) await onSaved()
     setIsLoading(false)
 
-    if (result?.error) {
-      toast.error(result.error)
-    } else {
-      toast.success(initialData ? 'Trade updated successfully!' : 'Trade logged successfully!')
+    if (ok) {
       router.refresh()
       onClose()
     }
@@ -284,7 +299,7 @@ export default function SmartTransactionForm({
                   min="1"
                   step="1"
                   required
-                  defaultValue={initialData?.quantity}
+                  defaultValue={seed?.quantity}
                   placeholder="e.g. 100"
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400"
                 />
@@ -301,7 +316,7 @@ export default function SmartTransactionForm({
                   min="0.1"
                   step="0.1"
                   required
-                  defaultValue={initialData?.price_per_unit}
+                  defaultValue={seed?.price_per_unit}
                   placeholder="e.g. 45.5"
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400"
                 />
@@ -333,7 +348,7 @@ export default function SmartTransactionForm({
                   name="brokerage_fee"
                   min="0"
                   step="0.01"
-                  defaultValue={initialData?.brokerage_fee || ''}
+                  defaultValue={seed?.brokerage_fee || ''}
                   placeholder="0.00"
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white dark:placeholder-gray-400"
                 />

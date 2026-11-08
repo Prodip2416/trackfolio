@@ -69,7 +69,7 @@ export default function HistoryTabs({ activeTab, onTabChange, currentTotal }: Hi
             activeTab === 'SELL' ? 'text-pink-900 dark:text-pink-300' :
             'text-green-900 dark:text-green-300'
           }`}>
-            ৳{currentTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ৳{currentTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
         </div>
       </div>

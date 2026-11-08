@@ -39,7 +39,7 @@ export default function AnimatedCounter({
   const display = useTransform(springValue, (current) => {
     const isNegative = current < 0
     const absoluteVal = Math.abs(current)
-    const formattedNum = absoluteVal.toLocaleString(undefined, { 
+    const formattedNum = absoluteVal.toLocaleString('en-US', { 
       minimumFractionDigits: decimals, 
       maximumFractionDigits: decimals 
     })

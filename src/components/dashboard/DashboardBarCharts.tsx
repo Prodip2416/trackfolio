@@ -108,17 +108,17 @@ export default function DashboardBarCharts({
         <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
           <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
           <p className="text-xs font-bold text-indigo-600 mb-2">
-            Total: ৳{data.buyAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Total: ৳{data.buyAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
           {data.buyDetails && data.buyDetails.length > 0 && (
             <div className="space-y-1.5">
               {data.buyDetails.map((d: any, i: number) => (
                 <div key={i} className="flex justify-between items-center text-[11px]">
                   <span className="text-gray-600 dark:text-gray-300 font-medium">
-                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
+                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString('en-US')})</span>
                   </span>
                   <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">
-                    ৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    ৳{d.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                 </div>
               ))}
@@ -137,14 +137,14 @@ export default function DashboardBarCharts({
         <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
           <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
           <p className="text-xs font-bold text-emerald-600 mb-2">
-            Total: ৳{data.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Total: ৳{data.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
           {data.details && data.details.length > 0 && (
             <div className="space-y-1.5">
               {data.details.map((d: any, i: number) => (
                 <div key={i} className="flex justify-between items-center text-[11px]">
                   <span className="text-gray-600 dark:text-gray-300 font-medium">{d.symbol}</span>
-                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               ))}
             </div>
@@ -162,16 +162,16 @@ export default function DashboardBarCharts({
         <div className="bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg min-w-[160px]">
           <p className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-1.5 mb-1.5">{label}</p>
           <p className="text-xs font-bold text-rose-600 mb-2">
-            Total: ৳{data.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Total: ৳{data.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
           {data.details && data.details.length > 0 && (
             <div className="space-y-1.5">
               {data.details.map((d: any, i: number) => (
                 <div key={i} className="flex justify-between items-center text-[11px]">
                   <span className="text-gray-600 dark:text-gray-300 font-medium">
-                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString()})</span>
+                    {d.symbol} <span className="text-gray-400">({d.quantity.toLocaleString('en-US')})</span>
                   </span>
-                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="text-gray-900 dark:text-gray-100 font-bold ml-4">৳{d.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               ))}
             </div>
@@ -183,7 +183,7 @@ export default function DashboardBarCharts({
   }
 
   return (
-    <>
+    <div className="space-y-3">
       {/* Monthly Trade Activity Bar Chart */}
       <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col w-full">
         <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
@@ -241,7 +241,7 @@ export default function DashboardBarCharts({
             />
             <div className="text-right hidden sm:block bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
               <p className="text-[13px] font-extrabold text-emerald-600 dark:text-emerald-400">
-                ৳{selectedYearTotalDividend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ৳{selectedYearTotalDividend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function DashboardBarCharts({
             />
             <div className="text-right hidden sm:block bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-lg border border-rose-100 dark:border-rose-800/30">
               <p className="text-[13px] font-extrabold text-rose-600 dark:text-rose-400">
-                ৳{selectedYearTotalSell.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ৳{selectedYearTotalSell.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -315,6 +315,6 @@ export default function DashboardBarCharts({
           </ResponsiveContainer>
         </div>
       </div>
-    </>
+    </div>
   )
 }

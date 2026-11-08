@@ -55,7 +55,11 @@ export async function getAssetLedger(stockId?: string, year?: string, type?: str
         gte: startDate,
         lte: endDate
       }
-      dividendWhere.year = yearNum
+      // Filter by date (not the dividend's `year` field) to match History and Reports
+      dividendWhere.date = {
+        gte: startDate,
+        lte: endDate
+      }
     }
 
     if (type === 'BUY' || type === 'SELL') {
@@ -102,7 +106,9 @@ export async function getAssetLedger(stockId?: string, year?: string, type?: str
       company_name: t.stocks?.dse_company?.company_name || 'Unknown',
       quantity: Number(t.quantity),
       price_per_unit: Number(t.price_per_unit),
-      total: Number(t.quantity) * Number(t.price_per_unit)
+      // Same fee rule as History/Portfolio: cost includes fee on BUY, proceeds net of fee on SELL
+      total: Number(t.quantity) * Number(t.price_per_unit) +
+        (t.type === 'SELL' ? -1 : 1) * Number(t.brokerage_fee || 0)
     }))
 
     const normalizedDividends = rawDividends.map(d => ({

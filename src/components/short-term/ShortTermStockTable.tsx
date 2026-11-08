@@ -10,7 +10,7 @@ type StockRow = {
 }
 
 export default function ShortTermStockTable({ data }: { data: StockRow[] }) {
-  const money = (n: number) => `৳${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  const money = (n: number) => `৳${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
   return (
     <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border border-gray-200/50 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm transition-colors duration-200">

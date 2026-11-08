@@ -43,7 +43,7 @@ export default function WatchlistTable({
 
   const formatPrice = (price: number | null) => {
     if (price === null) return '—'
-    return `৳${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    return `৳${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
   }
 
   const getCategoryColor = (category: string) => {

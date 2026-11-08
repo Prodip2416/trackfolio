@@ -10,6 +10,9 @@ services:
       - "6005:3000"
     environment:
       - NODE_ENV=development
+      # Bind-mounted files don't emit inotify events reliably → use polling for hot reload
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     env_file:
       - .env
     command: sh -c "npm install && npm run dev"

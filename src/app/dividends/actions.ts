@@ -5,6 +5,11 @@ import prisma from '@/lib/prisma'
 import { revalidatePortfolioViews } from '@/lib/revalidate'
 import { z } from 'zod'
 import { recalculateStockAggregates, OversellError } from '@/lib/stock-aggregates'
+import { pastOrTodayDateString } from '@/lib/date-schema'
+import { serializableTx } from '@/lib/tx'
+
+// P2002 = unique index violation (dividends_user_stock_date_key, see prisma/sql)
+const isUniqueViolation = (e: unknown) => (e as { code?: string } | null)?.code === 'P2002'
 
 const dividendSchema = z.object({
   symbol: z.string().min(1, 'Please select a valid Stock Symbol'),
@@ -12,7 +17,7 @@ const dividendSchema = z.object({
   year: z.number().min(2000, "Year must be 2000 or later").max(2100, "Year must be 2100 or earlier"),
   cash_amount: z.number().min(0, "Cash amount cannot be negative").nullable().optional(),
   bonus_quantity: z.number().int("Bonus shares must be a whole number").min(0, "Bonus quantity cannot be negative").nullable().optional(),
-  date: z.string().min(1, 'Please select a Declaration Date'),
+  date: pastOrTodayDateString,
   note: z.string().optional()
 })
 
@@ -92,38 +97,42 @@ export async function addDividend(formData: FormData) {
       return { error: 'You do not own this stock in your portfolio.' }
     }
 
-    // 2. Check for duplicate dividend on the same date
-    const existingDividend = await prisma.dividends.findFirst({
-      where: {
-        user_id: user.id,
-        stock_id: stock.id,
-        date: new Date(date)
-      }
+    // 2-4. Duplicate check, create and recalc atomically (serializable → no concurrent duplicates)
+    const created = await serializableTx(async (tx) => {
+      const existingDividend = await tx.dividends.findFirst({
+        where: {
+          user_id: user.id,
+          stock_id: stock.id,
+          date: new Date(date)
+        }
+      })
+      if (existingDividend) return false
+
+      await tx.dividends.create({
+        data: {
+          user_id: user.id,
+          stock_id: stock.id,
+          type: type as any,
+          year,
+          cash_amount,
+          bonus_quantity,
+          date: new Date(date),
+          note
+        }
+      })
+
+      await recalculateStockAggregates(stock.id, { db: tx })
+      return true
     })
 
-    if (existingDividend) {
+    if (!created) {
       return { error: 'A dividend for this stock on this date already exists.' }
     }
-
-    // 3. Create the dividend record
-    await prisma.dividends.create({
-      data: {
-        user_id: user.id,
-        stock_id: stock.id,
-        type: type as any,
-        year,
-        cash_amount,
-        bonus_quantity,
-        date: new Date(date),
-        note
-      }
-    })
-
-    await recalculateStockAggregates(stock.id)
 
     revalidatePortfolioViews()
     return { success: 'Dividend added successfully!' }
   } catch (error) {
+    if (isUniqueViolation(error)) return { error: 'A dividend for this stock on this date already exists.' }
     console.error('Error adding dividend:', error)
     return { error: 'Failed to add dividend.' }
   }
@@ -138,7 +147,7 @@ export async function deleteDividend(id: string) {
     const div = await prisma.dividends.findUnique({ where: { id, user_id: user.id } })
     if (!div) return { error: 'Dividend not found' }
 
-    await prisma.$transaction(async (tx) => {
+    await serializableTx(async (tx) => {
       await tx.dividends.delete({
         where: { id, user_id: user.id }
       })
@@ -212,7 +221,7 @@ export async function updateDividend(id: string, formData: FormData) {
       return { error: 'A dividend for this stock on this date already exists.' }
     }
 
-    await prisma.$transaction(async (tx) => {
+    await serializableTx(async (tx) => {
       await tx.dividends.update({
         where: { id, user_id: user.id },
         data: {
@@ -237,6 +246,7 @@ export async function updateDividend(id: string, formData: FormData) {
     return { success: 'Dividend updated successfully!' }
   } catch (error) {
     if (error instanceof OversellError) return { error: `Cannot update this dividend. ${error.message}` }
+    if (isUniqueViolation(error)) return { error: 'A dividend for this stock on this date already exists.' }
     console.error('Error updating dividend:', error)
     return { error: 'Failed to update dividend.' }
   }

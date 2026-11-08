@@ -27,11 +27,15 @@ export default async function ShortTermTransactionsPage({
 
   // Fetch all DSE symbols for the "Log Trade" modal
   const dseCompanies = await prisma.dse_companies.findMany({
-    select: { symbol: true },
+    select: { symbol: true, current_price: true },
     orderBy: { symbol: 'asc' },
   })
 
   const availableSymbols = dseCompanies.map(c => c.symbol)
+  const currentPrices: Record<string, number> = {}
+  for (const c of dseCompanies) {
+    if (c.current_price != null) currentPrices[c.symbol] = Number(c.current_price)
+  }
   const [filterSymbols, trades] = await Promise.all([
     getOwnedShortTermSymbols(),
     getShortTermTrades(symbol, year)
@@ -43,6 +47,7 @@ export default async function ShortTermTransactionsPage({
         <ShortTermClient
           trades={trades}
           availableSymbols={availableSymbols}
+          currentPrices={currentPrices}
           filterSymbols={filterSymbols}
           initialSymbol={symbol}
           initialYear={year}

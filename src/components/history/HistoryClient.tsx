@@ -7,6 +7,7 @@ import DividendForm from '@/components/dividends/DividendForm'
 import ConfirmModal from '@/components/shared/ConfirmModal'
 import { deleteTransaction } from '@/app/transactions/actions'
 import { deleteDividend } from '@/app/dividends/actions'
+import { runAction } from '@/lib/run-action'
 
 import HistoryTabs from './HistoryTabs'
 import HistoryFilters from './HistoryFilters'
@@ -45,10 +46,11 @@ export default function HistoryClient({
   const confirmDelete = async () => {
     if (!deleteId || !deleteType) return
     setIsDeleting(true)
+    const id = deleteId
     if (deleteType === 'TRANSACTION') {
-      await deleteTransaction(deleteId)
+      await runAction(() => deleteTransaction(id), 'Trade log deleted')
     } else {
-      await deleteDividend(deleteId)
+      await runAction(() => deleteDividend(id), 'Dividend deleted')
     }
     setIsDeleting(false)
     setDeleteId(null)
@@ -64,6 +66,8 @@ export default function HistoryClient({
 
   // Fetch data from backend whenever filters or page change
   useEffect(() => {
+    // Ignore responses from superseded requests (fast filter/page/tab changes)
+    let cancelled = false
     const fetchData = async () => {
       setIsLoading(true)
       try {
@@ -75,19 +79,20 @@ export default function HistoryClient({
           currentPage,
           itemsPerPage
         })
-        
+        if (cancelled) return
         setData(result.data)
         setTotalPages(result.totalPages)
         setTotalRecords(result.totalRecords)
         setCurrentTotal(result.currentTotal)
       } catch (error) {
-        console.error("Failed to fetch history data:", error)
+        if (!cancelled) console.error("Failed to fetch history data:", error)
       } finally {
-        setIsLoading(false)
+        if (!cancelled) setIsLoading(false)
       }
     }
 
     fetchData()
+    return () => { cancelled = true }
   }, [activeTab, filterStock, filterYear, filterMonth, currentPage, refreshTrigger])
 
 

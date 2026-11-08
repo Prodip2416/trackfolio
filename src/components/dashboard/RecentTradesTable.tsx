@@ -45,7 +45,7 @@ export default function RecentTradesTable({ recentTrades, dict }: RecentTradesTa
                       </span>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-[12px] text-gray-900 dark:text-white text-right font-semibold">
-                      {txn.quantity.toLocaleString()}
+                      {txn.quantity.toLocaleString('en-US')}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-[12px] text-gray-900 dark:text-white text-right">
                       {txn.price_per_unit.toFixed(2)}
@@ -54,7 +54,7 @@ export default function RecentTradesTable({ recentTrades, dict }: RecentTradesTa
                       {txn.stocks.current_price ? txn.stocks.current_price.toFixed(2) : '-'}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-[12px] font-bold text-gray-900 dark:text-white text-right hidden sm:table-cell">
-                      {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                   </tr>
                 )
