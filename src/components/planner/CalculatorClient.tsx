@@ -150,7 +150,7 @@ function AverageDownCalc({
     const h = holdings.find(x => x.symbol === sym)
     if (h) {
       setHoldQty(String(h.quantity))
-      setHoldAvg(String(h.average_price))
+      setHoldAvg(String(Math.round(h.average_price * 10000) / 10000))
       if (h.current_price) setAddPrice(String(h.current_price))
     }
   }

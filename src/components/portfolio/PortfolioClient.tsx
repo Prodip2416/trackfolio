@@ -216,7 +216,13 @@ export default function PortfolioClient({
                           {stock.total_quantity.toLocaleString('en-US')}
                         </span>
                       </td>
-                      <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right text-[11px] sm:text-xs font-medium text-gray-900 dark:text-white">
+                      <td className={`px-2 sm:px-3 py-1.5 whitespace-nowrap text-right text-[11px] sm:text-xs ${
+                        stock.latest_price > 0 && stock.average_buy_price < stock.latest_price
+                          ? 'font-bold text-green-600 dark:text-green-400'
+                          : stock.latest_price > 0 && stock.average_buy_price > stock.latest_price
+                            ? 'font-bold text-rose-600 dark:text-rose-400'
+                            : 'font-medium text-gray-900 dark:text-white'
+                      }`}>
                         {stock.average_buy_price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 sm:px-3 py-1.5 whitespace-nowrap text-right text-[11px] sm:text-xs font-medium text-gray-900 dark:text-white">
