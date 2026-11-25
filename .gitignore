@@ -45,3 +45,14 @@ next-env.d.ts
 
 # npm is the package manager; package-lock.json is committed
 yarn.lock
+
+# Playwright (login state holds a session token)
+/e2e/.auth/
+/test-results/
+/playwright-report/
+
+# Prize bond samples: result PDFs are public test fixtures and are committed;
+# spreadsheets hold a client's real bond numbers and must stay local.
+/sample-pdf/*.xlsx
+/sample-pdf/*.xls
+/sample-pdf/*.csv

@@ -29,10 +29,12 @@
     "react-hook-form": "^7.84.0",
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.10.1",
+    "unpdf": "^1.9.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.20.5",
     "@types/react": "^19",
