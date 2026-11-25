@@ -54,6 +54,7 @@ model dse_companies {
   shortTermTrades short_term_trades[]
   tradePlans      trade_plans[]
   plannerNotes    planner_notes[]
+  yearEndPrices   year_end_prices[]
 
   @@schema("public")
 }
@@ -78,6 +79,7 @@ model profiles {
   plannerNotes    planner_notes[]
   prizeBonds      prize_bonds[]
   prizeBondWins   prize_bond_wins[]
+  yearEndPrices   year_end_prices[]
 
   @@schema("public")
 }
@@ -321,5 +323,26 @@ model prize_bond_wins {
   bond     prize_bonds? @relation(fields: [bond_id], references: [id], onDelete: SetNull)
 
   @@index([user_id])
+  @@schema("public")
+}
+
+/// Last known price of a symbol in a year (Yearly Return / CAGR). Global, not per user.
+/// source: 'sync' (DSE price sync, overwritten each sync of that year) | 'manual' (entered for past years).
+model year_end_prices {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  symbol     String
+  year       Int
+  price      Decimal  @db.Decimal
+  price_date DateTime @db.Date
+  source     String   @default("sync")
+  updated_by String?  @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  dse_company dse_companies @relation(fields: [symbol], references: [symbol], onDelete: NoAction, onUpdate: Cascade)
+  updater     profiles?     @relation(fields: [updated_by], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@unique([symbol, year], map: "year_end_prices_symbol_year_key")
+  @@index([year], map: "year_end_prices_year_idx")
   @@schema("public")
 }

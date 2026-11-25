@@ -96,6 +96,7 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
       base: '/analytics',
       subItems: [
         { name: dict.sidebar.performance, href: '/analytics/performance' },
+        { name: dict.sidebar.yearlyReturn || 'Yearly Return', href: '/analytics/returns' },
         { name: dict.sidebar.diversification, href: '/analytics/diversification' },
         { name: dict.sidebar.dividendInsights, href: '/analytics/dividends' },
         { name: dict.sidebar.tradingBehavior, href: '/analytics/trading' },
@@ -207,7 +208,9 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
                 {isOpen && (
                   <div className="pl-11 pr-2 space-y-1 py-1">
                     {item.subItems.map((sub) => {
-                      const isSubActive = pathname === sub.href
+                      // Year-end Prices is a sub-page of Yearly Return (not in the menu)
+                      const isSubActive = pathname === sub.href ||
+                        (sub.href === '/analytics/returns' && pathname.startsWith('/analytics/returns/'))
                       return (
                         <Link
                           key={sub.name}

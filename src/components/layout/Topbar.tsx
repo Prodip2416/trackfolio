@@ -59,6 +59,11 @@ export default function Topbar({ lastSyncTime, dict }: { user: User, lastSyncTim
     } else if (pathname.startsWith('/analytics')) {
       items.push({ name: dict.sidebar.analytics, icon: PieChart })
       if (pathname === '/analytics/performance') items.push({ name: dict.sidebar.performance })
+      else if (pathname === '/analytics/returns') items.push({ name: dict.sidebar.yearlyReturn })
+      else if (pathname === '/analytics/returns/prices') {
+        items.push({ name: dict.sidebar.yearlyReturn })
+        items.push({ name: dict.sidebar.yearEndPrices })
+      }
       else if (pathname === '/analytics/diversification') items.push({ name: dict.sidebar.diversification })
       else if (pathname === '/analytics/dividends') items.push({ name: dict.sidebar.dividendInsights })
       else if (pathname === '/analytics/trading') items.push({ name: dict.sidebar.tradingBehavior })
