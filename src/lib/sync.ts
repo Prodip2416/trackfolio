@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { recalculateStockAggregates } from '@/lib/stock-aggregates'
+import { snapshotYearEndPrices } from '@/lib/year-end-prices'
 
 const DSE_PRICES_URL = 'https://www.dse.com.bd/api/live/prices'
 const FETCH_TIMEOUT_MS = 10_000
@@ -42,6 +43,15 @@ export async function syncDseData(userId: string) {
   })
   for (const stock of userStocks) {
     await recalculateStockAggregates(stock.id)
+  }
+
+  // Keep this year's year-end prices (Yearly Return) current. Never fails the sync.
+  if (!skipped && priceError === null) {
+    try {
+      await snapshotYearEndPrices()
+    } catch (error) {
+      console.error('Year-end price snapshot failed:', error)
+    }
   }
 
   return { success: priceError === null, skipped, priceError }
