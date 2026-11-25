@@ -1,5 +1,3 @@
-import { getDocumentProxy } from 'unpdf'
-
 type Item = { str: string; x: number; y: number; w: number }
 
 /**
@@ -8,6 +6,9 @@ type Item = { str: string; x: number; y: number; w: number }
  * a space so a 7-digit number split across text runs stays intact.
  */
 export async function extractPdfText(data: Uint8Array): Promise<string> {
+  // Loaded lazily: pdf.js (unpdf, needs Node >= 22) is only pulled in when a PDF is checked,
+  // so a runtime problem there can never break page rendering — the check just reports an error.
+  const { getDocumentProxy } = await import('unpdf')
   // verbosity 0: silence pdf.js font warnings (SutonnyMJ has non-standard TrueType hints)
   const pdf = await getDocumentProxy(data, { verbosity: 0 })
   const pages: string[] = []
