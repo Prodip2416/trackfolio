@@ -4,7 +4,7 @@ import { useState, useEffect, useTransition, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X, Zap, NotebookPen } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, History, Coins, Briefcase, PieChart, ChevronDown, ChevronRight, FileText, LogOut, Sun, Moon, Globe, Loader2, Star, Bell, X, Zap, NotebookPen, Ticket } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { logout } from '@/app/auth/actions'
 import { setLanguage } from '@/app/actions/i18n'
@@ -50,7 +50,8 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
   const userInitial = user ? (user.user_metadata?.full_name || user.email || 'U').charAt(0).toUpperCase() : 'U'
   const userName = user ? (user.user_metadata?.full_name || user.email?.split('@')[0] || 'User') : 'User'
   // Only one submenu is open at a time; keyed by the submenu's base path.
-  const SUBMENU_BASES = ['/portfolio', '/watchlist', '/analytics', '/short-term', '/planner', '/reports']
+  // Every navItem with `base` + subItems MUST be listed here, or its submenu won't stay open/active.
+  const SUBMENU_BASES = ['/portfolio', '/watchlist', '/analytics', '/short-term', '/planner', '/prize-bond', '/reports']
   const baseFor = (p: string) => SUBMENU_BASES.find(b => p === b || p.startsWith(`${b}/`)) ?? null
   const [openMenu, setOpenMenu] = useState<string | null>(() => baseFor(pathname))
   const [lastPathname, setLastPathname] = useState(pathname)
@@ -120,6 +121,16 @@ export default function Sidebar({ dict, user }: { dict: any, user?: User }) {
         { name: dict.sidebar.tradePlan || 'Trade Plan', href: '/planner' },
         { name: dict.sidebar.plannerNotes || 'Notes & Journal', href: '/planner/notes' },
         { name: dict.sidebar.whatIfCalculator || 'What-If Calculator', href: '/planner/calculator' },
+      ]
+    },
+    {
+      name: dict.sidebar.prizeBond || 'Prize Bond',
+      icon: Ticket,
+      base: '/prize-bond',
+      subItems: [
+        { name: dict.sidebar.myBonds || 'My Bonds', href: '/prize-bond' },
+        { name: dict.sidebar.drawResults || 'Draw Results', href: '/prize-bond/draws' },
+        { name: dict.sidebar.winnings || 'Winnings', href: '/prize-bond/winnings' },
       ]
     },
     { name: dict.sidebar.dividendLog, href: '/dividends', icon: Coins },

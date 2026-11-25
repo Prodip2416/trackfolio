@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import DashboardClient from '@/components/dashboard/DashboardClient'
 import { getDictionary } from '@/i18n/getDictionary'
 import { getPlannerSnapshot } from '@/lib/planner-snapshot'
+import { getBondSummary } from '@/lib/prize-bond/service'
 
 export const metadata = {
   title: 'Dashboard - TrackFolio',
@@ -21,7 +22,7 @@ export default async function DashboardPage() {
   const dict = await getDictionary()
 
   // Fetch dashboard data. Stock aggregates are the source of truth for active shares.
-  const [transactions, dividends, companies, activeStocks, lastUpdatedCompany, plannerSnapshot] = await Promise.all([
+  const [transactions, dividends, companies, activeStocks, lastUpdatedCompany, plannerSnapshot, prizeBondSummary] = await Promise.all([
     prisma.transactions.findMany({
       where: { user_id: user.id },
       select: {
@@ -76,7 +77,12 @@ export default async function DashboardPage() {
       orderBy: { updated_at: 'desc' },
       select: { updated_at: true }
     }),
-    getPlannerSnapshot(user.id)
+    getPlannerSnapshot(user.id),
+    // Optional card: a prize-bond failure must never break the dashboard.
+    getBondSummary(user.id).catch(e => {
+      console.error('Prize bond summary failed:', e)
+      return null
+    })
   ])
 
   // Create a map for fast sector lookups from dse_companies
@@ -133,6 +139,7 @@ export default async function DashboardPage() {
         stocks={formattedStocks}
         lastSyncTime={lastUpdatedCompany?.updated_at?.toISOString() || null}
         plannerSnapshot={plannerSnapshot}
+        prizeBondSummary={prizeBondSummary}
         dict={dict}
       />
     

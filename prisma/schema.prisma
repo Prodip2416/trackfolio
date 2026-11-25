@@ -76,6 +76,8 @@ model profiles {
   shortTermTrades short_term_trades[]
   tradePlans      trade_plans[]
   plannerNotes    planner_notes[]
+  prizeBonds      prize_bonds[]
+  prizeBondWins   prize_bond_wins[]
 
   @@schema("public")
 }
@@ -267,6 +269,56 @@ model planner_notes {
 
   dse_company dse_companies? @relation(fields: [symbol], references: [symbol])
   profiles    profiles       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@schema("public")
+}
+
+// ---------------------------------------------------------------------------
+// Prize Bond (prisma/sql/2026-11-25_prize_bond.sql). The DB also has a unique
+// expression index prize_bonds_user_number_series_key on
+// (user_id, number, COALESCE(series, '')) that Prisma cannot model.
+// ---------------------------------------------------------------------------
+
+model prize_bonds {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id       String    @db.Uuid
+  number        String    @db.Char(7)
+  series        String?
+  holder        String?
+  purchase_date DateTime? @db.Date
+  encashed_on   DateTime? @db.Date
+  note          String?
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  profiles profiles          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  wins     prize_bond_wins[]
+
+  @@index([number])
+  @@schema("public")
+}
+
+// Wins found while checking a draw PDF (prisma/sql/2026-11-25b_prize_bond_wins.sql).
+// Draws themselves are NOT stored. Unique expression index
+// prize_bond_wins_user_bond_draw_key on (user_id, number, COALESCE(series, ''), draw_no)
+// lives in SQL only. Old unused tables (prize_bond_draws / _winning_numbers / _claims)
+// still exist in the DB but are intentionally not modelled.
+model prize_bond_wins {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String   @db.Uuid
+  bond_id    String?  @db.Uuid
+  number     String   @db.Char(7)
+  series     String?
+  holder     String?
+  draw_no    Int
+  draw_date  DateTime @db.Date
+  rank       Int      @db.SmallInt
+  amount     Decimal  @db.Decimal
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  profiles profiles     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  bond     prize_bonds? @relation(fields: [bond_id], references: [id], onDelete: SetNull)
 
   @@index([user_id])
   @@schema("public")

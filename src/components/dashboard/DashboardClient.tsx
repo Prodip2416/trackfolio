@@ -10,6 +10,8 @@ import DashboardBarCharts from './DashboardBarCharts'
 import RecentTradesTable from './RecentTradesTable'
 import PlannerSnapshotCard from './PlannerSnapshotCard'
 import type { PlannerSnapshot } from '@/lib/planner-snapshot'
+import PrizeBondSummaryCard from '@/components/prize-bond/PrizeBondSummaryCard'
+import type { BondSummary } from '@/lib/prize-bond/winnings'
 import { motion, Variants } from 'framer-motion'
 
 type Transaction = {
@@ -59,6 +61,7 @@ export default function DashboardClient({
   stocks,
   lastSyncTime,
   plannerSnapshot,
+  prizeBondSummary,
   dict
 }: {
   transactions: Transaction[],
@@ -66,6 +69,7 @@ export default function DashboardClient({
   stocks: StockHolding[],
   lastSyncTime?: string | null,
   plannerSnapshot?: PlannerSnapshot | null,
+  prizeBondSummary?: BondSummary | null,
   dict: any
 }) {
   const { theme } = useTheme()
@@ -336,6 +340,12 @@ export default function DashboardClient({
       {plannerSnapshot && (
         <motion.div variants={itemVariants}>
           <PlannerSnapshotCard snapshot={plannerSnapshot} />
+        </motion.div>
+      )}
+
+      {prizeBondSummary && prizeBondSummary.bondCount > 0 && (
+        <motion.div variants={itemVariants}>
+          <PrizeBondSummaryCard summary={prizeBondSummary} t={dict.prizeBond} />
         </motion.div>
       )}
 
