@@ -12,6 +12,7 @@ import {
   holdingsAt,
   priceKey,
   requiredYearEndPrices,
+  topMovers,
   type PriceBook,
   type ReturnDividend,
   type ReturnTxn,
@@ -132,6 +133,9 @@ describe('computeYearReturn', () => {
     expect(r.realized + r.unrealized + r.dividends).toBeCloseTo(r.gain, 10)
     expect(r.stocks).toHaveLength(1)
     expect(r.stocks[0]).toMatchObject({ symbol: 'AAA', startQty: 100, endQty: 60, gain: r.gain })
+    // per stock: realized + unrealized + dividend = gain
+    expect(r.stocks[0].unrealized).toBeCloseTo(r.unrealized, 10)
+    expect(r.stocks[0].realized + r.stocks[0].unrealized! + r.stocks[0].dividend).toBeCloseTo(r.stocks[0].gain!, 10)
   })
 
   it('bonus shares raise the end quantity without a cash flow', () => {
@@ -187,6 +191,7 @@ describe('computeYearReturn', () => {
     expect(r.returnPct).toBeNull()
     expect(r.missing).toEqual([{ symbol: 'BBB', year: 2024, qty: 5 }])
     expect(r.stocks.find(s => s.symbol === 'BBB')?.gain).toBeNull()
+    expect(r.stocks.find(s => s.symbol === 'BBB')?.unrealized).toBeNull()
     expect(r.stocks.find(s => s.symbol === 'AAA')?.gain).toBe(100)
   })
 
@@ -228,6 +233,27 @@ describe('computeYearReturn', () => {
 
   it('rejects future years', () => {
     expect(() => computeYearReturn({ txns: [], dividends: [], prices: book({}), year: 2027, today: TODAY })).toThrow()
+  })
+})
+
+describe('topMovers', () => {
+  const row = (symbol: string, gain: number | null) => ({
+    symbol, gain, startQty: 0, startPrice: null, startValue: 0, buyAmount: 0, sellAmount: 0,
+    dividend: 0, realized: 0, endQty: 0, endPrice: null, endValue: 0, unrealized: gain
+  })
+
+  it('picks the biggest gain and the biggest loss, skipping unmeasurable stocks', () => {
+    const m = topMovers([row('A', 500), row('B', -200), row('C', 900), row('D', -700), row('E', null)])
+    expect(m.gainer).toEqual({ symbol: 'C', gain: 900 })
+    expect(m.loser).toEqual({ symbol: 'D', gain: -700 })
+  })
+
+  it('no gainer when every stock lost, no loser when every stock gained or broke even', () => {
+    expect(topMovers([row('A', -5), row('B', -1)]).gainer).toBeNull()
+    const m = topMovers([row('A', 5), row('B', 0)])
+    expect(m.loser).toBeNull()
+    expect(m.gainer?.symbol).toBe('A')
+    expect(topMovers([])).toEqual({ gainer: null, loser: null })
   })
 })
 

@@ -228,6 +228,8 @@
     "subtitle": "Return of your main portfolio for a selected year, and CAGR for all time.",
     "allTime": "All time",
     "ytd": "{year} YTD",
+    "searchYear": "Search year...",
+    "noYearFound": "No year found",
     "pricesLink": "Year-end Prices",
     "empty": "No transactions yet. Add trades to see your yearly return.",
     "cards": {
@@ -242,17 +244,21 @@
       "cumulative": "Cumulative Return",
       "span": "Years Invested",
       "best": "Best Year",
-      "worst": "Worst Year"
+      "worst": "Worst Year",
+      "topGainer": "Top Gainer",
+      "topLoser": "Top Loser"
     },
     "hints": {
       "period": "{start} → {end}",
       "method": "Money-weighted (Modified Dietz): buys and sells count only for the days they were invested.",
-      "cagr": "Yearly returns chained and annualized since {date}.",
-      "cagrShort": "Less than 1 year of history — CAGR is shown after one full year.",
-      "cagrMissing": "Add the missing year-end prices to see CAGR.",
+      "cagr": "since {date}",
+      "cagrShort": "shown after 1 full year",
+      "cagrMissing": "year-end prices missing",
       "invalid": "Not measurable: no money stayed invested during this year.",
       "noActivity": "No holdings or trades in this year.",
-      "netInvested": "Buys − sells in this year"
+      "netInvested": "Buys − sells in this year",
+      "noGainer": "No stock gained this year",
+      "noLoser": "No stock lost this year"
     },
     "warnings": {
       "missing": "{count} year-end price(s) missing — the return can't be calculated yet.",
@@ -280,6 +286,7 @@
       "endValue": "End Value",
       "dividend": "Dividend",
       "realized": "Realized",
+      "unrealized": "Unrealized",
       "gain": "Gain",
       "year": "Year",
       "start": "Start",
