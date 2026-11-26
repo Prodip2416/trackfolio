@@ -55,6 +55,8 @@ export type StockYearRow = {
   endValue: number
   /** null when a needed price is missing */
   gain: number | null
+  /** paper gain/loss of the year: gain − realized − dividend; null when gain is null */
+  unrealized: number | null
 }
 
 export type YearStatus = 'ok' | 'missing' | 'noActivity' | 'invalid'
@@ -225,7 +227,7 @@ export function computeYearReturn(params: {
     if (!r) {
       rows.set(symbol, (r = {
         symbol, startQty: 0, startPrice: null, startValue: 0, buyAmount: 0, sellAmount: 0,
-        dividend: 0, realized: 0, endQty: 0, endPrice: null, endValue: 0, gain: null
+        dividend: 0, realized: 0, endQty: 0, endPrice: null, endValue: 0, gain: null, unrealized: null
       }))
     }
     return r
@@ -284,6 +286,7 @@ export function computeYearReturn(params: {
     r.gain = missingSymbols.has(r.symbol)
       ? null
       : r.endValue - r.startValue - (r.buyAmount - r.sellAmount) + r.dividend
+    r.unrealized = r.gain === null ? null : r.gain - r.realized - r.dividend
   }
 
   const stocks = [...rows.values()].sort((a, b) => a.symbol.localeCompare(b.symbol))
@@ -326,6 +329,23 @@ export function computeYearReturn(params: {
     stale,
     stocks
   }
+}
+
+export type Mover = { symbol: string; gain: number }
+
+/**
+ * Stock with the biggest gain (> 0) and the biggest loss (< 0) in the year.
+ * Stocks whose gain can't be measured (missing price) are ignored.
+ */
+export function topMovers(stocks: StockYearRow[]): { gainer: Mover | null; loser: Mover | null } {
+  let gainer: Mover | null = null
+  let loser: Mover | null = null
+  for (const s of stocks) {
+    if (s.gain === null) continue
+    if (s.gain > EPS && (!gainer || s.gain > gainer.gain)) gainer = { symbol: s.symbol, gain: s.gain }
+    if (s.gain < -EPS && (!loser || s.gain < loser.gain)) loser = { symbol: s.symbol, gain: s.gain }
+  }
+  return { gainer, loser }
 }
 
 /** Chain-links yearly returns into a cumulative return and annualizes it (CAGR). */

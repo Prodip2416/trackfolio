@@ -6,6 +6,10 @@ import { Check, ChevronDown, Search } from 'lucide-react'
 type Option = {
   label: string
   value: string
+  /** shown but not selectable */
+  disabled?: boolean
+  /** extra text the search also matches (e.g. "2026" for a Bangla-digit label) */
+  keywords?: string
 }
 
 interface SearchableDropdownProps {
@@ -14,6 +18,11 @@ interface SearchableDropdownProps {
   onChange: (value: string) => void
   placeholder?: string
   searchPlaceholder?: string
+  noResultsText?: string
+  /** icon shown before the selected label */
+  icon?: React.ReactNode
+  /** data-testid for the button; options get `${testId}-option-${value}` */
+  testId?: string
   className?: string
   buttonClassName?: string
 }
@@ -24,6 +33,9 @@ export default function SearchableDropdown({
   onChange,
   placeholder = 'Select an option',
   searchPlaceholder = 'Search...',
+  noResultsText = 'No results found',
+  icon,
+  testId,
   className = '',
   buttonClassName = 'px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-medium min-h-[38px]'
 }: SearchableDropdownProps) {
@@ -50,14 +62,16 @@ export default function SearchableDropdown({
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false)
+        setSearchQuery('') // a stale search would hide options next time it opens
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const query = searchQuery.toLowerCase()
   const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    option.label.toLowerCase().includes(query) || (option.keywords?.toLowerCase().includes(query) ?? false)
   )
 
   const selectedOption = options.find(opt => opt.value === value)
@@ -66,10 +80,18 @@ export default function SearchableDropdown({
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (isOpen) setSearchQuery('')
+          setIsOpen(!isOpen)
+        }}
+        data-testid={testId}
+        aria-expanded={isOpen}
         className={`w-full flex items-center justify-between text-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 transition-colors ${buttonClassName}`}
       >
-        <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
+        <span className="flex items-center gap-2 min-w-0">
+          {icon}
+          <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
+        </span>
         <ChevronDown className={`w-4 h-4 ml-2 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
@@ -91,14 +113,18 @@ export default function SearchableDropdown({
           
           <div className="max-h-60 overflow-y-auto p-1">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-3 text-sm text-center text-gray-500 dark:text-gray-400">No results found</div>
+              <div className="px-3 py-3 text-sm text-center text-gray-500 dark:text-gray-400">{noResultsText}</div>
             ) : (
               filteredOptions.map((option) => (
                 <button
                   key={option.value}
                   type="button"
+                  disabled={option.disabled}
+                  data-testid={testId ? `${testId}-option-${option.value}` : undefined}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${
-                    value === option.value ? 'bg-indigo-50 text-indigo-700 font-semibold dark:bg-indigo-900/30 dark:text-indigo-300' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                    option.disabled
+                      ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                      : value === option.value ? 'bg-indigo-50 text-indigo-700 font-semibold dark:bg-indigo-900/30 dark:text-indigo-300' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
                   }`}
                   onClick={() => {
                     onChange(option.value)
